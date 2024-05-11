@@ -22,10 +22,7 @@ node_modules
 *.sln
 *.sw?
 
-
-
-
-
+*/secret.json
 
 
 
@@ -266,4 +263,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-/TravelAgencyAPI/appsettings.json
