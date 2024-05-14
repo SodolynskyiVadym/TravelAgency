@@ -19,7 +19,7 @@ public class Place
     public string Description { get; set; }
     
 
-    public string AttractionSiteUrl { get; set; }
+    public string? AttractionSiteUrl { get; set; }
     
     [Required]
     public string ImageUrl { get; set; }
