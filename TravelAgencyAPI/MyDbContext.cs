@@ -1,8 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.Models;
 
-namespace TravelAgencyAPI.Settings;
+namespace TravelAgencyAPI;
 
 public class MyDbContext : DbContext
 {
@@ -13,18 +12,15 @@ public class MyDbContext : DbContext
     public DbSet<Destination> Destinations { get; set; }
     public DbSet<Tour> Tours { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    
-    // public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
-    // {
-    // }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(
-            "Server=localhost;Database=travel_agency;User Id=sa;Password=Test123456;TrustServerCertificate=true");
+            "Server=localhost;Database=travel_agency;User Id=sa;Password=Test1234;TrustServerCertificate=true");
     }
 
-    protected MyDbContext()
+    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
     {
     }
 }
