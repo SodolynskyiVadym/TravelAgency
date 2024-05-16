@@ -22,7 +22,6 @@ public class Place
     
     public ICollection<Hotel> Hotels { get; set; }
     
-    
     public Place()
     {
     }

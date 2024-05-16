@@ -14,17 +14,13 @@ public class PlaceController : ControllerBase
         _context = context;
     }
 
-    [HttpGet]
-    [Route("test")]
-    public IActionResult Test()
+    [HttpPost]
+    [Route("create")]
+    public IActionResult CreatePlace(Place place)
     {
-        _context.Places.Add(new Place()
-        {
-            Name = "Paris",
-            Description = "Amazing city!!!",
-            Country = "France"
-        });
+        place.Id = 0;
+        _context.Places.Add(place);
         _context.SaveChanges();
-        return Ok("Test");
+        return Ok(place);
     }
 }
