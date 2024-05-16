@@ -18,11 +18,9 @@ public class Place
     [Required]
     public string Description { get; set; }
     
-
-    public string? AttractionSiteUrl { get; set; }
+    public string? SiteUrl { get; set; }
     
-    [Required]
-    public string ImageUrl { get; set; }
+    public ICollection<Hotel> Hotels { get; set; }
     
     
     public Place()

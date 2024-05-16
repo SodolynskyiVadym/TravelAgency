@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TravelAgencyAPI.Settings;
+using TravelAgencyAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddJsonFile("secret.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

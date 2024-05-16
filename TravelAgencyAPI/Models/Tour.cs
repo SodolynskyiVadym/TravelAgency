@@ -16,13 +16,12 @@ public class Tour
     public string Description { get; set; }
     
     [Required]
-    public string ImageUrl { get; set; }
-    
-    [Required]
     public int Price { get; set; }
     
     [Required]
     public int QuantitySeats { get; set; }
+    
+    public ICollection<Destination> Destinations { get; set; }
     
     
     public Tour()

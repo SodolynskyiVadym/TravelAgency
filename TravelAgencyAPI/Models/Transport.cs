@@ -16,9 +16,6 @@ public class Transport
     public string Description { get; set; }
     
     [Required]
-    public string ImageUrl { get; set; }
-    
-    [Required]
     public int PricePerSeatPerKm { get; set; }
     
     [Required]

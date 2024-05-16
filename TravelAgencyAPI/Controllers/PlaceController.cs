@@ -22,8 +22,7 @@ public class PlaceController : ControllerBase
         {
             Name = "Paris",
             Description = "Amazing city!!!",
-            Country = "France",
-            ImageUrl = "test_link"
+            Country = "France"
         });
         _context.SaveChanges();
         return Ok("Test");

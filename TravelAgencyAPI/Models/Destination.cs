@@ -16,12 +16,6 @@ public class Destination
     public Tour Tour { get; set; }
     
     [Required]
-    public int PlaceId { get; set; }
-    
-    [ForeignKey("PlaceId")]
-    public Place Place { get; set; }
-    
-    [Required]
     public int HotelId { get; set; }
     
     [ForeignKey("HotelId")]
@@ -35,6 +29,8 @@ public class Destination
     
     [Required]
     public int QuantityDays { get; set; }
+    
+    public Place Place => Hotel.Place;
     
 
     public Destination()

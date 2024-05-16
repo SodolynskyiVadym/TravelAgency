@@ -19,10 +19,13 @@ public class Hotel
     public string Description { get; set; }
     
     [Required]
-    public string ImageUrl { get; set; }
+    public int PricePerNight { get; set; }
     
     [Required]
-    public int PricePerNight { get; set; }
+    public int PlaceId { get; set; }
+    
+    [ForeignKey("PlaceId")]
+    public Place Place { get; set; }
     
     public Hotel()
     {
