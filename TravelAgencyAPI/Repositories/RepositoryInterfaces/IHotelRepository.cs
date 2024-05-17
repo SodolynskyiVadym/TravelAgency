@@ -1,8 +1,8 @@
-﻿using TravelAgencyAPI.Models;
+﻿using TravelAgencyAPI.DTO;
 
 namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 public interface IHotelRepository
 {
-    public Task<bool> AddHotelAsync(Hotel hotel);
+    public Task<bool> AddHotelAsync(HotelCreateDto hotel);
 }

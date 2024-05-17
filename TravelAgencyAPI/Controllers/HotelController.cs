@@ -1,21 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Repositories.Implementations;
 
 namespace TravelAgencyAPI.Controllers;
 
-public class HotelController
+
+[ApiController]
+[Route("[controller]")]
+public class HotelController : ControllerBase
 {
-    private HotelRepository _hotelRepository;
-    public HotelController(MyDbContext context)
+    private readonly HotelRepository _hotelRepository;
+    public HotelController(MyDbContext context, IMapper mapper)
     {
-        _hotelRepository = new HotelRepository(context);
+        _hotelRepository = new HotelRepository(context, mapper);
     }
     
-    [HttpPost]
-    public async Task<Hotel> AddHotel(Hotel hotel)
+    [HttpPost("create")]
+    public async Task<IActionResult> AddHotel(HotelCreateDto hotel)
     {
         await _hotelRepository.AddHotelAsync(hotel);
-        return hotel;
+        return Ok(hotel);
     }
 }

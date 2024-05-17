@@ -1,8 +1,10 @@
-﻿using TravelAgencyAPI.Models;
+﻿using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Models;
 
 namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 public interface IPlaceRepository
 {
-    public Task<bool> AddPlaceAsync(Place place);
+    public Task<Place?> GetAsyncById(int id);
+    public Task<bool> AddPlaceAsync(PlaceCreateDto place);
 }

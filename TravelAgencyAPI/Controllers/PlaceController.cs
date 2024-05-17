@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
+using TravelAgencyAPI.Repositories.Implementations;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -7,20 +10,23 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class PlaceController : ControllerBase
 {
-    private readonly MyDbContext _context;
+    private readonly PlaceRepository _placeRepository;
 
-    public PlaceController(MyDbContext context)
+    public PlaceController(MyDbContext context, IMapper mapper)
     {
-        _context = context;
+        _placeRepository = new PlaceRepository(context, mapper);
     }
 
-    [HttpPost]
-    [Route("create")]
-    public IActionResult CreatePlace(Place place)
+    [HttpGet("{id}")]
+    public async Task<Place?> GetPlace(int id)
     {
-        place.Id = 0;
-        _context.Places.Add(place);
-        _context.SaveChanges();
+        return await _placeRepository.GetAsyncById(id);
+    }
+    
+    [HttpPost("create")]
+    public async Task<IActionResult> CreatePlace(PlaceCreateDto place)
+    {
+        await _placeRepository.AddPlaceAsync(place);
         return Ok(place);
     }
 }

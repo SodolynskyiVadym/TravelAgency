@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI;
+using TravelAgencyAPI.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +10,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration["ConnectionString:DefaultConnection"]);
-    Console.WriteLine("Connected to database");
 });
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddCors((options) =>
 {
