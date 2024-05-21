@@ -10,9 +10,11 @@ public class Tour
     public int Id { get; set; }
     
     [Required]
+    [MinLength(5, ErrorMessage = "Name of tour must be more than 4 symbols")]
     public string Name { get; set; }
     
     [Required]
+    [MinLength(20, ErrorMessage = "Description must be more than 19 symbols")]
     public string Description { get; set; }
     
     [Required]

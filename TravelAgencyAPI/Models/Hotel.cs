@@ -21,9 +21,6 @@ public class Hotel
     [Required]
     public int PricePerNight { get; set; }
     
-    [Required]
-    public int PlaceId { get; set; }
-    
     [ForeignKey("PlaceId")]
     public Place Place { get; set; }
     

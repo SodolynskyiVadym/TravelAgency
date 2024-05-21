@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TravelAgencyAPI.Models;
 
 public class User
 {
@@ -6,7 +7,7 @@ public class User
     public int Id { get; set; }
 
     [Required]
-    [MaxLength(50)]
+    [StringLength(30, ErrorMessage = "Name must be less than 30")]
     public string Name { get; set; }
 
     [Required]
@@ -21,6 +22,8 @@ public class User
 
     [Required]
     public string Role { get; set; }
+    
+    public ICollection<Payment> Payments { get; set; }
     
     public User()
     {
