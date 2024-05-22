@@ -23,6 +23,12 @@ public class PlaceController : ControllerBase
         return await _placeRepository.GetAsyncById(id);
     }
     
+    [HttpGet("getAllPlaces")]
+    public async Task<List<Place>> GetAllPlaces()
+    {
+        return await _placeRepository.GetAllPlacesListAsync();
+    }
+    
     [HttpPost("create")]
     public async Task<IActionResult> CreatePlace(PlaceCreateDto place)
     {

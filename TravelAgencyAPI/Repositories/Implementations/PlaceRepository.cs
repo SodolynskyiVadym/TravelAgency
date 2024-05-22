@@ -23,17 +23,18 @@ public class PlaceRepository : IPlaceRepository
             .Include(place => place.Hotels)
             .FirstOrDefaultAsync(place => place.Id == id);
     }
+    
+    public async Task<List<Place>> GetAllPlacesListAsync()
+    {
+        return await _context.Places
+            .Include(place => place.Hotels!)
+            .ToListAsync();
+    }
 
     public async Task<bool> AddPlaceAsync(PlaceCreateDto place)
     {
         await _context.Places.AddAsync(_mapper.Map<Place>(place));
         await _context.SaveChangesAsync();
         return true;
-    }
-
-    private IQueryable<Place> GetAllPlaces()
-    {
-        return _context.Places
-            .Include(place => place.Hotels!);
     }
 }

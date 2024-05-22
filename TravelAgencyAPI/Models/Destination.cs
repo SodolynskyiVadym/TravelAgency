@@ -8,14 +8,16 @@ public class Destination
 {
     [Key]
     public int Id { get; set; }
+    
+    [Required]
+    public DateTime StartDate { get; set; }
+
+    [Required]
+    public DateTime EndDate { get; set; }
     public Tour Tour { get; set; }
     public Hotel Hotel { get; set; }
     public Transport Transport { get; set; }
     public Place Place { get; set; }
-    
-    // Remake with DateTime
-    // [Required]
-    // public int QuantityDays { get; set; }
     
     public Destination()
     {

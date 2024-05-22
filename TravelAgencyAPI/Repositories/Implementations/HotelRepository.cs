@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
@@ -14,7 +15,17 @@ public class HotelRepository : IHotelRepository
         _context = context;
         _mapper = mapper;
     }
-    
+
+    public Task<Hotel?> GetHotelByIdAsync(int id)
+    {
+        return _context.Hotels.FirstOrDefaultAsync(h => h.Id == id);
+    }
+
+    public async Task<List<Hotel>> GetAllHotelsListAsync()
+    {
+        return await _context.Hotels.ToListAsync();
+    }
+
     public async Task<bool> AddHotelAsync(HotelCreateDto hotel)
     {
         await _context.Hotels.AddAsync(_mapper.Map<Hotel>(hotel));
