@@ -19,21 +19,24 @@ public class PlaceRepository : IPlaceRepository
 
     public async Task<Place?> GetAsyncById(int id)
     {
-        return await _context.Places
-            .Include(place => place.Hotels)
-            .FirstOrDefaultAsync(place => place.Id == id);
+        return await _context.Places.FirstOrDefaultAsync(place => place.Id == id);
     }
     
     public async Task<List<Place>> GetAllPlacesListAsync()
     {
-        return await _context.Places
-            .Include(place => place.Hotels!)
-            .ToListAsync();
+        return await _context.Places.ToListAsync();
     }
 
     public async Task<bool> AddPlaceAsync(PlaceCreateDto place)
     {
         await _context.Places.AddAsync(_mapper.Map<Place>(place));
+        // _context.Places.Add(new Place()
+        // {
+        //     Country = place.Country,
+        //     Description = place.Description,
+        //     Name = place.Name,
+        //     SiteUrl = place.SiteUrl
+        // });
         await _context.SaveChangesAsync();
         return true;
     }

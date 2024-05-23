@@ -17,7 +17,6 @@ public class Destination
     public Tour Tour { get; set; }
     public Hotel Hotel { get; set; }
     public Transport Transport { get; set; }
-    public Place Place { get; set; }
     
     public Destination()
     {

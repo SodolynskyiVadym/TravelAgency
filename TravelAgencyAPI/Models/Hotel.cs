@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AutoMapper.Configuration.Annotations;
 
 namespace TravelAgencyAPI.Models;
 
@@ -21,7 +22,8 @@ public class Hotel
     [Required]
     public int PricePerNight { get; set; }
     
-    [ForeignKey("PlaceId")]
+    public int PlaceId { get; set; }
+    
     public Place Place { get; set; }
     
     public Hotel()

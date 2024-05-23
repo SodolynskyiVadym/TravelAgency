@@ -17,7 +17,7 @@ public class HotelController : ControllerBase
         _hotelRepository = new HotelRepository(context, mapper);
     }
     
-    [HttpGet("hotel/{id}")]
+    [HttpGet("{id}")]
     public async Task<Hotel?> GetHotel(int id)
     {
         return await _hotelRepository.GetHotelByIdAsync(id);
@@ -34,5 +34,13 @@ public class HotelController : ControllerBase
     {
         await _hotelRepository.AddHotelAsync(hotel);
         return Ok(hotel);
+    }
+    
+    [HttpPatch("update/{id}")]
+    public async Task<IActionResult> UpdateHotel(int id, HotelCreateDto hotel)
+    {
+        if (await _hotelRepository.UpdateHotelAsync(id, hotel)) return Ok();
+        // Replace NoContent
+        return NoContent();
     }
 }

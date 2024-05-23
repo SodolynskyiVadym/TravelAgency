@@ -21,8 +21,6 @@ public class Place
     
     public string? SiteUrl { get; set; }
     
-    public ICollection<Hotel> Hotels { get; set; }
-    
     public Place()
     {
     }

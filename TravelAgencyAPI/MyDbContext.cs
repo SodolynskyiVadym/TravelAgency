@@ -21,15 +21,9 @@ public class MyDbContext : DbContext
     {
         modelBuilder.Entity<Hotel>()
             .HasOne(h => h.Place)
-            .WithMany(p => p.Hotels)
-            .HasForeignKey("PlaceId")
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Destination>()
-            .HasOne(d => d.Place)
             .WithMany()
-            .HasForeignKey("PlaceId")
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey("PlaceId");
+            // .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Destination>()
             .HasOne(d => d.Hotel)
