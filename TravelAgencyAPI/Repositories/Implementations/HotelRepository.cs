@@ -6,7 +6,7 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories.Implementations;
 
-public class HotelRepository : IHotelRepository
+public class HotelRepository : IRepository<Hotel, HotelCreateDto>
 {
     private MyDbContext _context;
     private readonly IMapper _mapper;
@@ -15,28 +15,28 @@ public class HotelRepository : IHotelRepository
         _context = context;
         _mapper = mapper;
     }
-
-    public Task<Hotel?> GetHotelByIdAsync(int id)
+    
+    
+    public async Task<Hotel?> GetByIdAsync(int id)
     {
-        return _context.Hotels
+        return await _context.Hotels
             .Include(h => h.Place)
             .FirstOrDefaultAsync(h => h.Id == id);
-
     }
 
-    public async Task<List<Hotel>> GetAllHotelsListAsync()
+    public async Task<List<Hotel>> GetAllAsync()
     {
         return await _context.Hotels.ToListAsync();
     }
 
-    public async Task<bool> AddHotelAsync(HotelCreateDto hotel)
+    public async Task<bool> AddAsync(HotelCreateDto hotel)
     {
         await _context.Hotels.AddAsync(_mapper.Map<Hotel>(hotel));
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> UpdateHotelAsync(int id, HotelCreateDto hotelUpdate)
+    public async Task<bool> UpdateAsync(int id, HotelCreateDto hotelUpdate)
     {
         Hotel? hotel = await _context.Hotels.FindAsync(id);
         if (hotel == null) return false;
@@ -50,7 +50,7 @@ public class HotelRepository : IHotelRepository
         return true;
     }
 
-    public Task<bool> DeleteHotelAsync(int id)
+    public Task<bool> DeleteAsync(int id)
     {
         throw new NotImplementedException();
     }

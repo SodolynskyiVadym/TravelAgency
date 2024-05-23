@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TravelAgencyAPI.Models;
 
-public class User
+namespace TravelAgencyAPI.Models;
+public class User : IModel
 {
     [Key]
     public int Id { get; set; }

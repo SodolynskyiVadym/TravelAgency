@@ -20,26 +20,26 @@ public class HotelController : ControllerBase
     [HttpGet("{id}")]
     public async Task<Hotel?> GetHotel(int id)
     {
-        return await _hotelRepository.GetHotelByIdAsync(id);
+        return await _hotelRepository.GetByIdAsync(id);
     }
     
     [HttpGet("getAllHotels")]
     public async Task<List<Hotel>> GetAllHotels()
     {
-        return await _hotelRepository.GetAllHotelsListAsync();
+        return await _hotelRepository.GetAllAsync();
     }
     
     [HttpPost("create")]
     public async Task<IActionResult> AddHotel(HotelCreateDto hotel)
     {
-        await _hotelRepository.AddHotelAsync(hotel);
+        await _hotelRepository.AddAsync(hotel);
         return Ok(hotel);
     }
     
     [HttpPatch("update/{id}")]
     public async Task<IActionResult> UpdateHotel(int id, HotelCreateDto hotel)
     {
-        if (await _hotelRepository.UpdateHotelAsync(id, hotel)) return Ok();
+        if (await _hotelRepository.UpdateAsync(id, hotel)) return Ok();
         // Replace NoContent
         return NoContent();
     }

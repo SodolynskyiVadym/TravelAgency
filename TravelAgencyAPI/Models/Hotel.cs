@@ -5,7 +5,7 @@ using AutoMapper.Configuration.Annotations;
 namespace TravelAgencyAPI.Models;
 
 [Table("Hotels")]
-public class Hotel
+public class Hotel : IModel
 {
     [Key]
     public int Id { get; set; }

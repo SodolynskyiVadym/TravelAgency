@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TravelAgencyAPI.Models;
 
 [Table("Transports")]
-public class Transport
+public class Transport : IModel
 {
     [Key]
     public int Id { get; set; }

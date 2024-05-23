@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TravelAgencyAPI.Models;
 
 [Table("Places")]
-public class Place
+public class Place : IModel
 {
     [Key]
     [Index]
