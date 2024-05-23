@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.Implementations;
+using TravelAgencyAPI.Repositories;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -20,19 +20,26 @@ public class PlaceController : ControllerBase
     [HttpGet("{id}")]
     public async Task<Place?> GetPlace(int id)
     {
-        return await _placeRepository.GetAsyncById(id);
+        return await _placeRepository.GetByIdAsync(id);
     }
     
     [HttpGet("getAllPlaces")]
     public async Task<List<Place>> GetAllPlaces()
     {
-        return await _placeRepository.GetAllPlacesListAsync();
+        return await _placeRepository.GetAllAsync();
     }
     
     [HttpPost("create")]
     public async Task<IActionResult> CreatePlace(PlaceCreateDto place)
     {
-        await _placeRepository.AddPlaceAsync(place);
+        await _placeRepository.AddAsync(place);
         return Ok(place);
+    }
+    
+    [HttpPatch("update/{id}")]
+    public async Task<IActionResult> UpdatePlace(int id, PlaceCreateDto place)
+    {
+        if (await _placeRepository.UpdateAsync(id, place)) return Ok();
+        return NoContent();
     }
 }

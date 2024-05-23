@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.Implementations;
+using TravelAgencyAPI.Repositories;
 
 namespace TravelAgencyAPI.Controllers;
 

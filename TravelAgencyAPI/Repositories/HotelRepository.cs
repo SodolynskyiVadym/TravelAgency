@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Repositories.Implementations;
 
-namespace TravelAgencyAPI.Repositories.Implementations;
+namespace TravelAgencyAPI.Repositories;
 
 public class HotelRepository : IRepository<Hotel, HotelCreateDto>
 {
@@ -50,8 +50,14 @@ public class HotelRepository : IRepository<Hotel, HotelCreateDto>
         return true;
     }
 
-    public Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        Hotel? hotel = await _context.Hotels.FindAsync(id);
+        if (hotel == null) return false;
+
+        _context.Hotels.Remove(hotel);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }
