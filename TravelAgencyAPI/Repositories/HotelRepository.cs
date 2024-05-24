@@ -6,7 +6,7 @@ using TravelAgencyAPI.Repositories.Implementations;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class HotelRepository : IRepository<Hotel, HotelCreateDto>
+public class HotelRepository : IRepository<Hotel, HotelDto>
 {
     private MyDbContext _context;
     private readonly IMapper _mapper;
@@ -29,14 +29,14 @@ public class HotelRepository : IRepository<Hotel, HotelCreateDto>
         return await _context.Hotels.ToListAsync();
     }
 
-    public async Task<bool> AddAsync(HotelCreateDto hotel)
+    public async Task<bool> AddAsync(HotelDto hotel)
     {
         await _context.Hotels.AddAsync(_mapper.Map<Hotel>(hotel));
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> UpdateAsync(int id, HotelCreateDto hotelUpdate)
+    public async Task<bool> UpdateAsync(int id, HotelDto hotelUpdate)
     {
         Hotel? hotel = await _context.Hotels.FindAsync(id);
         if (hotel == null) return false;

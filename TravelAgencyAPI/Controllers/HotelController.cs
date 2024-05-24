@@ -30,14 +30,14 @@ public class HotelController : ControllerBase
     }
     
     [HttpPost("create")]
-    public async Task<IActionResult> AddHotel(HotelCreateDto hotel)
+    public async Task<IActionResult> AddHotel(HotelDto hotel)
     {
         await _hotelRepository.AddAsync(hotel);
         return Ok(hotel);
     }
     
     [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateHotel(int id, HotelCreateDto hotel)
+    public async Task<IActionResult> UpdateHotel(int id, HotelDto hotel)
     {
         if (await _hotelRepository.UpdateAsync(id, hotel)) return Ok();
         // Replace NoContent

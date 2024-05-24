@@ -1,6 +1,6 @@
 ﻿namespace TravelAgencyAPI.DTO;
 
-public class HotelCreateDto : IDto
+public class HotelDto : IDto
 {
     public string? Name { get; set; }
     public string? Address { get; set; }

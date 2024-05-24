@@ -8,7 +8,10 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<PlaceCreateDto, Place>();
-        CreateMap<HotelCreateDto, Hotel>();
+        CreateMap<PlaceDto, Place>();
+        CreateMap<HotelDto, Hotel>();
+        CreateMap<DestinationDto, Destination>();
+        CreateMap<TransportDto, Transport>();
+        CreateMap<TourDto, Tour>();
     }
 }

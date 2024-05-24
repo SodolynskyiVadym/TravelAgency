@@ -6,7 +6,7 @@ using TravelAgencyAPI.Repositories.Implementations;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class PlaceRepository : IRepository<Place, PlaceCreateDto>
+public class PlaceRepository : IRepository<Place, PlaceDto>
 {
     private readonly MyDbContext _context;
     private readonly IMapper _mapper;
@@ -27,14 +27,14 @@ public class PlaceRepository : IRepository<Place, PlaceCreateDto>
         return await _context.Places.ToListAsync();
     }
 
-    public async Task<bool> AddAsync(PlaceCreateDto place)
+    public async Task<bool> AddAsync(PlaceDto place)
     {
         await _context.Places.AddAsync(_mapper.Map<Place>(place));
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> UpdateAsync(int id, PlaceCreateDto entity)
+    public async Task<bool> UpdateAsync(int id, PlaceDto entity)
     {
         Place? place = await _context.Places.FindAsync(id);
         if (place == null) return false;
@@ -49,7 +49,7 @@ public class PlaceRepository : IRepository<Place, PlaceCreateDto>
 
     public async Task<bool> DeleteAsync(int id)
     {
-        Place place = await _context.Places.FindAsync(id);
+        Place? place = await _context.Places.FindAsync(id);
         if (place == null) return false;
 
         _context.Places.Remove(place);

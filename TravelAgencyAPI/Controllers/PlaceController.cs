@@ -30,14 +30,14 @@ public class PlaceController : ControllerBase
     }
     
     [HttpPost("create")]
-    public async Task<IActionResult> CreatePlace(PlaceCreateDto place)
+    public async Task<IActionResult> CreatePlace(PlaceDto place)
     {
         await _placeRepository.AddAsync(place);
         return Ok(place);
     }
     
     [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdatePlace(int id, PlaceCreateDto place)
+    public async Task<IActionResult> UpdatePlace(int id, PlaceDto place)
     {
         if (await _placeRepository.UpdateAsync(id, place)) return Ok();
         return NoContent();

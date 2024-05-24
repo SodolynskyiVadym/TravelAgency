@@ -8,16 +8,19 @@ public class Payment : IModel
 {
     [Key]
     public int Id { get; set; }
-    public User User { get; set; }
-    public Tour Tour { get; set; }
     
     [Required]
-    public int QuantityPurchasedSeats { get; set; }
+    public int Amount { get; set; }
+    
+    [Required]
+    public bool Status { get; set; }
+    
+    [Required]
+    public DateTime Date { get; set; }
+    
+    public User User { get; set; }
+    public Tour Tour { get; set; }
 
     [NotMapped]
-    public int TotalPrice => QuantityPurchasedSeats * Tour.Price;
-
-    public Payment()
-    {
-    }
+    public int TotalPrice => Amount * Tour.Price;
 }

@@ -97,8 +97,14 @@ namespace TravelAgencyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("QuantityPurchasedSeats")
+                    b.Property<int>("Amount")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<int>("TourId")
                         .HasColumnType("int");
@@ -197,7 +203,7 @@ namespace TravelAgencyAPI.Migrations
                     b.ToTable("Transports");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("TravelAgencyAPI.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,7 +283,7 @@ namespace TravelAgencyAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "User")
+                    b.HasOne("TravelAgencyAPI.Models.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -293,7 +299,7 @@ namespace TravelAgencyAPI.Migrations
                     b.Navigation("Destinations");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("TravelAgencyAPI.Models.User", b =>
                 {
                     b.Navigation("Payments");
                 });
