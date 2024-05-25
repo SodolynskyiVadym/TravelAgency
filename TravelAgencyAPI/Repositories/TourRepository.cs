@@ -19,7 +19,9 @@ public class TourRepository : IRepository<Tour, TourDto>
     
     public async Task<Tour?> GetByIdAsync(int id)
     {
-        return await _context.Tours.FindAsync(id);
+        return await _context.Tours
+            .Include(p => p.Destinations)
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
     
     public async Task<List<Tour>> GetAllAsync()

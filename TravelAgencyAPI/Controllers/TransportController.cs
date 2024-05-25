@@ -6,6 +6,9 @@ using TravelAgencyAPI.Repositories;
 
 namespace TravelAgencyAPI.Controllers;
 
+
+[ApiController]
+[Route("[controller]")]
 public class TransportController : ControllerBase
 {
     private readonly TransportRepository _transportRepository;

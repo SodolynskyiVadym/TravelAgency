@@ -40,7 +40,6 @@ public class DestinationController : ControllerBase
     public async Task<IActionResult> UpdateDestination(int id, DestinationDto destination)
     {
         if (await _destinationRepository.UpdateAsync(id, destination)) return Ok();
-        // Replace NoContent
         return NoContent();
     }
     
@@ -48,7 +47,6 @@ public class DestinationController : ControllerBase
     public async Task<IActionResult> DeleteDestination(int id)
     {
         if (await _destinationRepository.DeleteAsync(id)) return Ok();
-        // Replace NoContent
         return NoContent();
     }
 }

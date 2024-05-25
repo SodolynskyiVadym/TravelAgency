@@ -45,6 +45,7 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
         hotel.Address = hotelUpdate.Address ?? hotel.Address;
         hotel.Description = hotelUpdate.Description ?? hotel.Description;
         hotel.PricePerNight = hotelUpdate.PricePerNight;
+        hotel.PlaceId = hotelUpdate.PlaceId != 0 ? hotelUpdate.PlaceId : hotel.PlaceId;
 
         await _context.SaveChangesAsync();
         return true;
