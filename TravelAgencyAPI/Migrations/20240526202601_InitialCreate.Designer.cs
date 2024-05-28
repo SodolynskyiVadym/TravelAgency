@@ -12,7 +12,7 @@ using TravelAgencyAPI;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240524071724_InitialCreate")]
+    [Migration("20240526202601_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -112,14 +112,14 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<int>("TourId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TourId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Payments");
                 });
@@ -288,7 +288,7 @@ namespace TravelAgencyAPI.Migrations
 
                     b.HasOne("TravelAgencyAPI.Models.User", "User")
                         .WithMany("Payments")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

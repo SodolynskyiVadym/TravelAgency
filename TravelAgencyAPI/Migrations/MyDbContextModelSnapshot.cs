@@ -109,14 +109,14 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<int>("TourId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TourId");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Payments");
                 });
@@ -285,7 +285,7 @@ namespace TravelAgencyAPI.Migrations
 
                     b.HasOne("TravelAgencyAPI.Models.User", "User")
                         .WithMany("Payments")
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

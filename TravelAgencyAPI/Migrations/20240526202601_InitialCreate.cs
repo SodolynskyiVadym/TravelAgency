@@ -108,7 +108,7 @@ namespace TravelAgencyAPI.Migrations
                     Amount = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     TourId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -121,8 +121,8 @@ namespace TravelAgencyAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Payments_Users_UserID",
-                        column: x => x.UserID,
+                        name: "FK_Payments_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -189,9 +189,9 @@ namespace TravelAgencyAPI.Migrations
                 column: "TourId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_UserID",
+                name: "IX_Payments_UserId",
                 table: "Payments",
-                column: "UserID");
+                column: "UserId");
         }
 
         /// <inheritdoc />

@@ -21,6 +21,7 @@ public class TourRepository : IRepository<Tour, TourDto>
     {
         return await _context.Tours
             .Include(p => p.Destinations)
+            .ThenInclude(d => d.Hotel)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
     

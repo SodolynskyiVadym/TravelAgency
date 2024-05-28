@@ -22,7 +22,6 @@ public class Hotel : IModel
     [Required]
     public int PricePerNight { get; set; }
     
-    [NotMapped]
     public int PlaceId { get; set; }
     public Place Place { get; set; }
     

@@ -19,37 +19,61 @@ public class MyDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Hotel>()
-            .HasOne(h => h.Place)
-            .WithMany()
-            .HasForeignKey("PlaceId");
-            // .OnDelete(DeleteBehavior.Restrict);
-
+        modelBuilder.Entity<Tour>()
+            .HasMany(t => t.Destinations)
+            .WithOne(d => d.Tour)
+            .HasForeignKey(d => d.TourId)
+            .HasPrincipalKey(t => t.Id);
+        
+        
         modelBuilder.Entity<Destination>()
             .HasOne(d => d.Hotel)
             .WithMany()
-            .HasForeignKey("HotelId");
-        
+            .HasForeignKey(d => d.HotelId)
+            .HasPrincipalKey(h => h.Id);
+
+
         modelBuilder.Entity<Destination>()
             .HasOne(d => d.Transport)
             .WithMany()
-            .HasForeignKey("TransportId");
-        
-        modelBuilder.Entity<Destination>()
-            .HasOne(d => d.Tour)
-            .WithMany(t => t.Destinations)
-            .HasForeignKey("TourId");
+            .HasForeignKey(d => d.TransportId)
+            .HasPrincipalKey(t => t.Id);
 
+
+        modelBuilder.Entity<Hotel>()
+            .HasOne(h => h.Place)
+            .WithMany()
+            .HasForeignKey(h => h.PlaceId);
+        
+        
         modelBuilder.Entity<Payment>()
             .HasOne(p => p.User)
             .WithMany(u => u.Payments)
-            .HasForeignKey("UserID");
+            .HasForeignKey(p => p.UserId)
+            .HasPrincipalKey(u => u.Id);
 
+        
         modelBuilder.Entity<Payment>()
             .HasOne(p => p.Tour)
             .WithMany()
-            .HasForeignKey("TourId");
+            .HasForeignKey(p => p.TourId)
+            .HasPrincipalKey(t => t.Id);
 
+        
+        // modelBuilder.Entity<Destination>()
+        //     .HasOne(d => d.Hotel)
+        //     .WithMany()
+        //     .HasForeignKey("HotelId");
+        //
+        // modelBuilder.Entity<Destination>()
+        //     .HasOne(d => d.Transport)
+        //     .WithMany()
+        //     .HasForeignKey("TransportId");
+        //
+        // modelBuilder.Entity<Destination>()
+        //     .HasOne(d => d.Tour)
+        //     .WithMany(t => t.Destinations)
+        //     .HasForeignKey("TourId");
 
     }
 }

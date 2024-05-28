@@ -15,15 +15,12 @@ public class Destination : IModel
     [Required]
     public DateTime EndDate { get; set; }
     
-    [NotMapped]
     public int TourId { get; set; }
     public Tour Tour { get; set; }
     
-    [NotMapped]
     public int HotelId { get; set; }
     public Hotel Hotel { get; set; }
     
-    [NotMapped]
     public int TransportId { get; set; }
     public Transport Transport { get; set; }
 }
