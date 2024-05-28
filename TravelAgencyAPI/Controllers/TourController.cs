@@ -13,7 +13,7 @@ public class TourController : ControllerBase
 {
     private readonly TourRepository _tourRepository;
     
-    public TourController(MyDbContext context, IMapper mapper)
+    public TourController(TravelDbContext context, IMapper mapper)
     {
         _tourRepository = new TourRepository(context, mapper);
     }

@@ -12,7 +12,7 @@ namespace TravelAgencyAPI.Controllers;
 public class HotelController : ControllerBase
 {
     private readonly HotelRepository _hotelRepository;
-    public HotelController(MyDbContext context, IMapper mapper)
+    public HotelController(TravelDbContext context, IMapper mapper)
     {
         _hotelRepository = new HotelRepository(context, mapper);
     }

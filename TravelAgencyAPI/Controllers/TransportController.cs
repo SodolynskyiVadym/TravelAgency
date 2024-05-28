@@ -13,7 +13,7 @@ public class TransportController : ControllerBase
 {
     private readonly TransportRepository _transportRepository;
     
-    public TransportController(MyDbContext context, IMapper mapper)
+    public TransportController(TravelDbContext context, IMapper mapper)
     {
         _transportRepository = new TransportRepository(context, mapper);
     }

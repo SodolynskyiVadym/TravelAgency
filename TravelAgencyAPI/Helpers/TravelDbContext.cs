@@ -3,7 +3,7 @@ using TravelAgencyAPI.Models;
 
 namespace TravelAgencyAPI;
 
-public class MyDbContext : DbContext
+public class TravelDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Hotel> Hotels { get; set; }
@@ -13,7 +13,7 @@ public class MyDbContext : DbContext
     public DbSet<Tour> Tours { get; set; }
     public DbSet<Payment> Payments { get; set; }
 
-    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
+    public TravelDbContext(DbContextOptions<TravelDbContext> options) : base(options)
     {
     }
 

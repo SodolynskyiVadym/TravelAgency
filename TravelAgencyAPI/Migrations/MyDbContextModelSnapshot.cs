@@ -10,7 +10,7 @@ using TravelAgencyAPI;
 
 namespace TravelAgencyAPI.Migrations
 {
-    [DbContext(typeof(MyDbContext))]
+    [DbContext(typeof(TravelDbContext))]
     partial class MyDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

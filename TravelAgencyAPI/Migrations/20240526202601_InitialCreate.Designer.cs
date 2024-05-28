@@ -11,7 +11,7 @@ using TravelAgencyAPI;
 
 namespace TravelAgencyAPI.Migrations
 {
-    [DbContext(typeof(MyDbContext))]
+    [DbContext(typeof(TravelDbContext))]
     [Migration("20240526202601_InitialCreate")]
     partial class InitialCreate
     {

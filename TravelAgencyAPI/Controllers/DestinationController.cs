@@ -12,7 +12,7 @@ public class DestinationController : ControllerBase
 {
     private readonly DestinationRepository _destinationRepository;
     
-    public DestinationController(MyDbContext context, IMapper mapper)
+    public DestinationController(TravelDbContext context, IMapper mapper)
     {
         _destinationRepository = new DestinationRepository(context, mapper);
     }

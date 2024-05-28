@@ -14,7 +14,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddDbContext<MyDbContext>(options =>
+builder.Services.AddDbContext<TravelDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration["ConnectionString:DefaultConnection"]);
 });

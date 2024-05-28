@@ -12,7 +12,7 @@ public class PlaceController : ControllerBase
 {
     private readonly PlaceRepository _placeRepository;
 
-    public PlaceController(MyDbContext context, IMapper mapper)
+    public PlaceController(TravelDbContext context, IMapper mapper)
     {
         _placeRepository = new PlaceRepository(context, mapper);
     }

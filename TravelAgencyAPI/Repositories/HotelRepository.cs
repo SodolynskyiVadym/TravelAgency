@@ -8,9 +8,9 @@ namespace TravelAgencyAPI.Repositories;
 
 public class HotelRepository : IRepository<Hotel, HotelDto>
 {
-    private MyDbContext _context;
+    private TravelDbContext _context;
     private readonly IMapper _mapper;
-    public HotelRepository(MyDbContext context, IMapper mapper)
+    public HotelRepository(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
