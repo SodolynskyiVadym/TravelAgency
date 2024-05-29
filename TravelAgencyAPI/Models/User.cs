@@ -23,8 +23,6 @@ public class User : IModel
     [Required]
     public string Role { get; set; }
     
-    public ICollection<Payment> Payments { get; set; }
-    
     public User()
     {
     }

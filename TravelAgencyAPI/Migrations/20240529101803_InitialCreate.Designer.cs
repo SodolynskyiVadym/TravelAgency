@@ -12,7 +12,7 @@ using TravelAgencyAPI;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    [Migration("20240526202601_InitialCreate")]
+    [Migration("20240529101803_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -249,7 +249,7 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("TravelAgencyAPI.Models.Tour", "Tour")
-                        .WithMany("Destinations")
+                        .WithMany()
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -287,7 +287,7 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("TravelAgencyAPI.Models.User", "User")
-                        .WithMany("Payments")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -295,16 +295,6 @@ namespace TravelAgencyAPI.Migrations
                     b.Navigation("Tour");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>
-                {
-                    b.Navigation("Destinations");
-                });
-
-            modelBuilder.Entity("TravelAgencyAPI.Models.User", b =>
-                {
-                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,8 +16,8 @@
       </ul>
 
       <div class="text-end">
-        <button type="button" class="btn btn-outline-light me-2 fs-4">Login</button>
-        <button type="button" class="btn btn-warning me-2 fs-4">Sign-up</button>
+        <button type="button" class="btn btn-outline-light me-2 fs-5">Login</button>
+        <button type="button" class="btn btn-primary me-2 fs-5">Sign-up</button>
       </div>
     </div>
   </header>
@@ -29,3 +29,7 @@
 <script>
 
 </script>
+
+<style scoped>
+@import "./assets/styles/css/styleMain.css";
+</style>

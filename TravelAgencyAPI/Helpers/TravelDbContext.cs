@@ -19,9 +19,9 @@ public class TravelDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Tour>()
-            .HasMany(t => t.Destinations)
-            .WithOne(d => d.Tour)
+        modelBuilder.Entity<Destination>()
+            .HasOne(d => d.Tour)
+            .WithMany()
             .HasForeignKey(d => d.TourId)
             .HasPrincipalKey(t => t.Id);
         
@@ -48,7 +48,7 @@ public class TravelDbContext : DbContext
         
         modelBuilder.Entity<Payment>()
             .HasOne(p => p.User)
-            .WithMany(u => u.Payments)
+            .WithMany()
             .HasForeignKey(p => p.UserId)
             .HasPrincipalKey(u => u.Id);
 
@@ -58,22 +58,5 @@ public class TravelDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.TourId)
             .HasPrincipalKey(t => t.Id);
-
-        
-        // modelBuilder.Entity<Destination>()
-        //     .HasOne(d => d.Hotel)
-        //     .WithMany()
-        //     .HasForeignKey("HotelId");
-        //
-        // modelBuilder.Entity<Destination>()
-        //     .HasOne(d => d.Transport)
-        //     .WithMany()
-        //     .HasForeignKey("TransportId");
-        //
-        // modelBuilder.Entity<Destination>()
-        //     .HasOne(d => d.Tour)
-        //     .WithMany(t => t.Destinations)
-        //     .HasForeignKey("TourId");
-
     }
 }

@@ -11,7 +11,7 @@ using TravelAgencyAPI;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    partial class TravelDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -246,7 +246,7 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("TravelAgencyAPI.Models.Tour", "Tour")
-                        .WithMany("Destinations")
+                        .WithMany()
                         .HasForeignKey("TourId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -284,7 +284,7 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("TravelAgencyAPI.Models.User", "User")
-                        .WithMany("Payments")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -292,16 +292,6 @@ namespace TravelAgencyAPI.Migrations
                     b.Navigation("Tour");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>
-                {
-                    b.Navigation("Destinations");
-                });
-
-            modelBuilder.Entity("TravelAgencyAPI.Models.User", b =>
-                {
-                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

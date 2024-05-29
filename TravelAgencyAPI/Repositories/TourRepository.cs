@@ -20,8 +20,6 @@ public class TourRepository : IRepository<Tour, TourDto>
     public async Task<Tour?> GetByIdAsync(int id)
     {
         return await _context.Tours
-            .Include(p => p.Destinations)
-            .ThenInclude(d => d.Hotel)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
     

@@ -23,8 +23,6 @@ public class Tour : IModel
     [Required]
     public int QuantitySeats { get; set; }
     
-    public ICollection<Destination> Destinations { get; set; }
-    
     
     public Tour()
     {

@@ -19,10 +19,9 @@ public class TourController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<List<Destination>?> GetTour(int id)
+    public async Task<Tour?> GetTour(int id)
     {
-        Tour? tour = await _tourRepository.GetByIdAsync(id);
-        return tour?.Destinations.ToList();
+        return await _tourRepository.GetByIdAsync(id);
     }
     
     [HttpGet("getAllTours")]

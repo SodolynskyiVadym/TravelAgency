@@ -6,11 +6,13 @@ using TravelAgencyAPI.Helpers;
 var builder = WebApplication.CreateBuilder(args);
 
 // Rework this part of the code
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-        });
+// builder.Services.AddControllers()
+//     .AddJsonOptions(options =>
+//         {
+//             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//         });
+
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
