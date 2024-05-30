@@ -22,7 +22,7 @@
     </div>
   </header>
 
-  <router-view></router-view>
+  <router-view style="margin-top: 30px;"></router-view>
 </template>
 
 
@@ -31,5 +31,7 @@
 </script>
 
 <style scoped>
+
 @import "./assets/css/styleMain.css";
+
 </style>
