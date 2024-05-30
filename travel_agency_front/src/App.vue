@@ -30,8 +30,8 @@
 
 </script>
 
-<style scoped>
+<style>
 
-@import "./assets/css/styleMain.css";
+@import "./assets/css/styleMainPage.css";
 
 </style>
