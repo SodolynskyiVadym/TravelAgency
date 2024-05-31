@@ -21,6 +21,9 @@ public class Transport : IModel
     [Required]
     public int QuantitySeats { get; set; }
     
+    [Required]
+    public string ImageUrl { get; set; }
+    
     public Transport()
     {
     }

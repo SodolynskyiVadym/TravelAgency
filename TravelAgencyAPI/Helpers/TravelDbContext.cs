@@ -12,6 +12,7 @@ public class TravelDbContext : DbContext
     public DbSet<Destination> Destinations { get; set; }
     public DbSet<Tour> Tours { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<PlaceImageUrl> PlaceImageUrls { get; set; }
 
     public TravelDbContext(DbContextOptions<TravelDbContext> options) : base(options)
     {
@@ -58,5 +59,11 @@ public class TravelDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.TourId)
             .HasPrincipalKey(t => t.Id);
+
+        modelBuilder.Entity<PlaceImageUrl>()
+            .HasOne(i => i.Place)
+            .WithMany(p => p.ImagesUrls)
+            .HasForeignKey(i => i.PlaceId)
+            .HasPrincipalKey(p => p.Id);
     }
 }

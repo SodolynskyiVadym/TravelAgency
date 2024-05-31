@@ -12,7 +12,7 @@ using TravelAgencyAPI;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    [Migration("20240529101803_InitialCreate")]
+    [Migration("20240531204013_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -72,6 +72,10 @@ namespace TravelAgencyAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -144,12 +148,31 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SiteUrl")
+                    b.HasKey("Id");
+
+                    b.ToTable("Places");
+                });
+
+            modelBuilder.Entity("TravelAgencyAPI.Models.PlaceImageUrl", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PlaceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Places");
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("PlaceImageUrl");
                 });
 
             modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>
@@ -161,6 +184,10 @@ namespace TravelAgencyAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -188,6 +215,10 @@ namespace TravelAgencyAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -295,6 +326,22 @@ namespace TravelAgencyAPI.Migrations
                     b.Navigation("Tour");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TravelAgencyAPI.Models.PlaceImageUrl", b =>
+                {
+                    b.HasOne("TravelAgencyAPI.Models.Place", "Place")
+                        .WithMany("ImagesUrls")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("TravelAgencyAPI.Models.Place", b =>
+                {
+                    b.Navigation("ImagesUrls");
                 });
 #pragma warning restore 612, 618
         }

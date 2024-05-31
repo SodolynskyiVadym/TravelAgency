@@ -23,6 +23,9 @@ public class Tour : IModel
     [Required]
     public int QuantitySeats { get; set; }
     
+    [Required]
+    public string ImageUrl { get; set; }
+    
     
     public Tour()
     {

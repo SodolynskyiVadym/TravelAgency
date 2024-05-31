@@ -19,8 +19,7 @@ namespace TravelAgencyAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +35,8 @@ namespace TravelAgencyAPI.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    QuantitySeats = table.Column<int>(type: "int", nullable: false)
+                    QuantitySeats = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +52,8 @@ namespace TravelAgencyAPI.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PricePerSeatPerKm = table.Column<int>(type: "int", nullable: false),
-                    QuantitySeats = table.Column<int>(type: "int", nullable: false)
+                    QuantitySeats = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,6 +87,7 @@ namespace TravelAgencyAPI.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PricePerNight = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PlaceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -93,6 +95,26 @@ namespace TravelAgencyAPI.Migrations
                     table.PrimaryKey("PK_Hotels", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Hotels_Places_PlaceId",
+                        column: x => x.PlaceId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PlaceImageUrl",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlaceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlaceImageUrl", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PlaceImageUrl_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
                         principalColumn: "Id",
@@ -192,6 +214,11 @@ namespace TravelAgencyAPI.Migrations
                 name: "IX_Payments_UserId",
                 table: "Payments",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PlaceImageUrl_PlaceId",
+                table: "PlaceImageUrl",
+                column: "PlaceId");
         }
 
         /// <inheritdoc />
@@ -202,6 +229,9 @@ namespace TravelAgencyAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "PlaceImageUrl");
 
             migrationBuilder.DropTable(
                 name: "Hotels");

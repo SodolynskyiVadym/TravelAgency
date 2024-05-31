@@ -19,7 +19,8 @@ public class Place : IModel
     [Required]
     public string Description { get; set; }
     
-    public string? SiteUrl { get; set; }
+    [Required]
+    public IEnumerable<PlaceImageUrl> ImagesUrls { get; set; }
     
     public Place()
     {
