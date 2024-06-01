@@ -34,8 +34,12 @@ public class PlaceRepository : IRepository<Place, PlaceDto>
     {
         if (place.ImagesUrls == null || !place.ImagesUrls.Any()) return false;
         
-        var newPlace = _mapper.Map<Place>(place);
-        
+        Place newPlace = new Place()
+        {
+            Name = place.Name!,
+            Country = place.Country!,
+            Description = place.Description!
+        };
         await _context.Places.AddAsync(newPlace);
         await _context.SaveChangesAsync();
         

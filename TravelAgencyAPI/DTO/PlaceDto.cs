@@ -1,4 +1,6 @@
-﻿namespace TravelAgencyAPI.DTO;
+﻿using TravelAgencyAPI.Models;
+
+namespace TravelAgencyAPI.DTO;
 
 public class PlaceDto : IDto
 {

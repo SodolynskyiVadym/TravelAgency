@@ -12,7 +12,7 @@ using TravelAgencyAPI;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    [Migration("20240531204013_InitialCreate")]
+    [Migration("20240601163006_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -172,7 +172,7 @@ namespace TravelAgencyAPI.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("PlaceImageUrl");
+                    b.ToTable("PlaceImageUrls");
                 });
 
             modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>

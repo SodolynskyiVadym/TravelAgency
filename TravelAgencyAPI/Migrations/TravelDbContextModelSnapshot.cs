@@ -169,7 +169,7 @@ namespace TravelAgencyAPI.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("PlaceImageUrl");
+                    b.ToTable("PlaceImageUrls");
                 });
 
             modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>

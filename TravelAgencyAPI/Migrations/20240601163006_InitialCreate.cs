@@ -102,7 +102,7 @@ namespace TravelAgencyAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlaceImageUrl",
+                name: "PlaceImageUrls",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -112,9 +112,9 @@ namespace TravelAgencyAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlaceImageUrl", x => x.Id);
+                    table.PrimaryKey("PK_PlaceImageUrls", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PlaceImageUrl_Places_PlaceId",
+                        name: "FK_PlaceImageUrls_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
                         principalColumn: "Id",
@@ -216,8 +216,8 @@ namespace TravelAgencyAPI.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlaceImageUrl_PlaceId",
-                table: "PlaceImageUrl",
+                name: "IX_PlaceImageUrls_PlaceId",
+                table: "PlaceImageUrls",
                 column: "PlaceId");
         }
 
@@ -231,7 +231,7 @@ namespace TravelAgencyAPI.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "PlaceImageUrl");
+                name: "PlaceImageUrls");
 
             migrationBuilder.DropTable(
                 name: "Hotels");
