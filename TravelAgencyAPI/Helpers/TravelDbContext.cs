@@ -13,6 +13,7 @@ public class TravelDbContext : DbContext
     public DbSet<Tour> Tours { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PlaceImageUrl> PlaceImageUrls { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
     public TravelDbContext(DbContextOptions<TravelDbContext> options) : base(options)
     {
@@ -44,7 +45,8 @@ public class TravelDbContext : DbContext
         modelBuilder.Entity<Hotel>()
             .HasOne(h => h.Place)
             .WithMany()
-            .HasForeignKey(h => h.PlaceId);
+            .HasForeignKey(h => h.PlaceId)
+            .HasPrincipalKey(p => p.Id);
         
         
         modelBuilder.Entity<Payment>()
@@ -65,5 +67,17 @@ public class TravelDbContext : DbContext
             .WithMany(p => p.ImagesUrls)
             .HasForeignKey(i => i.PlaceId)
             .HasPrincipalKey(p => p.Id);
+        
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.User)
+            .WithMany()
+            .HasForeignKey(r => r.UserId)
+            .HasPrincipalKey(u => u.Id);
+
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.Tour)
+            .WithMany()
+            .HasForeignKey(r => r.TourId)
+            .HasPrincipalKey(t => t.Id);
     }
 }
