@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.Implementations;
+using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
@@ -44,6 +44,7 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.Description = tourUpdate.Description ?? tour.Description;
         tour.Price = tourUpdate.Price;
         tour.QuantitySeats = tourUpdate.QuantitySeats;
+        tour.ImageUrl = tourUpdate.ImageUrl ?? tour.ImageUrl;
         
         await _context.SaveChangesAsync();
         return true;

@@ -1,6 +1,6 @@
 ﻿using TravelAgencyAPI.DTO;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 public interface IPlaceRepository
 {

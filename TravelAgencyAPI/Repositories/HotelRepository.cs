@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.Implementations;
+using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
@@ -46,6 +46,7 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
         hotel.Description = hotelUpdate.Description ?? hotel.Description;
         hotel.PricePerNight = hotelUpdate.PricePerNight;
         hotel.PlaceId = hotelUpdate.PlaceId != 0 ? hotelUpdate.PlaceId : hotel.PlaceId;
+        hotel.ImageUrl = hotelUpdate.ImageUrl ?? hotel.ImageUrl;
 
         await _context.SaveChangesAsync();
         return true;

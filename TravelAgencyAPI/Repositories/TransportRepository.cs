@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.Implementations;
+using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
@@ -41,8 +41,10 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         
         transport.Name = transportUpdate.Name ?? transport.Name;
         transport.Description = transportUpdate.Description ?? transport.Description;
+        transport.Type = transportUpdate.Type ?? transport.Type;
         transport.PricePerSeatPerKm = transportUpdate.PricePerSeatPerKm;
         transport.QuantitySeats = transportUpdate.QuantitySeats;
+        transport.ImageUrl = transportUpdate.ImageUrl ?? transport.ImageUrl;
         await _context.SaveChangesAsync();
         return true;
     }

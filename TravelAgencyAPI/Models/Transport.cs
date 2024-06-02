@@ -16,7 +16,10 @@ public class Transport : IModel
     public string Description { get; set; }
     
     [Required]
-    public int PricePerSeatPerKm { get; set; }
+    public string Type { get; set; }
+    
+    [Required]
+    public long PricePerSeatPerKm { get; set; }
     
     [Required]
     public int QuantitySeats { get; set; }
