@@ -34,7 +34,7 @@
             @input="checkCorrectInputs"></textarea>
         <div class="error" v-if="!description">Description is required</div>
 
-        <button v-if="!isSendRequest" style="margin: 20px;" @click="createPlace" :disabled="!isCorrectInputs">Create Place</button>
+        <button v-if="!isSendRequest" style="margin: 20px;" @click="createPlace" :disabled="!isCorrectInputs">Add Place</button>
         <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span role="status">Loading...</span>

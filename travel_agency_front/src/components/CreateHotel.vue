@@ -17,26 +17,36 @@
                 {{ place.name }}
             </option>
         </datalist>
+        <div class="error" v-if="!isCorrectPlace">Place is required</div>
 
         <label for="name">Hotel Name:</label>
-        <input id="name" type="text" v-model="name" placeholder="Enter hotel name">
+        <input id="name" type="text" @input="checkCorrectInputs" v-model="name" placeholder="Enter hotel name">
+        <div class="error" v-if="!name">Name is required</div>
 
         <label for="address">Address:</label>
-        <input id="address" type="text" v-model="address" placeholder="Enter place address">
+        <input id="address" type="text" @input="checkCorrectInputs" v-model="address" placeholder="Enter place address">
+        <div class="error" v-if="!address">Address is required</div>
 
         <label for="imageUrl">Image URL:</label>
         <input id="imageUrl" type="text" v-model="imageUrl" placeholder="Enter image URL" @input="checkImage"
             required />
-        <img v-if="existImage" class="image-preview" :src="imageUrl" />
+        <div class="error" v-if="!isCorrectImageUrl">Image url isn't correct</div>
+        <img v-if="isCorrectImageUrl" class="image-preview" :src="imageUrl" />
         <img v-else style="width: 300px;" class="image-preview" src='./@/../../assets/images/image-not-found.jpg' />
 
         <label for="pricePerNight">Price Per Night:</label>
-        <input id="pricePerNight" type="number" v-model="pricePerNight" placeholder="Enter price per night">
+        <input id="pricePerNight" type="number" v-model="pricePerNight" min="0" @change="checkCorrectInputs" placeholder="Enter price per night" @input="checkPrice">
+        <div class="error" v-if="pricePerNight <= 0">Price must be more than o</div>
 
         <label for="description">Description:</label>
-        <textarea id="description" v-model="description" placeholder="Enter place description"></textarea>
+        <textarea id="description" v-model="description" placeholder="Enter place description" @input="checkCorrectInputs"></textarea>
+        <div class="error" v-if="!description">Description is required</div>
 
-        <button @click="createHotel">Create Hotel</button>
+        <button v-if="!isSendRequest" style="margin: 20px;" @click="createHotel" :disabled="!isCorrectInputs">Add Hotel</button>
+        <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+        </button>
     </div>
 </template>
 
@@ -61,12 +71,26 @@ export default {
             description: '',
             pricePerNight: 0,
             imageUrl: '',
-            existImage: false
+            isCorrectImageUrl: false,
+            isSendRequest: false,
+            isCorrectInputs: false
         }
     },
 
     methods: {
-        checkImageExists(imageUrl) {
+        async checkCorrectInputs() {
+            this.isCorrectInputs = this.isCorrectPlace && this.address && this.description && this.pricePerNight > 0 
+            && this.placeId > 0 && this.isCorrectImageUrl;
+        },
+
+        async checkPrice() {
+            if(this.pricePerNight <= 0) {
+                this.pricePerNight = 0;
+            }
+            await this.checkCorrectInputs();
+        },
+        
+        async checkImageExists(imageUrl) {
             return new Promise((resolve) => {
                 let img = new Image();
                 img.onload = () => resolve(true);
@@ -76,7 +100,8 @@ export default {
         },
 
         async checkImage() {
-            this.existImage = await this.checkImageExists(this.imageUrl);
+            this.isCorrectImageUrl = await this.checkImageExists(this.imageUrl);
+            await this.checkCorrectInputs();
         },
 
         async checkPlace() {
@@ -84,11 +109,14 @@ export default {
                 this.isCorrectPlace = true;
                 this.country = this.places.find(place => place.name === this.placeName).country;
                 this.placeId = this.places.find(place => place.name === this.placeName).id;
+                await this.checkCorrectInputs();
+                console.log(this.isCorrectPlace);
             }
             else {
                 this.isCorrectPlace = false;
                 this.chooseCountry();
                 this.placeId = 0;
+                this.isCorrectInputs = false;
             }
         },
 
@@ -110,6 +138,7 @@ export default {
             this.address = '';
             this.description = '';
             this.pricePerNight = 0;
+            this.imageUrl = '';
         },
 
         async createHotel() {
@@ -122,9 +151,13 @@ export default {
                     imageUrl : this.imageUrl,
                     pricePerNight: this.pricePerNight
                 }
-                console.log(data);
+                this.isSendRequest = true;
                 await hotelAPI.createHotel(data);
                 await this.clearFields();
+                this.isCorrectInputs = false;
+                this.isCorrectPlace = false;
+                this.isCorrectImageUrl = false;
+                this.isSendRequest = false;
             }
         }
     },
