@@ -11,6 +11,14 @@ export async function getAllPlaces() {
   }
 }
 
+export async function getPlacesInfo() {
+  try {
+    return await axios.get(`${mainUrl}/getPlacesInfo`).then((res) => res.data);
+  } catch (error) {
+    await router.push("/error");
+  }
+}
+
 export async function getPlaceById(id) {
   try {
     return await axios

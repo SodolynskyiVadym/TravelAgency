@@ -6,7 +6,7 @@ using TravelAgencyAPI.Repositories.Implementations;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class PlaceRepository : IRepository<Place, PlaceDto>
+public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
@@ -27,6 +27,12 @@ public class PlaceRepository : IRepository<Place, PlaceDto>
     public async Task<List<Place>> GetAllAsync()
     {
         return await _context.Places.ToListAsync();
+    }
+    
+    public async Task<IEnumerable<PlaceInfoDto>> GetPlacesInfo()
+    {
+        IEnumerable<Place> places = await this.GetAllAsync();
+        return places.Select(place => _mapper.Map<PlaceInfoDto>(place));
     }
     
     

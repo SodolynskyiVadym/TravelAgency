@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
@@ -27,6 +28,12 @@ public class PlaceController : ControllerBase
     public async Task<List<Place>> GetAllPlaces()
     {
         return await _placeRepository.GetAllAsync();
+    }
+    
+    [HttpGet("getPlacesInfo")]
+    public async Task<IEnumerable<PlaceInfoDto>> GetPlaceInfo(int id)
+    {
+        return await _placeRepository.GetPlacesInfo();
     }
     
     [HttpPost("create")]
