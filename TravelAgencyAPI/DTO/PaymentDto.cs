@@ -1,6 +1,6 @@
 ﻿namespace TravelAgencyAPI.DTO;
 
-public class PaymentDbo
+public class PaymentDto
 {
     public int Amount { get; set; }
     public DateTime? Date { get; set; }
