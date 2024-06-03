@@ -36,7 +36,6 @@
         <textarea id="description" v-model="description" @input="checkCorrectInputs"></textarea>
         <div class="error" v-if="!description">Description is required</div>
 
-
         <button v-if="!isSendRequest" style="margin: 20px;" @click="createTransport" :disabled="!isCorrectInputs">Add Transport</button>
         <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
