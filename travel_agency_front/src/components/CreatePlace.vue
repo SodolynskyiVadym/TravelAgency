@@ -19,7 +19,8 @@
         <button v-if="!(imagesUrls.length >= 3)" type="button" @click="addImage">Add image</button>
         <div class="error" v-if="!isAllImages">Place must have 3 images</div>
 
-        <input type="search" list="data" class="form-control" @input="checkCountryFromList" autocomplete="false"
+        <label for="country">Country:</label>
+        <input type="search" list="data" id="country" class="form-control" @input="checkCountryFromList" autocomplete="false"
             autocorrect="on" v-model="country" placeholder="Type to choose country">
         <datalist id="data">
             <option v-for="country in countries" :key="country" :value="country">

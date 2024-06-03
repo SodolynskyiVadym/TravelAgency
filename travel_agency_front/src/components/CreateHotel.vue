@@ -114,7 +114,8 @@ export default {
             }
             else {
                 this.isCorrectPlace = false;
-                this.chooseCountry();
+                this.currentPlaces = this.places.filter(place => place.country === this.country);
+                this.country = '';
                 this.placeId = 0;
                 this.isCorrectInputs = false;
             }

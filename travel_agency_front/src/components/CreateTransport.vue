@@ -16,7 +16,7 @@
 
 
 
-        <label for="price">Price per seat per Km</label>
+        <label for="price">Price for hundred km</label>
         <input type="number" id="price" v-model="price" @input="checkCorrectInputs">
         <div class="error" v-if="price <= 0">Price must be more than 0</div>
 
@@ -101,10 +101,10 @@ export default {
                     description: this.description,
                     type: this.typeTransport,
                     quantitySeats: this.seats,
-                    pricePerSeatPerKm: this.price,
+                    priceForHundredKm: this.price,
                     imageUrl: this.imageUrl
                 };
-                
+                console.log(data)
                 this.isSendRequest = true;
                 await transportAPI.createTransport(data);
                 await this.clearFields();
