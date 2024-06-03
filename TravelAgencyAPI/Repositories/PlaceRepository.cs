@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 

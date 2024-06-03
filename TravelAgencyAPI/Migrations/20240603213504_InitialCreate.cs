@@ -27,23 +27,6 @@ namespace TravelAgencyAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tours",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false),
-                    QuantitySeats = table.Column<int>(type: "int", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tours", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Transports",
                 columns: table => new
                 {
@@ -123,6 +106,81 @@ namespace TravelAgencyAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tours",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
+                    QuantitySeats = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlaceStartId = table.Column<int>(type: "int", nullable: false),
+                    PlaceEndId = table.Column<int>(type: "int", nullable: false),
+                    TransportToEndId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tours", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tours_Places_PlaceEndId",
+                        column: x => x.PlaceEndId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tours_Places_PlaceStartId",
+                        column: x => x.PlaceStartId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tours_Transports_TransportToEndId",
+                        column: x => x.TransportToEndId,
+                        principalTable: "Transports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Destinations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TourId = table.Column<int>(type: "int", nullable: false),
+                    HotelId = table.Column<int>(type: "int", nullable: false),
+                    TransportId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Destinations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Destinations_Hotels_HotelId",
+                        column: x => x.HotelId,
+                        principalTable: "Hotels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Destinations_Tours_TourId",
+                        column: x => x.TourId,
+                        principalTable: "Tours",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Destinations_Transports_TransportId",
+                        column: x => x.TransportId,
+                        principalTable: "Transports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -179,41 +237,6 @@ namespace TravelAgencyAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Destinations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TourId = table.Column<int>(type: "int", nullable: false),
-                    HotelId = table.Column<int>(type: "int", nullable: false),
-                    TransportId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Destinations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Destinations_Hotels_HotelId",
-                        column: x => x.HotelId,
-                        principalTable: "Hotels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Destinations_Tours_TourId",
-                        column: x => x.TourId,
-                        principalTable: "Tours",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Destinations_Transports_TransportId",
-                        column: x => x.TransportId,
-                        principalTable: "Transports",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Destinations_HotelId",
                 table: "Destinations",
@@ -258,6 +281,24 @@ namespace TravelAgencyAPI.Migrations
                 name: "IX_Reviews_UserId",
                 table: "Reviews",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tours_PlaceEndId",
+                table: "Tours",
+                column: "PlaceEndId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tours_PlaceStartId",
+                table: "Tours",
+                column: "PlaceStartId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tours_TransportToEndId",
+                table: "Tours",
+                column: "TransportToEndId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -279,9 +320,6 @@ namespace TravelAgencyAPI.Migrations
                 name: "Hotels");
 
             migrationBuilder.DropTable(
-                name: "Transports");
-
-            migrationBuilder.DropTable(
                 name: "Tours");
 
             migrationBuilder.DropTable(
@@ -289,6 +327,9 @@ namespace TravelAgencyAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Places");
+
+            migrationBuilder.DropTable(
+                name: "Transports");
         }
     }
 }

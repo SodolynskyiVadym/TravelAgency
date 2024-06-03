@@ -18,6 +18,12 @@ public class Tour : IModel
     public string Description { get; set; }
     
     [Required]
+    public DateTime StartDate { get; set; }
+    
+    [Required]
+    public DateTime EndDate { get; set; }
+    
+    [Required]
     public int Price { get; set; }
     
     [Required]
@@ -25,6 +31,20 @@ public class Tour : IModel
     
     [Required]
     public string ImageUrl { get; set; }
+    
+
+    [Required]
+    public int PlaceStartId { get; set; }
+
+    public Place PlaceStart { get; set; }
+    
+    [Required]
+    public int PlaceEndId { get; set; }
+    public Place PlaceEnd { get; set; }
+    
+    [Required]
+    public int TransportToEndId { get; set; }
+    public Transport TransportToEnd { get; set; }
     
     
     public Tour()

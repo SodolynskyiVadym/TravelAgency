@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
@@ -45,6 +46,11 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.Price = tourUpdate.Price;
         tour.QuantitySeats = tourUpdate.QuantitySeats;
         tour.ImageUrl = tourUpdate.ImageUrl ?? tour.ImageUrl;
+        tour.PlaceStartId = tourUpdate.PlaceStartId != 0 ? tourUpdate.PlaceStartId : tour.PlaceStartId;
+        tour.PlaceEndId = tourUpdate.PlaceEndId != 0 ? tourUpdate.PlaceEndId : tour.PlaceEndId;
+        tour.TransportToEndId = tourUpdate.TransportToEndId != 0 ? tourUpdate.TransportToEndId : tour.TransportToEndId;
+        tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
+        tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
         
         await _context.SaveChangesAsync();
         return true;

@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories;
 

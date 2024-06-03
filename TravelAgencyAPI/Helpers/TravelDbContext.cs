@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.Models;
 
-namespace TravelAgencyAPI;
+namespace TravelAgencyAPI.Helpers;
 
 public class TravelDbContext : DbContext
 {
@@ -79,5 +79,26 @@ public class TravelDbContext : DbContext
             .WithMany()
             .HasForeignKey(r => r.TourId)
             .HasPrincipalKey(t => t.Id);
+
+        modelBuilder.Entity<Tour>()
+            .HasOne(t => t.PlaceStart)
+            .WithOne()
+            .HasForeignKey<Tour>(t => t.PlaceStartId)
+            .HasPrincipalKey<Place>(p => p.Id)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Tour>()
+            .HasOne(t => t.PlaceEnd)
+            .WithOne()
+            .HasForeignKey<Tour>(t => t.PlaceEndId)
+            .HasPrincipalKey<Place>(p => p.Id)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Tour>()
+            .HasOne(t => t.TransportToEnd)
+            .WithOne()
+            .HasForeignKey<Tour>(t => t.TransportToEndId)
+            .HasPrincipalKey<Transport>(t => t.Id)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

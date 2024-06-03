@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TravelAgencyAPI;
+using TravelAgencyAPI.Helpers;
 
 #nullable disable
 
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    [Migration("20240602182527_InitialCreate")]
+    [Migration("20240603213504_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -216,6 +216,9 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -224,13 +227,34 @@ namespace TravelAgencyAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PlaceEndId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlaceStartId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantitySeats")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TransportToEndId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PlaceEndId")
+                        .IsUnique();
+
+                    b.HasIndex("PlaceStartId")
+                        .IsUnique();
+
+                    b.HasIndex("TransportToEndId")
+                        .IsUnique();
 
                     b.ToTable("Tours");
                 });
@@ -389,6 +413,33 @@ namespace TravelAgencyAPI.Migrations
                     b.Navigation("Tour");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TravelAgencyAPI.Models.Tour", b =>
+                {
+                    b.HasOne("TravelAgencyAPI.Models.Place", "PlaceEnd")
+                        .WithOne()
+                        .HasForeignKey("TravelAgencyAPI.Models.Tour", "PlaceEndId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TravelAgencyAPI.Models.Place", "PlaceStart")
+                        .WithOne()
+                        .HasForeignKey("TravelAgencyAPI.Models.Tour", "PlaceStartId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TravelAgencyAPI.Models.Transport", "TransportToEnd")
+                        .WithOne()
+                        .HasForeignKey("TravelAgencyAPI.Models.Tour", "TransportToEndId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("PlaceEnd");
+
+                    b.Navigation("PlaceStart");
+
+                    b.Navigation("TransportToEnd");
                 });
 
             modelBuilder.Entity("TravelAgencyAPI.Models.Place", b =>
