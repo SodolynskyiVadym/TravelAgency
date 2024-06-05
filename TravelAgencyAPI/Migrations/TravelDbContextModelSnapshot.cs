@@ -107,7 +107,7 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Status")
+                    b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
 
                     b.Property<int>("TourId")
@@ -219,6 +219,9 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

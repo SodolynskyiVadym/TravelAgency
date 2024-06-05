@@ -9,6 +9,7 @@ public class TourDto : IDto
     public DateTime? EndDate { get; set; }
     public int QuantitySeats { get; set; }
     public string? ImageUrl { get; set; }
+    public bool IsAvailable { get; set; } = true;
     public int PlaceStartId { get; set; }
     public int PlaceEndId { get; set; }
     public int TransportToEndId { get; set; }

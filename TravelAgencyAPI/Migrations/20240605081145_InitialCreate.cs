@@ -118,6 +118,7 @@ namespace TravelAgencyAPI.Migrations
                     Price = table.Column<int>(type: "int", nullable: false),
                     QuantitySeats = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     PlaceStartId = table.Column<int>(type: "int", nullable: false),
                     PlaceEndId = table.Column<int>(type: "int", nullable: false),
                     TransportToEndId = table.Column<int>(type: "int", nullable: false)
@@ -187,7 +188,7 @@ namespace TravelAgencyAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     TourId = table.Column<int>(type: "int", nullable: false)

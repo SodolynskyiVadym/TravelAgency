@@ -51,6 +51,7 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.TransportToEndId = tourUpdate.TransportToEndId != 0 ? tourUpdate.TransportToEndId : tour.TransportToEndId;
         tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
+        tour.IsAvailable = tourUpdate.IsAvailable;
         
         await _context.SaveChangesAsync();
         return true;

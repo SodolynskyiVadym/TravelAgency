@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TravelAgencyAPI.Models;
@@ -31,6 +32,9 @@ public class Tour : IModel
     
     [Required]
     public string ImageUrl { get; set; }
+    
+    [Required]
+    public bool IsAvailable { get; set; }
     
 
     [Required]

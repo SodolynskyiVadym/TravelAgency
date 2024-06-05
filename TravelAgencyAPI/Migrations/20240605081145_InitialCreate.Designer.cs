@@ -12,7 +12,7 @@ using TravelAgencyAPI.Helpers;
 namespace TravelAgencyAPI.Migrations
 {
     [DbContext(typeof(TravelDbContext))]
-    [Migration("20240603213504_InitialCreate")]
+    [Migration("20240605081145_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -110,7 +110,7 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Status")
+                    b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
 
                     b.Property<int>("TourId")
@@ -222,6 +222,9 @@ namespace TravelAgencyAPI.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

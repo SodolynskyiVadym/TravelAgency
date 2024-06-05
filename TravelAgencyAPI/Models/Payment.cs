@@ -13,7 +13,7 @@ public class Payment : IModel
     public int Amount { get; set; }
     
     [Required]
-    public bool Status { get; set; }
+    public bool IsPaid { get; set; }
     
     [Required]
     public DateTime Date { get; set; }
