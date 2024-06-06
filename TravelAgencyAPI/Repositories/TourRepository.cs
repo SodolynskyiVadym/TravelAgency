@@ -42,10 +42,19 @@ public class TourRepository : IRepository<Tour, TourDto>
     
     public async Task<bool> AddAsync(TourDto tour)
     {
+        var existingPlace = await _context.Places
+            .FirstOrDefaultAsync(p => p.Id == tour.PlaceEndId);
+        Console.WriteLine(tour.PlaceEndId);
+        if (existingPlace == null)
+        {
+            // If the Place does not exist, return false
+            return false;
+        }
+        
         Tour createdTour = _mapper.Map<Tour>(tour);
         await _context.Tours.AddAsync(createdTour);
         await _context.SaveChangesAsync(); 
-
+    
         // IEnumerable<Destination> destinations = tour.Destinations.Select(d => _mapper.Map<Destination>(d));
         // var enumerable = destinations.ToList();
         // enumerable.ToList().ForEach(d => d.TourId = createdTour.Id);
@@ -56,6 +65,7 @@ public class TourRepository : IRepository<Tour, TourDto>
         // await _context.SaveChangesAsync();
         return true;
     }
+    
     
     public async Task<bool> UpdateAsync(int id, TourDto tourUpdate)
     {
