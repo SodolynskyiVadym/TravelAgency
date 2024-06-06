@@ -13,4 +13,5 @@ public class TourDto : IDto
     public int PlaceStartId { get; set; }
     public int PlaceEndId { get; set; }
     public int TransportToEndId { get; set; }
+    public IEnumerable<DestinationDto> Destinations { get; set; }
 }

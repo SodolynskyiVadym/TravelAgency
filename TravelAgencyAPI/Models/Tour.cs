@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TravelAgencyAPI.Models;
@@ -49,6 +48,8 @@ public class Tour : IModel
     [Required]
     public int TransportToEndId { get; set; }
     public Transport TransportToEnd { get; set; }
+    
+    public IEnumerable<Destination> Destinations { get; set; }
     
     
     public Tour()

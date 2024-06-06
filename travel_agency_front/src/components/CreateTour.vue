@@ -167,6 +167,7 @@
 import * as transportAPI from '@/services/API/transportAPI';
 import * as hotelAPI from '@/services/API/hotelAPI';
 import * as placeAPI from '@/services/API/placeAPI';
+import * as tourAPI from '@/services/API/tourAPI';
 import { countries } from '@/js/countries';
 
 export default {
@@ -353,6 +354,7 @@ export default {
 
 
         async createTour() {
+            this.isSendRequest = true;
             const data = {
                 name: this.name,
                 description: this.description,
@@ -366,9 +368,10 @@ export default {
                 endDate: this.endDate,
                 transportToEndId: this.endPlaceTransportId
             };
+            tourAPI.createTour(data);
+            console.log(data);
             await this.checkCorrectInputs();
 
-            console.log(data);
         }
     },
 

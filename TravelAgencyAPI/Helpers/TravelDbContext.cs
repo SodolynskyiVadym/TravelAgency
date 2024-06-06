@@ -21,9 +21,9 @@ public class TravelDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Destination>()
-            .HasOne(d => d.Tour)
-            .WithMany()
+        modelBuilder.Entity<Tour>()
+            .HasMany(t => t.Destinations)
+            .WithOne()
             .HasForeignKey(d => d.TourId)
             .HasPrincipalKey(t => t.Id);
         
@@ -61,10 +61,10 @@ public class TravelDbContext : DbContext
             .WithMany()
             .HasForeignKey(p => p.TourId)
             .HasPrincipalKey(t => t.Id);
-
-        modelBuilder.Entity<PlaceImageUrl>()
-            .HasOne(i => i.Place)
-            .WithMany(p => p.ImagesUrls)
+        
+        modelBuilder.Entity<Place>()
+            .HasMany(p => p.ImagesUrls)
+            .WithOne()
             .HasForeignKey(i => i.PlaceId)
             .HasPrincipalKey(p => p.Id);
         
@@ -82,23 +82,23 @@ public class TravelDbContext : DbContext
 
         modelBuilder.Entity<Tour>()
             .HasOne(t => t.PlaceStart)
-            .WithOne()
-            .HasForeignKey<Tour>(t => t.PlaceStartId)
-            .HasPrincipalKey<Place>(p => p.Id)
+            .WithMany()
+            .HasForeignKey(t => t.PlaceStartId)
+            .HasPrincipalKey(p => p.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Tour>()
             .HasOne(t => t.PlaceEnd)
-            .WithOne()
-            .HasForeignKey<Tour>(t => t.PlaceEndId)
-            .HasPrincipalKey<Place>(p => p.Id)
+            .WithMany()
+            .HasForeignKey(t => t.PlaceEndId)
+            .HasPrincipalKey(p => p.Id)
             .OnDelete(DeleteBehavior.Restrict);
         
         modelBuilder.Entity<Tour>()
             .HasOne(t => t.TransportToEnd)
-            .WithOne()
-            .HasForeignKey<Tour>(t => t.TransportToEndId)
-            .HasPrincipalKey<Transport>(t => t.Id)
+            .WithMany()
+            .HasForeignKey(t => t.TransportToEndId)
+            .HasPrincipalKey(t => t.Id)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
