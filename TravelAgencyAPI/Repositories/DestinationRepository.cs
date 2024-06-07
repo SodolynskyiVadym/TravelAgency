@@ -7,7 +7,7 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class DestinationRepository : IRepository<Destination, DestinationDto>
+public class DestinationRepository : IRepository<Destination, DestinationDto>, IDestinationRepository
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
@@ -28,11 +28,11 @@ public class DestinationRepository : IRepository<Destination, DestinationDto>
         return await _context.Destinations.ToListAsync();
     }
     
-    public async Task<bool> AddAsync(DestinationDto destination)
+    public Task<bool> AddAsync(DestinationDto destination)
     {
-        await _context.Destinations.AddAsync(_mapper.Map<Destination>(destination));
-        await _context.SaveChangesAsync();
-        return true;
+        // await _context.Destinations.AddAsync(_mapper.Map<Destination>(destination));
+        // await _context.SaveChangesAsync();
+        return Task.FromResult(true);
     }
     
     public async Task<bool> UpdateAsync(int id, DestinationDto destinationUpdate)
@@ -54,6 +54,15 @@ public class DestinationRepository : IRepository<Destination, DestinationDto>
         _context.Destinations.Remove(destination);
         await _context.SaveChangesAsync();
         
+        return true;
+    }
+
+    public async Task<bool> UpdateDestinationsAsync(IEnumerable<DestinationDto> destinations, int tourId)
+    {
+        if (await _context.Tours.FindAsync(tourId) == null) return false;
+        
+        _context.Destinations.RemoveRange(await _context.Destinations.Where(d => d.TourId == tourId).ToListAsync());
+        await _context.Destinations.AddRangeAsync(destinations.Select(destination => _mapper.Map<Destination>(destination)));
         return true;
     }
 }

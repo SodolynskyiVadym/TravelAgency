@@ -30,11 +30,11 @@ public class DestinationController : ControllerBase
         return await _destinationRepository.GetAllAsync();
     }
     
-    [HttpPost("create")]
-    public async Task<IActionResult> AddDestination(DestinationDto destination)
+    [HttpPost("createDestinations")]
+    public async Task<IActionResult> UpdateDestinations(IEnumerable<DestinationDto> destinations, int tourId)
     {
-        await _destinationRepository.AddAsync(destination);
-        return Ok(destination);
+        if(await _destinationRepository.UpdateDestinationsAsync(destinations, tourId)) return Ok(destinations);
+        return BadRequest();
     }
     
     [HttpPatch("update/{id}")]

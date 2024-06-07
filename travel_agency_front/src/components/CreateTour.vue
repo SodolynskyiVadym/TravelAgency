@@ -64,9 +64,8 @@
                 </datalist>
                 <div class="error" v-if="!countries.includes(destinationsCountries[index])">Country is required for
                     choice of place</div>
-                <div class="error"
-                    v-if="!possibleDestinationsPlacesByCountry[index].find(place => place.name === destinationsPlaces[index])">
-                    Place is required</div>
+                <div class="error" v-if="!destinationsIsCorrectNames[index]">This location don't exist or already used
+                </div>
 
                 <label :for="'hotel' + index">Hotel:</label>
                 <input :id="'hotel' + index" type="search" :list="'hotels' + index" v-model="destinationsHotels[index]"
@@ -98,13 +97,11 @@
 
                 <label :for="'startDate' + index">Start Date:</label>
                 <input :id="'startDate' + index" type="date" v-model="destination.startDate"
-                    @input="checkDestinationStartDate">
-                <div class="error" v-if="!destinationsIsCorrectStartDates[index]">Start date can't be before previous
-                    date</div>
+                    @input="checkDestinationDates">
+                <div class="error" v-if="!destinationsIsCorrectStartDates[index]">Incorrect start date</div>
 
                 <label :for="'endDate' + index">End Date:</label>
-                <input :id="'endDate' + index" type="date" v-model="destination.endDate"
-                    @input="checkDestinationEndDate">
+                <input :id="'endDate' + index" type="date" v-model="destination.endDate" @input="checkDestinationDates">
                 <div class="error" v-if="!destinationsIsCorrectEndDates[index]">Incorrect end date</div>
 
                 <button @click="removeDestination(index)">Remove destination</button>
@@ -210,6 +207,7 @@ export default {
             destinationsHotels: [],
             destinationsIsCorrectStartDates: [],
             destinationsIsCorrectEndDates: [],
+            destinationsIsCorrectNames: [],
             possibleDestinationsPlacesByCountry: [],
             possibleDestinationsHotelsByPlaceAndCountry: [],
             possiblePlacesByCountryStartLocation: [],
@@ -225,17 +223,7 @@ export default {
                 && this.destinationsCountries.every(country => this.countries.includes(country))
                 && this.destinationsIsCorrectEndDates.every(isCorrect => isCorrect)
                 && this.destinationsIsCorrectStartDates.every(isCorrect => isCorrect) && new Date(this.startDate) >= new Date() && new Date(this.startDate) < new Date(this.endDate)
-
-            console.log('name:', this.name);
-            console.log('isCorrectImageUrl:', this.isCorrectImageUrl);
-            console.log('description:', this.description);
-            console.log('placeStartId:', this.placeStartId);
-            console.log('placeEndId:', this.placeEndId);
-            console.log('quantitySeats:', this.quantitySeats);
-            console.log('price:', this.price);
-            console.log('destinations length:', this.destinations.length);
-            console.log('destinations:', this.destinations);
-            console.log('destinationsCountries:', this.destinationsCountries);
+                && this.destinationsIsCorrectNames.every(isCorrect => isCorrect);
         },
 
 
@@ -257,29 +245,26 @@ export default {
             } else return 0;
         },
 
-        async checkDestinationStartDate() {
-            this.destinationsIsCorrectStartDates = this.destinations.map((destination, i) => {
-                if (i === 0) {
-                    return new Date(destination.startDate) > new Date(this.startDate);
-                } else if (i === this.destinations.length - 1) {
-                    return new Date(destination.startDate) < new Date(this.endDate);
-                } else {
-                    return new Date(destination.startDate) > new Date(this.destinations[i - 1].endDate);
-                }
-            });
 
-            await this.checkCorrectInputs();
-        },
-
-
-        async checkDestinationEndDate() {
+        async checkDestinationDates() {
             this.destinationsIsCorrectEndDates = this.destinations.map((destination, i) => {
+
                 if (i === this.destinations.length - 1) {
-                    return new Date(destination.endDate) < new Date(this.endDate) && new Date(destination.endDate) > new Date(destination.startDate);
+                    return new Date(destination.endDate) <= new Date(this.endDate) && new Date(destination.endDate) > new Date(destination.startDate);
                 } else {
                     return new Date(destination.endDate) > new Date(destination.startDate);
                 }
             });
+
+            this.destinationsIsCorrectStartDates = this.destinations.map((destination, i) => {
+                if (i === 0) {
+                    return new Date(destination.startDate) >= new Date(this.startDate);
+                } else {
+                    return new Date(destination.startDate) >= new Date(this.destinations[i - 1].endDate) && new Date(destination.startDate) < new Date(destination.endDate);
+                }
+            });
+
+            await this.checkCorrectInputs();
         },
 
 
@@ -302,11 +287,13 @@ export default {
 
         async checkEndPlace() {
             this.placeEndId = await this.findPlaceIdByNameAndCountry(this.endPlace, this.endPlaceCountry);
+            await this.checkDestinationsPlaceNames();
             await this.checkCorrectInputs();
         },
 
         async checkStartPlace() {
             this.placeStartId = await this.findPlaceIdByNameAndCountry(this.startPlace, this.startPlaceCountry);
+            await this.checkDestinationsPlaceNames();
             await this.checkCorrectInputs();
         },
 
@@ -324,8 +311,8 @@ export default {
             this.possibleDestinationsHotelsByPlaceAndCountry.push([]);
             this.destinationsIsCorrectEndDates.push(false);
             this.destinationsIsCorrectStartDates.push(false);
-            await this.checkDestinationStartDate();
-            await this.checkDestinationEndDate();
+            this.destinationsIsCorrectNames.push(false);
+            await this.checkDestinationDates();
             await this.checkCorrectInputs();
         },
 
@@ -341,8 +328,10 @@ export default {
             this.possiblePlacesByCountryEndLocation.splice(index, 1);
             this.destinationsIsCorrectEndDates.splice(index, 1);
             this.destinationsIsCorrectStartDates.splice(index, 1);
-            await this.checkDestinationStartDate();
-            await this.checkDestinationEndDate();
+            this.destinationsIsCorrectNames.splice(index, 1);
+            await this.checkDestinationDates();
+            await this.checkDestinationsPlaceNames();
+
             await this.checkCorrectInputs();
         },
 
@@ -384,6 +373,8 @@ export default {
                 this.destinationsHotels[index] = '';
                 this.destinations[index].hotelId = 0;
             }
+            await this.checkDestinationsPlaceNames();
+
             await this.checkCorrectInputs();
         },
 
@@ -395,6 +386,17 @@ export default {
         async checkDestinationHotel(index) {
             this.destinations[index].hotelId = await this.findHotelIdByName(this.destinationsHotels[index]);
             await this.checkCorrectInputs();
+        },
+
+        async checkDestinationsPlaceNames() {
+            const placesId = this.destinations.map((destination) => {
+                return destination.placeId;
+            });
+
+            this.destinationsIsCorrectNames = this.destinations.map((destination, i) => {
+                return this.places.map(place => place.name).includes(this.destinationsPlaces[i]) && placesId.filter(placeId => placeId === destination.placeId).length === 1
+                    && this.placeStartId !== destination.placeId && this.placeEndId !== destination.placeId;
+            });
         },
 
 
@@ -414,9 +416,7 @@ export default {
                 transportToEndId: this.endPlaceTransportId
             };
             await tourAPI.createTour(data);
-            this.isSendRequest = false;
-            await this.checkCorrectInputs();
-
+            window.location.reload();
         }
     },
 
