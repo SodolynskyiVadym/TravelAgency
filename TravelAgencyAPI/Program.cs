@@ -1,16 +1,9 @@
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using TravelAgencyAPI;
 using TravelAgencyAPI.Helpers;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Rework this part of the code
-// builder.Services.AddControllers()
-//     .AddJsonOptions(options =>
-//         {
-//             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//         });
 
 builder.Services.AddControllers();
 

@@ -6,7 +6,7 @@ const mainUrl = "http://localhost:5113/tour";
 
 export async function getTourById(id) {
     try {
-        return await axios.get(`${mainUrl}/getTour/${id}`).then((res) => res.data);
+        return await axios.get(`${mainUrl}/${id}`).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

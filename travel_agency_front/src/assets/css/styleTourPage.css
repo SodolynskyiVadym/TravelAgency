@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tourImage{
+    margin-top: 40px;
+    width: 50%;
+    object-fit: cover;
+}
+
+.tourDescription {
+    font-family: "DM Serif Display", serif;
+    font-size: 23px;
+    font-weight: 400;
+    text-align: center;
+    color: #333;
+    line-height: 1.5;
+    text-align: justify;
+    margin-top: 30px; 
+    max-width: 65%;
+}
