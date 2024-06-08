@@ -4,6 +4,7 @@ import CreateHotel from '@/../src/components/CreateHotel.vue';
 import CreateTransport from '@/../src/components/CreateTransport.vue';
 import CreateTour from '@/../src/components/CreateTour.vue';
 import CreatePlace from '@/../src/components/CreatePlace.vue';
+import TourPage from '@/../src/components/TourPage.vue';
 
 
 // import * as listURL from "@/js/listUrl";
@@ -34,7 +35,12 @@ const routes = [
         path: '/createPlace',
         name: 'CreatePlacePage',
         component: CreatePlace,
-    }
+    },
+    {
+        path: '/tour/:id',
+        name: 'TourPage',
+        component: TourPage,
+    },
 ];
 
 
