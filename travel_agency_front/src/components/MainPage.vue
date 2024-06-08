@@ -19,8 +19,8 @@
         @click="enterTourPage(tour.id)">
         <div class="col p-4 d-flex flex-column position-static">
           <h4 style="max-width: 100%; word-wrap: break-word;" class="mb-0">{{ tour.name }}</h4>
-          <div class="mb-1 text-body-secondary">{{ tour.startDate }} - {{ tour.endDate }}</div>
-          <p class="card-text mb-auto">{{ tour.description }}</p>
+          <div class="mb-1 text-body-secondary">{{ tour.startDate }} --- {{ tour.endDate }}</div>
+          <p style="max-height: 100%; " class="card-text mb-auto">{{ tour.description }}</p>
         </div>
         <div class="col-auto d-none d-lg-block">
           <img class="bd-placeholder-img" :src="tour.imageUrl" alt="Description of image" width="390" height="250">
@@ -32,6 +32,8 @@
 
 <script>
 import * as tourAPI from '@/services/API/tourAPI';
+import * as dateHelper from '@/js/dateHelper';
+
 export default {
   data() {
     return {
@@ -47,6 +49,10 @@ export default {
 
   async mounted() {
     this.tours = await tourAPI.getAllTours();
+    for (let tour of this.tours) {
+      tour.startDate = await dateHelper.formatDate(tour.startDate);
+      tour.endDate = await dateHelper.formatDate(tour.endDate);
+    }
   }
 }
 

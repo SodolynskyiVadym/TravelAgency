@@ -23,3 +23,36 @@
     margin-top: 30px; 
     max-width: 65%;
 }
+
+
+.location{
+    font-family: "DM Serif Display", serif;
+    font-size: 23px;
+    font-weight: 400;
+    text-align: left;
+    width: 90%;
+    margin-left: 5%;
+    color: #333;
+    line-height: 1.5;
+    text-align: justify;
+    margin-top: 80px; 
+}
+
+.locationImages{
+    display: flex;
+    justify-content: space-between;
+}
+
+.locationImages img{
+    border-radius: 5%;
+}
+
+.hotel{
+    margin-top: 40px;
+    text-align: center;
+}
+
+.hotel img{
+    width: 500px;
+    border-radius: 10%;
+}
