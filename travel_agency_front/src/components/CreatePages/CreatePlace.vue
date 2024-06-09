@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { countries } from '@/js/countries';
-import * as placeAPI from '@/services/API/placeAPI';
+import { countries } from '@/../js/countries';
+import * as placeAPI from '@/../services/API/placeAPI';
 
 export default {
     data() {
@@ -131,5 +131,5 @@ export default {
 </script>
 
 <style>
-@import "./../assets/css/styleFormCreate.css";
+@import "./../../assets/css/styleFormCreate.css";
 </style>

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import * as transportAPI from '@/services/API/transportAPI';
+import * as transportAPI from '@/../services/API/transportAPI';
 
 export default {
     data() {
@@ -117,5 +117,5 @@ export default {
 
 </script>
 <style>
-@import "./../assets/css/styleFormCreate.css";
+@import "./../../assets/css/styleFormCreate.css";
 </style>

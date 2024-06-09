@@ -51,9 +51,9 @@
 </template>
 
 <script>
-import { countries } from '@/js/countries';
-import * as placeAPI from '@/services/API/placeAPI';
-import * as hotelAPI from '@/services/API/hotelAPI';
+import { countries } from '@/../js/countries';
+import * as placeAPI from '@/../services/API/placeAPI';
+import * as hotelAPI from '@/../services/API/hotelAPI';
 
 export default {
     data() {
@@ -172,5 +172,5 @@ export default {
 </script>
 
 <style>
-@import "./../assets/css/styleFormCreate.css";
+@import "./../../assets/css/styleFormCreate.css";
 </style>

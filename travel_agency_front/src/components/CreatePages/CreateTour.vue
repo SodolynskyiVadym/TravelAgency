@@ -170,11 +170,11 @@
 
 <script>
 // import * as tourAPI from '@/services/API/tourAPI';
-import * as transportAPI from '@/services/API/transportAPI';
-import * as hotelAPI from '@/services/API/hotelAPI';
-import * as placeAPI from '@/services/API/placeAPI';
-import * as tourAPI from '@/services/API/tourAPI';
-import { countries } from '@/js/countries';
+import * as transportAPI from '@/../services/API/transportAPI';
+import * as hotelAPI from '@/../services/API/hotelAPI';
+import * as placeAPI from '@/../services/API/placeAPI';
+import * as tourAPI from '@/../services/API/tourAPI';
+import { countries } from '@/../js/countries';
 
 export default {
     data() {
@@ -430,5 +430,5 @@ export default {
 </script>
 
 <style>
-@import "./../assets/css/styleFormCreate.css";
+@import "./../../assets/css/styleFormCreate.css";
 </style>

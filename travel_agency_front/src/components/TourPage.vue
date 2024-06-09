@@ -6,7 +6,7 @@
         <img :src="tour.imageUrl" alt="tour image" class="tourImage">
 
 
-        <div style="margin-top: 50px;">
+        <div>
             <div v-for="(destination, index) in tour.destinations" :key="index" class="location">
                 <h2>{{ index + 1 }} location</h2>
                 <h3>{{ destination.hotel.place.name }}({{ destination.hotel.place.country }})</h3>
@@ -20,16 +20,20 @@
                 <div class="hotel">
                     <h3>Your hotel({{ destination.hotel.place.name }})</h3>
                     <h4>"{{ destination.hotel.name }}"</h4>
-                    <p>{{ destination.hotel.description }}</p>
+                    <h4>Address: {{ destination.hotel.address }}</h4>
+                    <p style="margin-top: 30px;">{{ destination.hotel.description }}</p>
                     <img :src="destination.hotel.imageUrl" alt="hotel image" class="hotelImage">
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 50px; display: flex; flex-direction: column;">
-            <button>Buy</button>
-            <button>Reserve</button>
-            <button>Update</button>
+        <div>
+            <h2 style="margin-top: 100px;">Price: {{ tour.price }}</h2>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; flex-direction: column;">
+            <button class="button-action" @click="orderTour">Buy</button>
+            <button class="button-action" @click="enterUpdatePage">Update</button>
         </div>
     </div>
 </template>
@@ -46,6 +50,13 @@ export default {
         }
     },
     methods: {
+        enterUpdatePage() {
+            this.$router.push(`/updateTour/${this.tour.id}`);
+        },
+
+        orderTour(){
+            console.log("Tour ordered!");
+        }
     },
 
     async mounted() {
