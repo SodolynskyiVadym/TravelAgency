@@ -10,7 +10,7 @@
             required />
         <div class="error" v-if="!isCorrectImageUrl">Image url isn't correct</div>
         <img v-if="isCorrectImageUrl" class="image-preview" :src="imageUrl" />
-        <img v-else style="width: 300px;" class="image-preview" src='./@/../../assets/images/image-not-found.jpg' />
+        <img v-else style="width: 300px;" class="image-preview" src='./@/../../../assets/images/image-not-found.jpg' />
 
         <label for="startDate">Start date</label>
         <input id="startDate" type="date" v-model="startDate" @input="checkCorrectInputs">
@@ -170,11 +170,11 @@
 
 <script>
 // import * as tourAPI from '@/services/API/tourAPI';
-import * as transportAPI from '@/../services/API/transportAPI';
-import * as hotelAPI from '@/../services/API/hotelAPI';
-import * as placeAPI from '@/../services/API/placeAPI';
-import * as tourAPI from '@/../services/API/tourAPI';
-import { countries } from '@/../js/countries';
+import * as transportAPI from '@/services/API/transportAPI';
+import * as hotelAPI from '@/services/API/hotelAPI';
+import * as placeAPI from '@/services/API/placeAPI';
+import * as tourAPI from '@/services/API/tourAPI';
+import { countries } from '@/js/countries';
 
 export default {
     data() {

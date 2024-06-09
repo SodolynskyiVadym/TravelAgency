@@ -29,7 +29,7 @@
             required />
         <div class="error" v-if="!isCorrectImageUrl">Image url isn't correct</div>
         <img v-if="isCorrectImageUrl" class="image-preview" :src="imageUrl" />
-        <img v-else style="width: 300px;" class="image-preview" src='./@/../../assets/images/image-not-found.jpg' />
+        <img v-else style="width: 300px;" class="image-preview" src='./@/../../../assets/images/image-not-found.jpg' />
 
 
         <label for="description">Description</label>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import * as transportAPI from '@/../services/API/transportAPI';
+import * as transportAPI from '@/services/API/transportAPI';
 
 export default {
     data() {

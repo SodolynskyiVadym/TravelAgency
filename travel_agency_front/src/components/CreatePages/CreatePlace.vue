@@ -14,7 +14,7 @@
             </div>
 
             <img v-if="existImages[index]" class="image-preview" :src="imageUrl" />
-            <img v-else style="width: 300px;" class="image-preview" src='./@/../../assets/images/image-not-found.jpg' />
+            <img v-else style="width: 300px;" class="image-preview" src='./@/../../../assets/images/image-not-found.jpg' />
         </div>
         <button v-if="!(imagesUrls.length >= 3)" type="button" @click="addImage">Add image</button>
         <div class="error" v-if="!isAllImages">Place must have 3 images</div>
@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { countries } from '@/../js/countries';
-import * as placeAPI from '@/../services/API/placeAPI';
+import { countries } from '@/js/countries';
+import * as placeAPI from '@/services/API/placeAPI';
 
 export default {
     data() {

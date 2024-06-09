@@ -32,7 +32,7 @@
             required />
         <div class="error" v-if="!isCorrectImageUrl">Image url isn't correct</div>
         <img v-if="isCorrectImageUrl" class="image-preview" :src="imageUrl" />
-        <img v-else style="width: 300px;" class="image-preview" src='./@/../../assets/images/image-not-found.jpg' />
+        <img v-else style="width: 300px;" class="image-preview" src='@/assets/images/image-not-found.jpg' />
 
         <label for="pricePerNight">Price Per Night:</label>
         <input id="pricePerNight" type="number" v-model="pricePerNight" min="0" @change="checkCorrectInputs" placeholder="Enter price per night" @input="checkPrice">
@@ -51,9 +51,9 @@
 </template>
 
 <script>
-import { countries } from '@/../js/countries';
-import * as placeAPI from '@/../services/API/placeAPI';
-import * as hotelAPI from '@/../services/API/hotelAPI';
+import { countries } from '@/js/countries';
+import * as placeAPI from '@/services/API/placeAPI';
+import * as hotelAPI from '@/services/API/hotelAPI';
 
 export default {
     data() {
