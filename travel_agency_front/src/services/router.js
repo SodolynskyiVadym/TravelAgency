@@ -9,6 +9,7 @@ import UpdateTourPage from '@/components/UpdatePages/UpdateTour.vue';
 import UpdateHotelPage from '@/components/UpdatePages/UpdateHotel.vue';
 import UpdateTransportPage from '@/components/UpdatePages/UpdateTransport.vue';
 import UpdatePlacePage from '@/components/UpdatePages/UpdatePlace.vue';
+import TestPage from '@/components/CreatePages/TestPage.vue';
 
 
 // import * as listURL from "@/js/listUrl";
@@ -64,6 +65,11 @@ const routes = [
         path: '/updatePlace/:id',
         name: 'UpdatePlacePage',
         component: UpdatePlacePage,
+    },
+    {
+        path: '/test',
+        name: 'TestPage',
+        component: TestPage,
     },
 ];
 

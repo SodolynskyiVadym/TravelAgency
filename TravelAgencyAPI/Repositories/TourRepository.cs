@@ -42,27 +42,8 @@ public class TourRepository : IRepository<Tour, TourDto>
     
     public async Task<bool> AddAsync(TourDto tour)
     {
-        var existingPlace = await _context.Places
-            .FirstOrDefaultAsync(p => p.Id == tour.PlaceEndId);
-        Console.WriteLine(tour.PlaceEndId);
-        if (existingPlace == null)
-        {
-            // If the Place does not exist, return false
-            return false;
-        }
-        
-        Tour createdTour = _mapper.Map<Tour>(tour);
-        await _context.Tours.AddAsync(createdTour);
+        await _context.Tours.AddAsync(_mapper.Map<Tour>(tour));
         await _context.SaveChangesAsync(); 
-    
-        // IEnumerable<Destination> destinations = tour.Destinations.Select(d => _mapper.Map<Destination>(d));
-        // var enumerable = destinations.ToList();
-        // enumerable.ToList().ForEach(d => d.TourId = createdTour.Id);
-        // Console.WriteLine(enumerable.Count());
-        //
-        // await _context.Destinations.AddRangeAsync(enumerable);
-        //
-        // await _context.SaveChangesAsync();
         return true;
     }
     
@@ -83,6 +64,9 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
         tour.IsAvailable = tourUpdate.IsAvailable;
+        tour.Destinations = tourUpdate.Destinations.Count() != 0 ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList() : tour.Destinations;
+        
+        _context.Destinations.RemoveRange(await _context.Destinations.Where(d => d.TourId == id).ToListAsync());
         
         await _context.SaveChangesAsync();
         return true;
