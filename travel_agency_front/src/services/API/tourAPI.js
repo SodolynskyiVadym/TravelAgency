@@ -20,6 +20,14 @@ export async function getAllTours() {
     }
 }
 
+export async function updateTour(id, tour){
+    try{
+        return await axios.patch(`${mainUrl}/update/${id}`, tour).then((res) => res.data);
+    }catch(error){
+        await router.push("/error");
+    }
+}
+
 
 export async function createTour(data) {
     try {

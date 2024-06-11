@@ -16,7 +16,8 @@
         <label for="startDate">Start date</label>
         <input id="startDate" type="date" v-model="tour.startDate" @input="checkDestinationDates">
         <div class="error" v-if="new Date(tour.startDate) + 1 < new Date()">Start date can't be before today</div>
-        <div class="error" v-if="new Date(tour.startDate) >= new Date(tour.endDate)">Start date can't be after or same end date
+        <div class="error" v-if="new Date(tour.startDate) >= new Date(tour.endDate)">Start date can't be after or same
+            end date
         </div>
 
 
@@ -39,7 +40,8 @@
                 {{ place.name }}
             </option>
         </datalist>
-        <div class="error" v-if="!allCountries.includes(startPlaceCountry)">Country is required for choice of place</div>
+        <div class="error" v-if="!allCountries.includes(startPlaceCountry)">Country is required for choice of place
+        </div>
         <div class="error" v-if="tour.placeStartId === 0">Place is required</div>
 
         <div style="margin-top: 40px; margin-bottom: 40px">
@@ -56,8 +58,9 @@
                 <div class="error" v-if="!allCountries.includes(destinationsCountries[index])">Country is required</div>
 
                 <label :for="'place' + index">Place:</label>
-                <input :id="'place' + index" type="search" :list="'places' + index" v-model="destinationsPlacesNames[index]"
-                    placeholder="Type to choose place" @input="getDestinationPlaceIdByPlaceName(index)">
+                <input :id="'place' + index" type="search" :list="'places' + index"
+                    v-model="destinationsPlacesNames[index]" placeholder="Type to choose place"
+                    @input="getDestinationPlaceIdByPlaceName(index)">
                 <datalist :id="'places' + index">
                     <option v-for="place in allPlaces.filter(place => place.country === destinationsCountries[index])"
                         :key="place.name" :value="place.name">
@@ -69,8 +72,9 @@
                 <div class="error" v-if="!isCorrectPlacesNames[index]">This location don't exist or already used</div>
 
                 <label :for="'hotel' + index">Hotel:</label>
-                <input :id="'hotel' + index" type="search" :list="'hotels' + index" v-model="destinationsHotelsNames[index]"
-                    placeholder="Type to choose hotel" @input="getDestinationHotelIdByHotelName(index)">
+                <input :id="'hotel' + index" type="search" :list="'hotels' + index"
+                    v-model="destinationsHotelsNames[index]" placeholder="Type to choose hotel"
+                    @input="getDestinationHotelIdByHotelName(index)">
                 <datalist :id="'hotels' + index">
                     <option
                         v-for="hotel in allHotels.filter(hotel => hotel.placeId === tour.destinations[index].placeId)"
@@ -82,8 +86,9 @@
                 <div class="error" v-if="tour.destinations[index].hotelId === 0">Hotel is required</div>
 
                 <label :for="'transport' + index">Transport:</label>
-                <input :id="'transport' + index" type="search" list="transports" v-model="destinationsTransportsNames[index]"
-                    placeholder="Type to choose transport" @input="getDestinationTransportIdByTransportIdName(index)">
+                <input :id="'transport' + index" type="search" list="transports"
+                    v-model="destinationsTransportsNames[index]" placeholder="Type to choose transport"
+                    @input="getDestinationTransportIdByTransportIdName(index)">
                 <datalist id="transports">
                     <option v-for="transport in transports" :key="transport.type" :value="transport.name">
                         {{ transport.name }}
@@ -92,7 +97,8 @@
                 <div class="error" v-if="tour.destinations[index].transportId === 0">Transport is required</div>
 
                 <label :for="'startDate' + index">Start Date:</label>
-                <input :id="'startDate' + index" type="date" v-model="destination.startDate" @input="checkDestinationDates">
+                <input :id="'startDate' + index" type="date" v-model="destination.startDate"
+                    @input="checkDestinationDates">
                 <div class="error" v-if="!isCorrectDestinationsStartDates[index]">Incorrect start date</div>
 
                 <label :for="'endDate' + index">End Date:</label>
@@ -125,9 +131,11 @@
         <div class="error" v-if="!allCountries.includes(endPlaceCountry)">Country is required</div>
 
         <label for="endPlace">End location</label>
-        <input id="endPlace" list="endPlaces" type="search" v-model="endPlace" placeholder="Enter end location" @input="getEndPlaceId">
+        <input id="endPlace" list="endPlaces" type="search" v-model="endPlaceName" placeholder="Enter end location"
+            @input="getEndPlaceId">
         <datalist id="endPlaces">
-            <option v-for="place in allPlaces.filter(place => place.country === endPlaceCountry)" :key="place.id" :value="place.name">
+            <option v-for="place in allPlaces.filter(place => place.country === endPlaceCountry)" :key="place.id"
+                :value="place.name">
                 {{ place.name }}
             </option>
         </datalist>
@@ -142,7 +150,7 @@
                 {{ transport.name }}
             </option>
         </datalist>
-        <div class="error" v-if="tour.endPlaceTransportId === 0">Transport is required</div>
+        <div class="error" v-if="tour.transportToEndId === 0">Transport is required</div>
 
         <label for="quantitySeats">Quantity of Seats:</label>
         <input id="quantitySeats" type="number" v-model="tour.quantitySeats" @input="checkCorrectInputs">
@@ -167,13 +175,11 @@
 </template>
 
 <script>
-// import * as tourAPI from '@/services/API/tourAPI';
 import * as transportAPI from '@/services/API/transportAPI';
 import * as hotelAPI from '@/services/API/hotelAPI';
 import * as placeAPI from '@/services/API/placeAPI';
 import { countries } from '@/js/countries';
 // import * as tourAPI from '@/services/API/tourAPI';
-// import { countries } from '@/js/countries';
 
 export default {
     data() {
@@ -189,7 +195,7 @@ export default {
                 startDate: new Date().toISOString().split('T')[0],
                 endDate: new Date().toISOString().split('T')[0],
                 destinations: [],
-                endPlaceTransportId: 0
+                transportToEndId: 0
             },
             allPlaces: [],
             allTransports: [],
@@ -219,8 +225,24 @@ export default {
             const isCorrectHotels = hotelsIds.filter(id => id != 0).length === this.tour.destinations.length;
             const isCorrectTransports = transportsIds.filter(id => id != 0).length === this.tour.destinations.length;
 
+            console.log('this.tour.name:', this.tour.name);
+            console.log('this.isCorrectImageUrl:', this.isCorrectImageUrl);
+            console.log('this.tour.description:', this.tour.description);
+            console.log('this.tour.quantitySeats > 0:', this.tour.quantitySeats > 0);
+            console.log('this.tour.price > 0:', this.tour.price > 0);
+            console.log('this.tour.placeStartId > 0:', this.tour.placeStartId > 0);
+            console.log('this.tour.placeEndId > 0:', this.tour.placeEndId > 0);
+            console.log('this.tour.transportToEndId > 0:', this.tour.transportToEndId > 0);
+            console.log('this.tour.startDate < this.tour.endDate:', this.tour.startDate < this.tour.endDate);
+            console.log('this.tour.destinations.length > 0:', this.tour.destinations.length > 0);
+            console.log('this.isCorrectDestinationsStartDates.every(date => date):', this.isCorrectDestinationsStartDates.every(date => date));
+            console.log('this.isCorrectDestinationsEndDates.every(date => date):', this.isCorrectDestinationsEndDates.every(date => date));
+            console.log('this.isCorrectPlacesNames.every(name => name):', this.isCorrectPlacesNames.every(name => name));
+            console.log('isCorrectHotels:', isCorrectHotels);
+            console.log('isCorrectTransports:', isCorrectTransports);
+
             this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 && this.tour.price > 0
-                && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.endPlaceTransportId > 0 && this.tour.startDate < this.tour.endDate
+                && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.transportToEndId > 0 && this.tour.startDate < this.tour.endDate
                 && this.tour.destinations.length > 0 && this.isCorrectDestinationsStartDates.every(date => date) && this.isCorrectDestinationsEndDates.every(date => date)
                 && this.isCorrectPlacesNames.every(name => name) && isCorrectHotels && isCorrectTransports;
 
@@ -257,8 +279,8 @@ export default {
         async getDestinationPlaceIdByPlaceName(index) {
             this.tour.destinations[index].placeId = await this.findPlaceIdByPlaceName(this.destinationsPlacesNames[index], this.destinationsCountries[index]);
             const destinationsPlacesIds = this.tour.destinations.map(destination => destination.placeId);
-            for(let i = 0; i < this.tour.destinations.length; i++){
-                this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0 
+            for (let i = 0; i < this.tour.destinations.length; i++) {
+                this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0
                     && id != this.tour.placeStartId && id != this.tour.placeEndId).length === 1;
             }
             await this.checkCorrectInputs();
@@ -275,24 +297,24 @@ export default {
         },
 
         async getEndPlaceTransport() {
-            this.tour.endPlaceTransportId = await this.findTransportIdByTransportName(this.endTransportName);
+            this.tour.transportToEndId = await this.findTransportIdByTransportName(this.endTransportName);
             await this.checkCorrectInputs();
         },
 
-        async checkDestinationDates(){
+        async checkDestinationDates() {
             this.tour.destinations.forEach((destination, index) => {
-                if(index === 0) {
-                    this.isCorrectDestinationsStartDates[0] = new Date(destination.startDate) >= new Date(this.tour.startDate) 
+                if (index === 0) {
+                    this.isCorrectDestinationsStartDates[0] = new Date(destination.startDate) >= new Date(this.tour.startDate)
                         && new Date(destination.startDate) < new Date(destination.endDate);
                     this.isCorrectDestinationsEndDates[0] = new Date(destination.startDate) < new Date(destination.endDate);
-                }else if(index === this.tour.destinations.length - 1){
-                    this.isCorrectDestinationsEndDates[this.tour.destinations.length - 1] = new Date(destination.endDate) <= new Date(this.tour.endDate) 
+                } else if (index === this.tour.destinations.length - 1) {
+                    this.isCorrectDestinationsEndDates[this.tour.destinations.length - 1] = new Date(destination.endDate) <= new Date(this.tour.endDate)
                         && new Date(destination.startDate) < new Date(destination.endDate);
                     this.isCorrectDestinationsStartDates[this.tour.destinations.length - 1] = new Date(destination.startDate) < new Date(destination.endDate);
-                }else{
-                    this.isCorrectDestinationsStartDates[index] = new Date(destination.startDate) >= new Date(this.tour.destinations[index - 1].endDate) 
+                } else {
+                    this.isCorrectDestinationsStartDates[index] = new Date(destination.startDate) >= new Date(this.tour.destinations[index - 1].endDate)
                         && new Date(destination.startDate) < new Date(destination.endDate);
-                    this.isCorrectDestinationsEndDates[index] = new Date(destination.endDate) <= new Date(this.tour.destinations[index + 1].startDate) 
+                    this.isCorrectDestinationsEndDates[index] = new Date(destination.endDate) <= new Date(this.tour.destinations[index + 1].startDate)
                         && new Date(destination.startDate) < new Date(destination.endDate);
                 }
             });
@@ -348,21 +370,8 @@ export default {
 
         async createTour() {
             this.isSendRequest = true;
-            const data = {
-                name: this.name,
-                description: this.description,
-                imageUrl: this.imageUrl,
-                destinations: this.destinations,
-                quantitySeats: this.quantitySeats,
-                price: this.price,
-                placeStartId: this.placeStartId,
-                placeEndId: this.placeEndId,
-                startDate: this.startDate,
-                endDate: this.endDate,
-                transportToEndId: this.endPlaceTransportId
-            };
-            console.log(data);
-            // await tourAPI.createTour(data);
+            console.log(this.tour);
+            // await tourAPI.createTour(this.tour);
             // window.location.reload();
         }
     },

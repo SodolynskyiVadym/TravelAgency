@@ -53,6 +53,8 @@ public class TourRepository : IRepository<Tour, TourDto>
         Tour? tour = await _context.Tours.FindAsync(id);
         if (tour == null) return false;
         
+        _context.Destinations.RemoveRange(await _context.Destinations.Where(d => d.TourId == id).ToListAsync());
+        
         tour.Name = tourUpdate.Name ?? tour.Name;
         tour.Description = tourUpdate.Description ?? tour.Description;
         tour.Price = tourUpdate.Price;
@@ -65,8 +67,6 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
         tour.IsAvailable = tourUpdate.IsAvailable;
         tour.Destinations = tourUpdate.Destinations.Count() != 0 ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList() : tour.Destinations;
-        
-        _context.Destinations.RemoveRange(await _context.Destinations.Where(d => d.TourId == id).ToListAsync());
         
         await _context.SaveChangesAsync();
         return true;
