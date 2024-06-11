@@ -77,7 +77,7 @@
                     @input="getDestinationHotelIdByHotelName(index)">
                 <datalist :id="'hotels' + index">
                     <option
-                        v-for="hotel in allHotels.filter(hotel => hotel.placeId === tour.destinations[index].placeId)"
+                        v-for="hotel in allHotels.filter(hotel => hotel.placeId === tour.destinations[index].hotel.place.id)"
                         :key="hotel.name" :value="hotel.name">
                         {{ hotel.name }}
                     </option>
@@ -90,7 +90,7 @@
                     v-model="destinationsTransportsNames[index]" placeholder="Type to choose transport"
                     @input="getDestinationTransportIdByTransportIdName(index)">
                 <datalist id="transports">
-                    <option v-for="transport in transports" :key="transport.type" :value="transport.name">
+                    <option v-for="transport in allTransports" :key="transport.type" :value="transport.name">
                         {{ transport.name }}
                     </option>
                 </datalist>
@@ -110,12 +110,6 @@
 
             <button @click="addDestination">Add destination</button>
         </div>
-
-
-
-
-
-
 
         <label for="endDate">End date</label>
         <input id="endDate" type="date" v-model="tour.endDate" @input="checkDestinationDates">
@@ -209,8 +203,6 @@ export default {
     },
     methods: {
         async areDifferentSourceTourAndCurrentTour(){
-            console.log(this.startTour.name);
-            console.log(this.tour.name);
             if(this.startTour.name !== this.tour.name) return true;
             if(this.startTour.imageUrl !== this.tour.imageUrl) return true;
             if(this.startTour.description !== this.tour.description) return true;
@@ -238,7 +230,6 @@ export default {
             const isCorrectHotels = hotelsIds.filter(id => id != 0).length === this.tour.destinations.length;
             const isCorrectTransports = transportsIds.filter(id => id != 0).length === this.tour.destinations.length;
             const areDifferentSourceTourAndCurrentTour = await this.areDifferentSourceTourAndCurrentTour();
-            console.log("are different", areDifferentSourceTourAndCurrentTour);
 
 
             this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 && this.tour.price > 0
@@ -263,10 +254,10 @@ export default {
         },
 
         async checkDestinationsPlacesNames(){
-            const destinationsPlacesIds = this.tour.destinations.map(destination => destination.placeId);
-            for (let i = 0; i < this.tour.destinations.length; i++) {
-                this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0
-                    && id != this.tour.placeStartId && id != this.tour.placeEndId).length === 1;
+            const destinationsPlaceAndCountry = this.tour.destinations.map((destination, index) => [this.destinationsPlacesNames[index], this.destinationsCountries[index]]);
+            for(let i = 0; i < destinationsPlaceAndCountry.length; i++){
+                this.isCorrectPlacesNames[i] = destinationsPlaceAndCountry.filter(arr => arr[0] === destinationsPlaceAndCountry[i][0] 
+                    && arr[1] === destinationsPlaceAndCountry[i][1]).length === 1 && this.allPlaces.find(place => place.name === destinationsPlaceAndCountry[i][0] && place.country === destinationsPlaceAndCountry[i][1]);
             }
         },
 
@@ -281,7 +272,7 @@ export default {
         },
 
         async getDestinationPlaceIdByPlaceName(index) {
-            this.tour.destinations[index].placeId = await this.findPlaceIdByPlaceName(this.destinationsPlacesNames[index], this.destinationsCountries[index]);
+            this.tour.destinations[index].hotel.place.id = await this.findPlaceIdByPlaceName(this.destinationsPlacesNames[index], this.destinationsCountries[index]);
             await this.checkDestinationsPlacesNames();
             await this.checkCorrectInputs();
         },
@@ -405,7 +396,7 @@ export default {
         }
         this.startTour = JSON.parse(JSON.stringify(this.tour));
         await this.checkDestinationDates();
-        await this.checkCorrectPlacesNames();
+        await this.checkDestinationsPlacesNames();
         await this.checkImage();
         await this.checkCorrectInputs();
 
