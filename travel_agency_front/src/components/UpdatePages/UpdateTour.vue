@@ -48,7 +48,7 @@
             <div v-for="(destination, index) in tour.destinations" :key="index" class="create-form">
                 <h2>Destination {{ index + 1 }}</h2>
                 <label :for="'country' + index">Country:</label>
-                <input :id="'country' + index" type="search" :list="'countries' + index"
+                <input :id="'country' + index" type="search" :list="'countries' + index" @input="getDestinationPlaceIdByPlaceName(index)"
                     v-model="destinationsCountries[index]" placeholder="Type to choose country">
                 <datalist :id="'countries' + index">
                     <option v-for="country in allCountries" :key="country" :value="country">
@@ -83,7 +83,7 @@
                     </option>
                 </datalist>
                 <div class="error" v-if="!isCorrectPlacesNames[index]">Place is required for choice of hotel</div>
-                <div class="error" v-if="tour.destinations[index].hotelId === 0">Hotel is required</div>
+                <div class="error" v-if="tour.destinations[index].hotelId === 0">Incorrect hotel</div>
 
                 <label :for="'transport' + index">Transport:</label>
                 <input :id="'transport' + index" type="search" list="transports"
@@ -274,11 +274,12 @@ export default {
         async getDestinationPlaceIdByPlaceName(index) {
             this.tour.destinations[index].hotel.place.id = await this.findPlaceIdByPlaceName(this.destinationsPlacesNames[index], this.destinationsCountries[index]);
             await this.checkDestinationsPlacesNames();
+            await this.getDestinationHotelIdByHotelName(index);
             await this.checkCorrectInputs();
         },
 
         async getDestinationHotelIdByHotelName(index) {
-            this.tour.destinations[index].hotelId = await this.findHotelIdByHotelName(this.destinationsHotelsNames[index], this.tour.destinations[index].placeId);
+            this.tour.destinations[index].hotelId = await this.findHotelIdByHotelName(this.destinationsHotelsNames[index], this.tour.destinations[index].hotel.place.id);
             await this.checkCorrectInputs();
         },
 

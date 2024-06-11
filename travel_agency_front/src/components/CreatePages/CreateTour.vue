@@ -48,7 +48,7 @@
             <div v-for="(destination, index) in tour.destinations" :key="index" class="create-form">
                 <h2>Destination {{ index + 1 }}</h2>
                 <label :for="'country' + index">Country:</label>
-                <input :id="'country' + index" type="search" :list="'countries' + index"
+                <input :id="'country' + index" type="search" :list="'countries' + index" @input="getDestinationPlaceIdByPlaceName(index)"
                     v-model="destinationsCountries[index]" placeholder="Type to choose country">
                 <datalist :id="'countries' + index">
                     <option v-for="country in allCountries" :key="country" :value="country">
@@ -244,10 +244,16 @@ export default {
         },
 
         async checkDestinationsPlacesNames() {
-            const destinationsPlacesIds = this.tour.destinations.map(destination => destination.placeId);
-            for (let i = 0; i < this.tour.destinations.length; i++) {
-                this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0
-                    && id != this.tour.placeStartId && id != this.tour.placeEndId).length === 1;
+            // const destinationsPlacesIds = this.tour.destinations.map(destination => destination.placeId);
+            // for (let i = 0; i < this.tour.destinations.length; i++) {
+            //     this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0
+            //         && id != this.tour.placeStartId && id != this.tour.placeEndId).length === 1;
+            // }
+
+            const destinationsPlaceAndCountry = this.tour.destinations.map((destination, index) => [this.destinationsPlacesNames[index], this.destinationsCountries[index]]);
+            for(let i = 0; i < destinationsPlaceAndCountry.length; i++){
+                this.isCorrectPlacesNames[i] = destinationsPlaceAndCountry.filter(arr => arr[0] === destinationsPlaceAndCountry[i][0] 
+                    && arr[1] === destinationsPlaceAndCountry[i][1]).length === 1 && this.allPlaces.find(place => place.name === destinationsPlaceAndCountry[i][0] && place.country === destinationsPlaceAndCountry[i][1]);
             }
         },
 
@@ -264,6 +270,7 @@ export default {
         async getDestinationPlaceIdByPlaceName(index) {
             this.tour.destinations[index].placeId = await this.findPlaceIdByPlaceName(this.destinationsPlacesNames[index], this.destinationsCountries[index]);
             await this.checkDestinationsPlacesNames();
+            await this.getDestinationHotelIdByHotelName(index);
             await this.checkCorrectInputs();
         },
 
