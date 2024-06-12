@@ -20,6 +20,15 @@ export async function getAllHotels() {
     }
 }
 
+export async function updateHotel(hotel){
+    try {
+        return await axios.patch(`${mainUrl}/update/${hotel.id}`, hotel).then((res) => res.data);
+    } catch (error) {
+        await router.push("/error");
+    }
+
+}
+
 
 export async function createHotel(data) {
     try {

@@ -225,22 +225,6 @@ export default {
             const isCorrectHotels = hotelsIds.filter(id => id != 0).length === this.tour.destinations.length;
             const isCorrectTransports = transportsIds.filter(id => id != 0).length === this.tour.destinations.length;
 
-            console.log('this.tour.name:', this.tour.name);
-            console.log('this.isCorrectImageUrl:', this.isCorrectImageUrl);
-            console.log('this.tour.description:', this.tour.description);
-            console.log('this.tour.quantitySeats > 0:', this.tour.quantitySeats > 0);
-            console.log('this.tour.price > 0:', this.tour.price > 0);
-            console.log('this.tour.placeStartId > 0:', this.tour.placeStartId > 0);
-            console.log('this.tour.placeEndId > 0:', this.tour.placeEndId > 0);
-            console.log('this.tour.transportToEndId > 0:', this.tour.transportToEndId > 0);
-            console.log('this.tour.startDate < this.tour.endDate:', this.tour.startDate < this.tour.endDate);
-            console.log('this.tour.destinations.length > 0:', this.tour.destinations.length > 0);
-            console.log('this.isCorrectDestinationsStartDates.every(date => date):', this.isCorrectDestinationsStartDates.every(date => date));
-            console.log('this.isCorrectDestinationsEndDates.every(date => date):', this.isCorrectDestinationsEndDates.every(date => date));
-            console.log('this.isCorrectPlacesNames.every(name => name):', this.isCorrectPlacesNames.every(name => name));
-            console.log('isCorrectHotels:', isCorrectHotels);
-            console.log('isCorrectTransports:', isCorrectTransports);
-
             this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 && this.tour.price > 0
                 && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.transportToEndId > 0 && this.tour.startDate < this.tour.endDate
                 && this.tour.destinations.length > 0 && this.isCorrectDestinationsStartDates.every(date => date) && this.isCorrectDestinationsEndDates.every(date => date)

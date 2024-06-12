@@ -30,24 +30,24 @@ public class DestinationController : ControllerBase
         return await _destinationRepository.GetAllAsync();
     }
     
-    [HttpPost("createDestinations")]
-    public async Task<IActionResult> UpdateDestinations(IEnumerable<DestinationDto> destinations, int tourId)
-    {
-        if(await _destinationRepository.UpdateDestinationsAsync(destinations, tourId)) return Ok(destinations);
-        return BadRequest();
-    }
+    // [HttpPost("createDestinations")]
+    // public async Task<IActionResult> UpdateDestinations(IEnumerable<DestinationDto> destinations, int tourId)
+    // {
+    //     if(await _destinationRepository.UpdateDestinationsAsync(destinations, tourId)) return Ok(destinations);
+    //     return BadRequest();
+    // }
     
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateDestination(int id, DestinationDto destination)
-    {
-        if (await _destinationRepository.UpdateAsync(id, destination)) return Ok();
-        return NoContent();
-    }
+    // [HttpPatch("update/{id}")]
+    // public async Task<IActionResult> UpdateDestination(int id, DestinationDto destination)
+    // {
+    //     if (await _destinationRepository.UpdateAsync(id, destination)) return Ok();
+    //     return NoContent();
+    // }
     
-    [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteDestination(int id)
-    {
-        if (await _destinationRepository.DeleteAsync(id)) return Ok();
-        return NoContent();
-    }
+    // [HttpDelete("delete/{id}")]
+    // public async Task<IActionResult> DeleteDestination(int id)
+    // {
+    //     if (await _destinationRepository.DeleteAsync(id)) return Ok();
+    //     return NoContent();
+    // }
 }

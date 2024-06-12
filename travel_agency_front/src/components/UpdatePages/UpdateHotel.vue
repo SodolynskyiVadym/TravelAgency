@@ -19,34 +19,34 @@
                 {{ place.name }}
             </option>
         </datalist>
-        <div class="error" v-if="tour.placeId === 0">Place is required</div>
+        <div class="error" v-if="hotel.placeId === 0">Place is required</div>
 
         <label for="name">Hotel Name:</label>
-        <input id="name" type="text" @input="checkCorrectInputs" v-model="tour.name" placeholder="Enter hotel name">
-        <div class="error" v-if="!tour.name">Name is required</div>
+        <input id="name" type="text" @input="checkCorrectInputs" v-model="hotel.name" placeholder="Enter hotel name">
+        <div class="error" v-if="!hotel.name">Name is required</div>
 
         <label for="address">Address:</label>
-        <input id="address" type="text" @input="checkCorrectInputs" v-model="tour.address" placeholder="Enter place address">
-        <div class="error" v-if="!tour.address">Address is required</div>
+        <input id="address" type="text" @input="checkCorrectInputs" v-model="hotel.address" placeholder="Enter place address">
+        <div class="error" v-if="!hotel.address">Address is required</div>
 
         <label for="imageUrl">Image URL:</label>
-        <input id="imageUrl" type="text" v-model="tour.imageUrl" placeholder="Enter image URL" @input="checkImage"
+        <input id="imageUrl" type="text" v-model="hotel.imageUrl" placeholder="Enter image URL" @input="checkImage"
             required />
         <div class="error" v-if="!isCorrectImageUrl">Image url isn't correct</div>
-        <img v-if="isCorrectImageUrl" class="image-preview" :src="tour.imageUrl" />
+        <img v-if="isCorrectImageUrl" class="image-preview" :src="hotel.imageUrl" />
         <img v-else style="width: 300px;" class="image-preview" src='@/assets/images/image-not-found.jpg' />
 
         <label for="pricePerNight">Price Per Night:</label>
-        <input id="pricePerNight" type="number" v-model="tour.pricePerNight" min="0" @change="checkCorrectInputs"
+        <input id="pricePerNight" type="number" v-model="hotel.pricePerNight" min="0" @change="checkCorrectInputs"
             placeholder="Enter price per night" @input="checkPrice">
-        <div class="error" v-if="tour.pricePerNight <= 0">Price must be more than o</div>
+        <div class="error" v-if="hotel.pricePerNight <= 0">Price must be more than o</div>
 
         <label for="description">Description:</label>
-        <textarea id="description" v-model="tour.description" placeholder="Enter place description"
+        <textarea id="description" v-model="hotel.description" placeholder="Enter place description"
             @input="checkCorrectInputs"></textarea>
-        <div class="error" v-if="!tour.description">Description is required</div>
+        <div class="error" v-if="!hotel.description">Description is required</div>
 
-        <button v-if="!isSendRequest" style="margin: 20px;" @click="createHotel" :disabled="!isCorrectInputs">Add
+        <button v-if="!isSendRequest" style="margin: 20px;" @click="updateHotel" :disabled="!isCorrectInputs">Update
             Hotel</button>
         <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
@@ -63,7 +63,7 @@ import * as hotelAPI from '@/services/API/hotelAPI';
 export default {
     data() {
         return {
-            tour: {
+            hotel: {
                 name: '',
                 placeId: 0,
                 address: '',
@@ -71,6 +71,7 @@ export default {
                 pricePerNight: 0,
                 imageUrl: '',
             },
+            startHotel: {},
             places: [],
             country: '',
             countries: countries,
@@ -83,13 +84,15 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            this.isCorrectInputs = this.tour.placeId != 0 && this.tour.address && this.tour.description && this.tour.pricePerNight > 0
-                && this.isCorrectImageUrl && this.countries.includes(this.country);
+            const isChanged = JSON.stringify(this.startHotel) !== JSON.stringify(this.hotel);
+
+            this.isCorrectInputs = this.hotel.placeId != 0 && this.hotel.address && this.hotel.description && this.hotel.pricePerNight > 0
+                && this.isCorrectImageUrl && this.countries.includes(this.country) && isChanged;
         },
 
         async checkPrice() {
-            if (this.tour.pricePerNight <= 0) {
-                this.tour.pricePerNight = 0;
+            if (this.hotel.pricePerNight <= 0) {
+                this.hotel.pricePerNight = 0;
             }
             await this.checkCorrectInputs();
         },
@@ -104,7 +107,7 @@ export default {
         },
 
         async checkImage() {
-            this.isCorrectImageUrl = await this.checkImageExists(this.tour.imageUrl);
+            this.isCorrectImageUrl = await this.checkImageExists(this.hotel.imageUrl);
             await this.checkCorrectInputs();
         },
 
@@ -115,36 +118,29 @@ export default {
         },
 
         async checkPlace() {
-            this.tour.placeId = await this.getPlaceIdByPlaceNameAndCountry(this.placeName, this.country);
+            this.hotel.placeId = await this.getPlaceIdByPlaceNameAndCountry(this.placeName, this.country);
             await this.checkCorrectInputs();
         },
 
-        async clearFields() {
-            this.tour.name = '';
-            this.placeName = '';
-            this.country = '';
-            this.tour.placeId = 0;
-            this.tour.address = '';
-            this.tour.description = '';
-            this.tour.pricePerNight = 0;
-            this.tour.imageUrl = '';
-        },
-
-        async createHotel() {
-            if (this.isCorrectInputs) {
-                this.isSendRequest = true;
-                await hotelAPI.createHotel(this.tour);
-                await this.clearFields();
-                this.isCorrectInputs = false;
-                this.isCorrectPlace = false;
-                this.isCorrectImageUrl = false;
-                this.isSendRequest = false;
-            }
+        async updateHotel() {
+            console.log(this.hotel);
+            // this.isSendRequest = true;
+            await hotelAPI.updateHotel(this.hotel);
+            // this.startHotel = JSON.parse(JSON.stringify(this.hotel));
+            // await this.checkCorrectInputs();
+            // this.isSendRequest = false;
         }
     },
 
     async mounted() {
+        this.hotel = await hotelAPI.getHotel(this.$route.params.id);
         this.places = await placeAPI.getPlacesInfo();
+        this.placeName = this.places.find(place => place.id === this.hotel.placeId).name;
+        this.country = this.places.find(place => place.id === this.hotel.placeId).country;
+        await this.checkImage();
+        this.startHotel = JSON.parse(JSON.stringify(this.hotel));
+
+        await this.checkCorrectInputs();
     }
 }
 
