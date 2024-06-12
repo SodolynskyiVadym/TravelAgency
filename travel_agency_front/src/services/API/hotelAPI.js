@@ -3,6 +3,15 @@ import router from "./../router";
 
 const mainUrl = "http://localhost:5113/hotel";
 
+export async function getHotel(id){
+    try {
+        return await axios.get(`${mainUrl}/${id}`).then((res) => res.data);
+    } catch (error) {
+        await router.push("/error");
+    }
+
+}
+
 export async function getAllHotels() {
     try {
         return await axios.get(`${mainUrl}/getAllHotels`).then((res) => res.data);

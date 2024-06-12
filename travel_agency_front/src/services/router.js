@@ -9,6 +9,7 @@ import UpdateTourPage from '@/components/UpdatePages/UpdateTour.vue';
 import UpdateHotelPage from '@/components/UpdatePages/UpdateHotel.vue';
 import UpdateTransportPage from '@/components/UpdatePages/UpdateTransport.vue';
 import UpdatePlacePage from '@/components/UpdatePages/UpdatePlace.vue';
+import HotelListPage from '@/components/Lists/ListHotels.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
 
@@ -71,6 +72,11 @@ const routes = [
         name: 'TestPage',
         component: TestPage,
     },
+    {
+        path: '/listHotels',
+        name: 'HotelListPage',
+        component: HotelListPage,
+    }
 ];
 
 

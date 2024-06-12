@@ -8,11 +8,11 @@
       </a>
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ml-auto">
-        <li><a href="#" class="nav-link px-2 text-secondary fs-4">Home</a></li>
-        <li><a href="#" class="nav-link px-2 text-white fs-4">Features</a></li>
-        <li><a href="#" class="nav-link px-2 text-white fs-4">Pricing</a></li>
-        <li><a href="#" class="nav-link px-2 text-white fs-4">FAQs</a></li>
-        <li><a href="#" class="nav-link px-2 text-white fs-4">About</a></li>
+        <li><a href="/" class="nav-link px-2 text-white fs-4">Home</a></li>
+        <li><a href="/listLocations" class="nav-link px-2 text-white fs-4">Locations</a></li>
+        <li><a href="/listHotels" class="nav-link px-2 text-white fs-4">Hotels</a></li>
+        <li><a href="/listTransports" class="nav-link px-2 text-white fs-4">Transports</a></li>
+        <li><a href="/test" class="nav-link px-2 text-white fs-4">Test</a></li>
       </ul>
 
       <div class="text-end">

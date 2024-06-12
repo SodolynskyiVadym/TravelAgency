@@ -15,12 +15,13 @@
 
   <div class="row mb-2" style="width: 100%;">
     <div class="col-md-6" v-for="(tour, index) in tours" :key="index">
-      <div style="cursor: pointer;" class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative" 
+      <div style="cursor: pointer;"
+        class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
         @click="enterTourPage(tour.id)">
         <div class="col p-4 d-flex flex-column position-static">
           <h4 style="max-width: 100%; word-wrap: break-word;" class="mb-0">{{ tour.name }}</h4>
           <div class="mb-1 text-body-secondary">{{ tour.startDate }} --- {{ tour.endDate }}</div>
-          <p style="max-height: 100%; " class="card-text mb-auto">{{ tour.description }}</p>
+          <p style="max-height: 145px; overflow: hidden;" class="card-text mb-auto">{{ tour.description }}</p>
         </div>
         <div class="col-auto d-none d-lg-block">
           <img class="bd-placeholder-img" :src="tour.imageUrl" alt="Description of image" width="390" height="250">
