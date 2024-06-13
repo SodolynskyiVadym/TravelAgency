@@ -262,8 +262,10 @@ export default {
         },
 
         async getStartPlaceId() {
-            this.tour.placeStartId = await this.findPlaceIdByPlaceName(this.startPlace, this.startPlaceCountry);
+            console.log(this.startPlaceName, this.startPlaceCountry);
+            this.tour.placeStartId = await this.findPlaceIdByPlaceName(this.startPlaceName, this.startPlaceCountry);
             await this.checkCorrectInputs();
+            console.log(this.tour.placeStartId)
         },
 
         async getEndPlaceId() {
@@ -316,7 +318,12 @@ export default {
         async addDestination() {
             this.tour.destinations.push({
                 startDate: new Date().toISOString().split('T')[0],
-                endDate: new Date().toISOString().split('T')[0]
+                endDate: new Date().toISOString().split('T')[0],
+                hotel: {
+                    place: {
+                        id: 0,
+                    }
+                },
             });
 
             this.destinationsCountries.push("");

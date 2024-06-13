@@ -3,6 +3,18 @@ import router from "./../router";
 
 const mainUrl = "http://localhost:5113/place";
 
+
+export async function getPlaceById(id) {
+  try {
+    return await axios
+      .get(`${mainUrl}/getPlaceById/${id}`)
+      .then((res) => res.data);
+  } catch (error) {
+    await router.push("/error");
+  }
+}
+
+
 export async function getAllPlaces() {
   try {
     return await axios.get(`${mainUrl}/getAllPlaces`).then((res) => res.data);
@@ -19,15 +31,6 @@ export async function getPlacesInfo() {
   }
 }
 
-export async function getPlaceById(id) {
-  try {
-    return await axios
-      .get(`${mainUrl}/getPlaceById/${id}`)
-      .then((res) => res.data);
-  } catch (error) {
-    await router.push("/error");
-  }
-}
 
 export async function createPlace(data) {
     try {

@@ -6,7 +6,7 @@
             <input class="input input-alt" placeholder="Type name of transport" type="text" v-model="inputTransport" @input="searchTransport">
             <span class="input-border input-border-alt"></span>
         </div>
-        <div class="error" v-if="searchedTransports.length === 0">Incorrect transport name</div>
+        <div class="error-search" v-if="searchedTransports.length === 0">Incorrect transport name</div>
 
 
         <table class="list-table">
@@ -27,7 +27,7 @@
                 <td>
                     <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
                         @click="enterUpdateTransportPage(transport.id)">EDIT</button>
-                    <button v-if="!usedTransportIds.includes(transport.id)"
+                    <button v-if="!(usedTransportIds.includes(transport.id) || usedTransportToEndIds.includes(transport.id))"
                         class="button-update-delete button-update-delete-hover-black"
                         @click="deleteTransport(transport.id)">DELETE</button>
                 </td>
@@ -39,6 +39,7 @@
 <script>
 import * as transportAPI from '@/services/API/transportAPI';
 import * as destinationAPI from '@/services/API/destinationAPI';
+import * as tourAPI from '@/services/API/tourAPI';
 
 export default {
     data() {
@@ -46,6 +47,7 @@ export default {
             transports: [],
             destinations: [],
             usedTransportIds: [],
+            usedTransportToEndIds: [],
             inputTransport: "",
             searchedTransports: []
         }
@@ -71,6 +73,9 @@ export default {
         this.searchedTransports = this.transports;
         this.destinations = await destinationAPI.getAllDestinations();
         this.usedTransportIds = this.destinations.map(destination => destination.transportId);
+
+        const toursForeignKeys = await tourAPI.getAllToursForeignKeys();
+        this.usedTransportToEndIds = toursForeignKeys.map(tourForeignKey => tourForeignKey.transportToEndId);
     }
 }
 </script>

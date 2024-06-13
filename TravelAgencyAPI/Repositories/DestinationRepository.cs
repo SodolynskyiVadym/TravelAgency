@@ -25,7 +25,7 @@ public class DestinationRepository : IRepository<Destination, DestinationDto>, I
     
     public async Task<List<Destination>> GetAllAsync()
     {
-        return await _context.Destinations.ToListAsync();
+        return await _context.Destinations.Include(d => d.Hotel).ToListAsync();
     }
     
     public Task<bool> AddAsync(DestinationDto destination)

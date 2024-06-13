@@ -27,7 +27,7 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
 
     public async Task<List<Place>> GetAllAsync()
     {
-        return await _context.Places.ToListAsync();
+        return await _context.Places.Include(p => p.ImagesUrls).ToListAsync();
     }
     
     public async Task<IEnumerable<PlaceInfoDto>> GetPlacesInfo()
@@ -35,8 +35,8 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
         IEnumerable<Place> places = await this.GetAllAsync();
         return places.Select(place => _mapper.Map<PlaceInfoDto>(place));
     }
-    
-    
+
+
     public async Task<bool> AddAsync(PlaceDto place)
     {
         if (place.ImagesUrls == null || !place.ImagesUrls.Any()) return false;

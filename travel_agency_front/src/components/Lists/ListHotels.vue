@@ -6,7 +6,7 @@
             <input class="input input-alt" placeholder="Type name of hotels" type="text" v-model="inputHotel" @input="searchHotel">
             <span class="input-border input-border-alt"></span>
         </div>
-        <div class="error" v-if="searchedHotels.length === 0">Incorrect hotel name</div>
+        <div class="error-search" v-if="searchedHotels.length === 0">Incorrect hotel name</div>
 
 
         <table class="list-table">

@@ -31,6 +31,12 @@ public class PlaceController : ControllerBase
         return await _placeRepository.GetAllAsync();
     }
     
+    [HttpGet("getPlacesWithImages")]
+    public async Task<IEnumerable<Place>> GetPlacesWithImages()
+    {
+        return await _placeRepository.GetAllAsync();
+    }
+    
     [HttpGet("getPlacesInfo")]
     public async Task<IEnumerable<PlaceInfoDto>> GetPlaceInfo(int id)
     {

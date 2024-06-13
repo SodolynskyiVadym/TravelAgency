@@ -13,10 +13,12 @@ namespace TravelAgencyAPI.Controllers;
 public class TourController : ControllerBase
 {
     private readonly TourRepository _tourRepository;
+    private readonly IMapper _mapper;
     
     public TourController(TravelDbContext context, IMapper mapper)
     {
         _tourRepository = new TourRepository(context, mapper);
+        _mapper = mapper;
     }
     
     [HttpGet("{id}")]
@@ -29,6 +31,14 @@ public class TourController : ControllerBase
     public async Task<List<Tour>> GetAllTours()
     {
         return await _tourRepository.GetAllAsync();
+    }
+    
+    
+    [HttpGet("getToursForeignKeys")]
+    public async Task<IEnumerable<TourForeignKeyDto>> GetToursWithDestinations()
+    {
+        IEnumerable<Tour> tours = await _tourRepository.GetAllAsync();
+        return tours.Select(tour => _mapper.Map<TourForeignKeyDto>(tour));
     }
     
     [HttpPost("create")]

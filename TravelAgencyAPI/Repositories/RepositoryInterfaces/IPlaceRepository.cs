@@ -1,4 +1,5 @@
 ﻿using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Models;
 
 namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
