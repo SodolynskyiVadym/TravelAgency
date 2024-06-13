@@ -13,8 +13,17 @@
     </div>
   </div>
 
+  <div style="text-align: center; margin-bottom: 30px;">
+    <div class="form-control">
+      <input class="input input-alt" placeholder="Type name of tour" type="text" v-model="inputTour"
+        @input="searchTour">
+      <span class="input-border input-border-alt"></span>
+    </div>
+    <div class="error" v-if="searchedTours.length === 0">Incorrect tour name</div>
+  </div>
+
   <div class="row mb-2" style="width: 100%;">
-    <div class="col-md-6" v-for="(tour, index) in tours" :key="index">
+    <div class="col-md-6" v-for="(tour, index) in searchedTours" :key="index">
       <div style="cursor: pointer;"
         class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
         @click="enterTourPage(tour.id)">
@@ -38,13 +47,19 @@ import * as dateHelper from '@/js/dateHelper';
 export default {
   data() {
     return {
-      tours: []
+      tours: [],
+      searchedTours: [],
+      inputTour: "",
     }
   },
 
   methods: {
     async enterTourPage(tourId) {
       this.$router.push("/tour/" + tourId);
+    },
+
+    async searchTour() {
+      this.searchedTours = this.tours.filter(tour => tour.name.toLowerCase().includes(this.inputTour.toLowerCase()));
     }
   },
 
@@ -54,7 +69,12 @@ export default {
       tour.startDate = await dateHelper.formatDate(tour.startDate);
       tour.endDate = await dateHelper.formatDate(tour.endDate);
     }
+    this.searchedTours = this.tours;
   }
 }
 
 </script>
+
+<style>
+@import "./../assets/css/styleInputSearch.css";
+</style>

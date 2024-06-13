@@ -10,6 +10,8 @@ import UpdateHotelPage from '@/components/UpdatePages/UpdateHotel.vue';
 import UpdateTransportPage from '@/components/UpdatePages/UpdateTransport.vue';
 import UpdatePlacePage from '@/components/UpdatePages/UpdatePlace.vue';
 import HotelListPage from '@/components/Lists/ListHotels.vue';
+import TransportListPage from '@/components/Lists/ListTransports.vue';
+import PlaceListPage from '@/components/Lists/ListPlaces.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
 
@@ -76,6 +78,16 @@ const routes = [
         path: '/listHotels',
         name: 'HotelListPage',
         component: HotelListPage,
+    },
+    {
+        path: '/listTransports',
+        name: 'TransportListPage',
+        component: TransportListPage,
+    },
+    {
+        path: '/listPlaces',
+        name: 'PlaceListPage',
+        component: PlaceListPage,
     }
 ];
 

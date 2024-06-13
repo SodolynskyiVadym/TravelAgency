@@ -123,12 +123,11 @@ export default {
         },
 
         async updateHotel() {
-            console.log(this.hotel);
-            // this.isSendRequest = true;
+            this.isSendRequest = true;
             await hotelAPI.updateHotel(this.hotel);
-            // this.startHotel = JSON.parse(JSON.stringify(this.hotel));
-            // await this.checkCorrectInputs();
-            // this.isSendRequest = false;
+            this.startHotel = JSON.parse(JSON.stringify(this.hotel));
+            await this.checkCorrectInputs();
+            this.isSendRequest = false;
         }
     },
 

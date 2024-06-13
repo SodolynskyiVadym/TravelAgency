@@ -244,12 +244,6 @@ export default {
         },
 
         async checkDestinationsPlacesNames() {
-            // const destinationsPlacesIds = this.tour.destinations.map(destination => destination.placeId);
-            // for (let i = 0; i < this.tour.destinations.length; i++) {
-            //     this.isCorrectPlacesNames[i] = destinationsPlacesIds.filter(id => id === this.tour.destinations[i].placeId && id != 0
-            //         && id != this.tour.placeStartId && id != this.tour.placeEndId).length === 1;
-            // }
-
             const destinationsPlaceAndCountry = this.tour.destinations.map((destination, index) => [this.destinationsPlacesNames[index], this.destinationsCountries[index]]);
             for(let i = 0; i < destinationsPlaceAndCountry.length; i++){
                 this.isCorrectPlacesNames[i] = destinationsPlaceAndCountry.filter(arr => arr[0] === destinationsPlaceAndCountry[i][0] 

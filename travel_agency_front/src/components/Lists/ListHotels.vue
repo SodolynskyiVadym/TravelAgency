@@ -1,17 +1,25 @@
 <template>
-    <h1>Hotel's list</h1>
-    <div>
+    <div style="text-align: center;">
+        <h1>List of hotels</h1>
+
+        <div class="form-control">
+            <input class="input input-alt" placeholder="Type name of hotels" type="text" v-model="inputHotel" @input="searchHotel">
+            <span class="input-border input-border-alt"></span>
+        </div>
+        <div class="error" v-if="searchedHotels.length === 0">Incorrect hotel name</div>
+
+
         <table class="list-table">
             <tr>
                 <th>Image</th>
                 <th>Hotel name</th>
-                <th>City</th>
+                <th>Location</th>
                 <th>Country</th>
                 <th>Address</th>
                 <th>Price per night</th>
                 <th style="width: 400px;">Action</th>
             </tr>
-            <tr v-for="hotel in hotels" :key="hotel.id">
+            <tr v-for="hotel in searchedHotels" :key="hotel.id">
                 <td><img :src="hotel.imageUrl"></td>
                 <td>{{ hotel.name }}</td>
                 <td>{{ hotel.place.name }}</td>
@@ -19,8 +27,11 @@
                 <td>{{ hotel.address }}</td>
                 <td>{{ hotel.pricePerNight }}</td>
                 <td>
-                    <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green" @click="enterUpdateHotelPage(hotel.id)">EDIT</button>
-                    <button v-if="!usedHotelIds.includes(hotel.id)" class="button-update-delete button-update-delete-hover-black" @click="deleteHotelPage(hotel.id)">DELETE</button>
+                    <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
+                        @click="enterUpdateHotelPage(hotel.id)">EDIT</button>
+                    <button v-if="!usedHotelIds.includes(hotel.id)"
+                        class="button-update-delete button-update-delete-hover-black"
+                        @click="deleteHotelPage(hotel.id)">DELETE</button>
                 </td>
             </tr>
         </table>
@@ -36,15 +47,21 @@ export default {
         return {
             hotels: [],
             destinations: [],
-            usedHotelIds: []
+            usedHotelIds: [],
+            inputHotel: "",
+            searchedHotels: []
         }
     },
 
     methods: {
+        async searchHotel() {
+            this.searchedHotels = this.hotels.filter(hotel => hotel.name.toLowerCase().includes(this.inputHotel.toLowerCase()));
+        },
+
         async enterUpdateHotelPage(hotelId) {
             this.$router.push(`/updateHotel/${hotelId}`);
         },
-        
+
         async deleteHotelPage(hotelId) {
             console.log("Hotel deleted! " + hotelId);
         },
@@ -53,12 +70,14 @@ export default {
 
     async mounted() {
         this.hotels = (await hotelAPI.getAllHotels()).sort((a, b) => a.place.name.localeCompare(b.place.name));
+        this.searchedHotels = this.hotels;
         this.destinations = await destinationAPI.getAllDestinations();
-        this.usedHotelIds = this.hotels.map(hotel => hotel.place.id);
+        this.usedHotelIds = this.destinations.map(destination => destination.hotelId);
     }
 }
 </script>
 
 <style>
 @import "./../../assets/css/styleTable.css";
+@import "./../../assets/css/styleInputSearch.css";
 </style>

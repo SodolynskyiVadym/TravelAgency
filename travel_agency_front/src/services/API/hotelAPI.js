@@ -9,7 +9,6 @@ export async function getHotel(id){
     } catch (error) {
         await router.push("/error");
     }
-
 }
 
 export async function getAllHotels() {
