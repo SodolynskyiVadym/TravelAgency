@@ -16,8 +16,8 @@
       </ul>
 
       <div class="text-end">
-        <button type="button" class="btn btn-outline-light me-2 fs-5">Login</button>
-        <button type="button" class="btn btn-primary me-2 fs-5">Sign-up</button>
+        <button type="button" class="btn btn-outline-light me-2 fs-5" @click="login">Login</button>
+        <button type="button" class="btn btn-primary me-2 fs-5" @click="registration">Sign-up</button>
       </div>
     </div>
   </header>
@@ -27,11 +27,19 @@
 
 
 <script>
+export default {
+  methods: {
+    login() {
+      this.$router.push('/login');
+    },
 
+    registration() {
+      this.$router.push('/registration');
+    }
+  }
+}
 </script>
 
 <style>
-
 @import "./assets/css/styleMainPage.css";
-
 </style>

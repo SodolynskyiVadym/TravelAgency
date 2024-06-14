@@ -1,6 +1,7 @@
 <template>
     <div style="text-align: center;">
-        <h1>List of locations</h1>
+        <h1>LOCATIONS</h1>
+        <button class="button-create-action" @click="enterPlaceCreatePage">Add location</button>
 
         <div class="form-control">
             <input class="input input-alt" placeholder="Type name of location" type="text" v-model="inputPlace" @input="searchPlace">
@@ -65,6 +66,10 @@ export default {
 
         async deletePlace(placeId) {
             console.log("Delete place with id: " + placeId);
+        },
+
+        async enterPlaceCreatePage() {
+            this.$router.push('/createPlace');
         }
     },
 
@@ -85,4 +90,5 @@ export default {
 <style>
 @import "./../../assets/css/styleTable.css";
 @import "./../../assets/css/styleInputSearch.css";
+@import "./../../assets/css/styleButtonCreate.css";
 </style>

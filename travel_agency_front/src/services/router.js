@@ -12,6 +12,8 @@ import UpdatePlacePage from '@/components/UpdatePages/UpdatePlace.vue';
 import HotelListPage from '@/components/Lists/ListHotels.vue';
 import TransportListPage from '@/components/Lists/ListTransports.vue';
 import PlaceListPage from '@/components/Lists/ListPlaces.vue';
+import LoginPage from '@/components/Auth/LoginPage.vue';
+import RegistrationPage from '@/components/Auth/RegistrationPage.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
 
@@ -88,6 +90,16 @@ const routes = [
         path: '/listPlaces',
         name: 'PlaceListPage',
         component: PlaceListPage,
+    },
+    {
+        path: '/login',
+        name: 'LoginPage',
+        component: LoginPage,
+    },
+    {
+        path: '/registration',
+        name: 'RegistrationPage',
+        component: RegistrationPage,
     }
 ];
 

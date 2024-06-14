@@ -1,6 +1,7 @@
 <template>
     <div style="text-align: center;">
-        <h1>List of hotels</h1>
+        <h1>Hotels</h1>
+        <button class="button-create-action" @click="enterHotelCreatePage">Add hotel</button>
 
         <div class="form-control">
             <input class="input input-alt" placeholder="Type name of hotels" type="text" v-model="inputHotel" @input="searchHotel">
@@ -66,6 +67,10 @@ export default {
             console.log("Hotel deleted! " + hotelId);
         },
 
+        async enterHotelCreatePage() {
+            this.$router.push('/createHotel');
+        }
+
     },
 
     async mounted() {
@@ -80,4 +85,5 @@ export default {
 <style>
 @import "./../../assets/css/styleTable.css";
 @import "./../../assets/css/styleInputSearch.css";
+@import "./../../assets/css/styleButtonCreate.css";
 </style>

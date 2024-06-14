@@ -1,6 +1,8 @@
 <template>
     <div style="text-align: center;">
-        <h1>List of Transports</h1>
+        <h1>TRANSPORTS</h1>
+        <button class="button-create-action" @click="enterTransportCreatePage">Add transport</button>
+        
 
         <div class="form-control">
             <input class="input input-alt" placeholder="Type name of transport" type="text" v-model="inputTransport" @input="searchTransport">
@@ -66,6 +68,10 @@ export default {
             console.log("Transport deleted! " + transportId);
         },
 
+        async enterTransportCreatePage() {
+            this.$router.push("/createTransport");
+        }
+
     },
 
     async mounted() {
@@ -83,4 +89,5 @@ export default {
 <style>
 @import "./../../assets/css/styleTable.css";
 @import "./../../assets/css/styleInputSearch.css";
+@import "./../../assets/css/styleButtonCreate.css";
 </style>
