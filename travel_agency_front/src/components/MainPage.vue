@@ -19,7 +19,7 @@
         @input="searchTour">
       <span class="input-border input-border-alt"></span>
     </div>
-    <div class="error" v-if="searchedTours.length === 0">Incorrect tour name</div>
+    <div class="error-search" v-if="searchedTours.length === 0">Incorrect tour name</div>
   </div>
 
   <div class="row mb-2" style="width: 100%;">

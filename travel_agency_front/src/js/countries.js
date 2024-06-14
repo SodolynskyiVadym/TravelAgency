@@ -43,7 +43,7 @@ export const countries = [
   "Croatia",
   "Cuba",
   "Cyprus",
-  "Czechia (Czech Republic)",
+  "Czech Republic",
   "Democratic Republic of the Congo",
   "Denmark",
   "Djibouti",

@@ -56,14 +56,21 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
         return true;
     }
 
-    public async Task<bool> UpdateAsync(int id, PlaceDto entity)
+    public async Task<bool> UpdateAsync(int id, PlaceDto placeUpdate)
     {
-        Place? place = await _context.Places.FindAsync(id);
+        Place? place = await _context.Places.Include(p => p.ImagesUrls).FirstOrDefaultAsync(p => p.Id == id);
         if (place == null) return false;
         
-        place.Name = entity.Name ?? place.Name;
-        place.Description = entity.Description ?? place.Description;
-        place.Country = entity.Country ?? place.Country;
+        _context.PlaceImageUrls.RemoveRange(place.ImagesUrls);
+        
+        place.Name = placeUpdate.Name ?? place.Name;
+        place.Description = placeUpdate.Description ?? place.Description;
+        place.Country = placeUpdate.Country ?? place.Country;
+
+        place.ImagesUrls = placeUpdate.ImagesUrls?.Count() == 3 
+            ? placeUpdate.ImagesUrls.Select(url => new PlaceImageUrl { Url = url, PlaceId = place.Id }).ToList() 
+            : place.ImagesUrls;
+        
         await _context.SaveChangesAsync();
         return true;
     }

@@ -50,11 +50,10 @@ public class TourRepository : IRepository<Tour, TourDto>
     
     public async Task<bool> UpdateAsync(int id, TourDto tourUpdate)
     {
-        Tour? tour = await _context.Tours.FindAsync(id);
+        Tour? tour = await _context.Tours.Include(t => t.Destinations).FirstOrDefaultAsync(t => t.Id == id);
         if (tour == null) return false;
-        
-        _context.Destinations.RemoveRange(await _context.Destinations.Where(d => d.TourId == id).ToListAsync());
-        
+
+        _context.Destinations.RemoveRange(tour.Destinations);
         tour.Name = tourUpdate.Name ?? tour.Name;
         tour.Description = tourUpdate.Description ?? tour.Description;
         tour.Price = tourUpdate.Price;
@@ -66,7 +65,7 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
         tour.IsAvailable = tourUpdate.IsAvailable;
-        tour.Destinations = tourUpdate.Destinations.Count() != 0 ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList() : tour.Destinations;
+        tour.Destinations = tourUpdate.Destinations?.Count() > 0 ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList() : tour.Destinations;
         
         await _context.SaveChangesAsync();
         return true;

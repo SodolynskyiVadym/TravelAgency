@@ -7,7 +7,7 @@ const mainUrl = "http://localhost:5113/place";
 export async function getPlaceById(id) {
   try {
     return await axios
-      .get(`${mainUrl}/getPlaceById/${id}`)
+      .get(`${mainUrl}/${id}`)
       .then((res) => res.data);
   } catch (error) {
     await router.push("/error");
@@ -31,6 +31,14 @@ export async function getPlacesInfo() {
   }
 }
 
+
+export async function updatePlace(id, data) {
+    try {
+        return await axios.patch(`${mainUrl}/update/${id}`, data).then((res) => res.data);
+    } catch (error) {
+        await router.push("/error");
+    }
+}
 
 export async function createPlace(data) {
     try {

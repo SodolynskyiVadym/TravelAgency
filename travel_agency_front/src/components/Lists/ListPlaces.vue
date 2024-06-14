@@ -59,6 +59,7 @@ export default {
         },
 
         async enterUpdatePlacePage(placeId) {
+            console.log(`/updatePlace/${placeId}`)
             this.$router.push(`/updatePlace/${placeId}`);
         },
 
