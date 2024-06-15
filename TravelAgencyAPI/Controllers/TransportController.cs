@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
@@ -31,6 +32,8 @@ public class TransportController : ControllerBase
         return await _transportRepository.GetAllAsync();
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPost("create")]
     public async Task<IActionResult> AddTransport(TransportDto transport)
     {
@@ -38,6 +41,8 @@ public class TransportController : ControllerBase
         return Ok(transport);
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPatch("update/{id}")]
     public async Task<IActionResult> UpdateTransport(int id, TransportDto transport)
     {
@@ -45,6 +50,8 @@ public class TransportController : ControllerBase
         return NoContent();
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteTransport(int id)
     {

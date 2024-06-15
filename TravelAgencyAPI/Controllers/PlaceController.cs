@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
@@ -43,6 +44,8 @@ public class PlaceController : ControllerBase
         return await _placeRepository.GetPlacesInfo();
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePlace(PlaceDto place)
     {
@@ -50,6 +53,8 @@ public class PlaceController : ControllerBase
         return Ok(place);
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPatch("update/{id}")]
     public async Task<IActionResult> UpdatePlace(int id, PlaceDto place)
     {

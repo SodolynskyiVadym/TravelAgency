@@ -1,26 +1,33 @@
 <template>
     <div class="container-user-input">
-        <form class="form" action="">
+        <div class="form">
             <p class="title">Login</p>
-            <input placeholder="Email" class="username input" type="text" v-model="email">
-            <input placeholder="Password" class="password input" type="password" v-model="password">
+            <input placeholder="Email" class="username input" type="text" v-model="user.email">
+            <input placeholder="Password" class="password input" type="password" v-model="user.password">
             <button class="btn" type="submit" @click="login">Login</button>
-        </form>
+        </div>
     </div>
 
 </template>
 
 <script>
+import * as userAPI from '@/services/API/userAPI';
+
 export default {
     data() {
         return {
-            email: '',
-            password: ''
+            user: {
+                email: '',
+                password: ''
+            }
+
         }
     },
     methods: {
-        login() {
-            console.log(this.username, this.password);
+        async login() {
+            const token = (await userAPI.login(this.user)).token;
+            localStorage.setItem('token', token);
+            this.$router.push('/');
         }
     }
 }

@@ -16,6 +16,8 @@ import LoginPage from '@/components/Auth/LoginPage.vue';
 import RegistrationPage from '@/components/Auth/RegistrationPage.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
+import * as userAPI from '@/services/API/userAPI';
+
 
 // import * as listURL from "@/js/listUrl";
 
@@ -30,21 +32,37 @@ const routes = [
         path: '/createHotel',
         name: 'CreateHotelPage',
         component: CreateHotel,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/createTransport',
         name: 'CreateTransportPage',
         component: CreateTransport,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/createTour',
         name: 'CreateTourPage',
         component: CreateTour,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/createPlace',
         name: 'CreatePlacePage',
         component: CreatePlace,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/tour/:id',
@@ -55,21 +73,37 @@ const routes = [
         path: '/updateTour/:id',
         name: 'UpdateTourPage',
         component: UpdateTourPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/updateHotel/:id',
         name: 'UpdateHotelPage',
         component: UpdateHotelPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/updateTransport/:id',
         name: 'UpdateTransportPage',
         component: UpdateTransportPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/updatePlace/:id',
         name: 'UpdatePlacePage',
         component: UpdatePlacePage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     },
     {
         path: '/test',
@@ -111,24 +145,23 @@ const router = createRouter({
 
 
 
-// router.beforeEach(async (to, from, next) => {
-//     if (to.meta.requiresAuth) {
-//         const token = localStorage.getItem('token');
-//         if (token) {
-//             const userData = await listURL.getUserByToken(token);
-//             const role = userData.role;
+router.beforeEach(async (to, from, next) => {
+    if (to.meta.requiresAuth) {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const role = await userAPI.getUserRoleByToken(token);
 
-//             if (to.meta.roles.includes(role)) {
-//                 next();
-//             } else {
-//                 next("/login");
-//             }
-//         } else {
-//             next('/login');
-//         }
-//     }else {
-//         next();
-//     }
-// });
+            if (to.meta.roles.includes(role)) {
+                next();
+            } else {
+                next("/login");
+            }
+        } else {
+            next('/login');
+        }
+    }else {
+        next();
+    }
+});
 
 export default router;

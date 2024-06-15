@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
@@ -41,6 +42,8 @@ public class TourController : ControllerBase
         return tours.Select(tour => _mapper.Map<TourForeignKeyDto>(tour));
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPost("create")]
     public async Task<IActionResult> AddTour(TourDto tour)
     {
@@ -48,6 +51,8 @@ public class TourController : ControllerBase
         return Ok(tour);
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPatch("update/{id}")]
     public async Task<IActionResult> UpdateTour(int id, TourDto tour)
     {
@@ -55,6 +60,8 @@ public class TourController : ControllerBase
         return NoContent();
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteTour(int id)
     {

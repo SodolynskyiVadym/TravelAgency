@@ -4,28 +4,29 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Options;
 using TravelAgencyAPI.DTO;
+using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories;
+using TravelAgencyAPI.Settings;
 
 namespace TravelAgencyAPI.Helpers;
 
 public class AuthHelper
 {
     private readonly UserRepository _userRepository;
-    private readonly string _passwordKey;
-    private readonly string _tokenKey;
+    private readonly AuthSetting _authSetting;
     private readonly string possibleValuePassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-    public AuthHelper(IConfiguration config, UserRepository userRepository)
+    public AuthHelper(IOptions<AuthSetting> authSetting, UserRepository userRepository)
     {
         _userRepository = userRepository;
-        _passwordKey = config.GetSection("AppSettings:PasswordKey").Value ?? throw new InvalidOperationException();
-        _tokenKey = config.GetSection("AppSettings:TokenKey").Value ?? throw new InvalidOperationException();
+        _authSetting = authSetting.Value;
     }
 
-    private byte[] GetPasswordHash(string password, byte[] passwordSalt)
+    public byte[] GetPasswordHash(string password, byte[] passwordSalt)
     {
-        string passwordSaltPlusString = _passwordKey + Convert.ToBase64String(passwordSalt);
+        string passwordSaltPlusString = _authSetting.PasswordKey + Convert.ToBase64String(passwordSalt);
 
         return KeyDerivation.Pbkdf2(
             password: password,
@@ -57,16 +58,16 @@ public class AuthHelper
     }
 
 
-    public string CreateToken(int userId, string email, string role)
+    public string CreateToken(User user)
     {
         Claim[] claims = new Claim[]
         {
-            new Claim("userId", userId.ToString()),
-            new Claim("email", email),
-            new Claim("role", role)
+            new Claim("userId", user.Id.ToString()),
+            new Claim("email", user.Email),
+            new Claim("role", user.Role)
         };
 
-        SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenKey));
+        SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSetting.TokenKey));
 
         SigningCredentials credentials = new SigningCredentials(tokenKey, SecurityAlgorithms.HmacSha512Signature);
 

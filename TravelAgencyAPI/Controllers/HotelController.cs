@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
@@ -18,11 +19,13 @@ public class HotelController : ControllerBase
         _hotelRepository = new HotelRepository(context, mapper);
     }
     
+    
     [HttpGet("{id}")]
     public async Task<Hotel?> GetHotel(int id)
     {
         return await _hotelRepository.GetByIdAsync(id);
     }
+    
     
     [HttpGet("getAllHotels")]
     public async Task<List<Hotel>> GetAllHotels()
@@ -30,6 +33,8 @@ public class HotelController : ControllerBase
         return await _hotelRepository.GetAllAsync();
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPost("create")]
     public async Task<IActionResult> AddHotel(HotelDto hotel)
     {
@@ -37,6 +42,8 @@ public class HotelController : ControllerBase
         return Ok(hotel);
     }
     
+    
+    [Authorize(Roles = "EDITOR, ADMIN")]
     [HttpPatch("update/{id}")]
     public async Task<IActionResult> UpdateHotel(int id, HotelDto hotel)
     {
