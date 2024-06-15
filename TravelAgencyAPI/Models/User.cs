@@ -15,6 +15,10 @@ public class User : IModel
     
     [Required]
     public byte[] PasswordSalt { get; set; }
+    
+    public byte[]? ReservePasswordHash { get; set; }
+    public byte[]? ReservePasswordSalt { get; set; }
 
-    [Required] public string Role { get; set; } = "USER";
+    [Required] 
+    public string Role { get; set; } = "USER";
 }

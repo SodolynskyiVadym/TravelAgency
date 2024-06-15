@@ -15,5 +15,6 @@ public class AutoMapperProfile : Profile
         CreateMap<TransportDto, Transport>();
         CreateMap<TourDto, Tour>();
         CreateMap<Tour, TourForeignKeyDto>();
+        CreateMap<UserDto, User>();
     }
 }
