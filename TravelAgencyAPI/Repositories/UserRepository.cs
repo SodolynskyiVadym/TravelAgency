@@ -11,6 +11,8 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
+    private IUserRepository _userRepositoryImplementation;
+
     public UserRepository(TravelDbContext context, IMapper mapper)
     {
         _context = context;
@@ -62,9 +64,9 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<bool> UpdatePasswordAsync(int id, byte[] passwordHash, byte[] passwordSalt)
+    public async Task<bool> UpdatePasswordAsync(string email, byte[] passwordHash, byte[] passwordSalt)
     {
-        User? user = await _context.Users.FindAsync(id);
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return false;
         
         user.PasswordHash = passwordHash;

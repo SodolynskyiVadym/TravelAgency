@@ -108,9 +108,9 @@ public class AuthHelper
     }
 
 
-    public async Task<bool> UpdatePassword(int userId, UserLoginRegistrationDto userUpdate)
+    public async Task<bool> UpdatePassword(UserLoginRegistrationDto userUpdate)
     {
-        if (userUpdate.Password.IsNullOrEmpty()) return false;
+        if (userUpdate.Password.IsNullOrEmpty() || userUpdate.Password.Length < 8) return false;
 
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -120,7 +120,7 @@ public class AuthHelper
 
         byte[] passwordHash = GetPasswordHash(userUpdate.Password, passwordSalt);
 
-        await _userRepository.UpdatePasswordAsync(userId, passwordHash, passwordSalt);
+        await _userRepository.UpdatePasswordAsync(userUpdate.Email, passwordHash, passwordSalt);
 
         return true;
     }

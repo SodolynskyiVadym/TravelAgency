@@ -7,7 +7,6 @@
             <button class="btn" type="submit" @click="login" :disabled="!user.email || user.password < 8">Login</button>
         </div>
     </div>
-
 </template>
 
 <script>

@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
     
     [Authorize]
     [HttpGet("getUserByToken")]
-    public async Task<User?> GetUserRole(int id)
+    public async Task<User?> GetUserByToken(int id)
     {
         int userId = 0;
         int.TryParse(User.FindFirst("userId")?.Value, out userId);
@@ -88,5 +88,12 @@ public class AuthController : ControllerBase
         }
 
         return StatusCode(400, "Incorrect data entered");
+    }
+
+    [HttpPatch("updatePassword")]
+    public async Task<IActionResult> UpdatePassword(UserLoginRegistrationDto user)
+    {
+        if (await _authHelper.UpdatePassword(user)) return Ok();
+        return BadRequest();
     }
 }

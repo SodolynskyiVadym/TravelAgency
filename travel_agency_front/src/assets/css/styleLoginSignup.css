@@ -73,3 +73,7 @@
     background-color: antiquewhite;
     box-shadow: none;
 }
+
+.container-user-input label{
+    color: white;
+}
