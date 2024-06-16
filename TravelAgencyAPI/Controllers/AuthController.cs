@@ -34,10 +34,12 @@ public class AuthController : ControllerBase
     }
     
     [Authorize]
-    [HttpGet("getUserRole")]
-    public Task<string> GetUserRole(int id)
+    [HttpGet("getUserByToken")]
+    public async Task<User?> GetUserRole(int id)
     {
-        return Task.FromResult(User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty);
+        int userId = 0;
+        int.TryParse(User.FindFirst("userId")?.Value, out userId);
+        return await _userRepository.GetByIdAsync(userId);
     }
     
     

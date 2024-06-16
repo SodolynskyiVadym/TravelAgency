@@ -22,24 +22,26 @@ export async function getAllTours() {
 
 export async function getAllToursForeignKeys() {
     try {
-      return await axios.get(`${mainUrl}/getToursForeignKeys`).then((res) => res.data);
+        return await axios.get(`${mainUrl}/getToursForeignKeys`).then((res) => res.data);
     } catch (error) {
-      await router.push("/error");
+        await router.push("/error");
     }
-  }
+}
 
-export async function updateTour(id, tour){
-    try{
-        return await axios.patch(`${mainUrl}/update/${id}`, tour).then((res) => res.data);
-    }catch(error){
+export async function updateTour(id, tour, token) {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+        return await axios.patch(`${mainUrl}/update/${id}`, tour, config).then((res) => res.data);
+    } catch (error) {
         await router.push("/error");
     }
 }
 
 
-export async function createTour(data) {
+export async function createTour(tour, token) {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
-        return await axios.post(`${mainUrl}/create`, data).then((res) => res.data);
+        return await axios.post(`${mainUrl}/create`, tour, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

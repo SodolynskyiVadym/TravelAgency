@@ -21,18 +21,20 @@ export async function getAllTransports() {
     }
 }
 
-export async function updateTransport(id, transport){
-    try{
-        return await axios.patch(`${mainUrl}/update/${id}`, transport).then((res) => res.data);
-    }catch(error){
+export async function updateTransport(id, transport, token) {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+        return await axios.patch(`${mainUrl}/update/${id}`, transport, config).then((res) => res.data);
+    } catch (error) {
         await router.push("/error");
     }
 }
 
 
-export async function createTransport(data) {
+export async function createTransport(transport, token) {
+    const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
-        return await axios.post(`${mainUrl}/create`, data).then((res) => res.data);
+        return await axios.post(`${mainUrl}/create`, transport, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

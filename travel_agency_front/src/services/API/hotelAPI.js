@@ -3,6 +3,7 @@ import router from "./../router";
 
 const mainUrl = "http://localhost:5113/hotel";
 
+
 export async function getHotel(id){
     try {
         return await axios.get(`${mainUrl}/${id}`).then((res) => res.data);
@@ -19,9 +20,10 @@ export async function getAllHotels() {
     }
 }
 
-export async function updateHotel(hotel){
+export async function updateHotel(hotel, token){
+    const config = {headers: {Authorization: `Bearer ${token}`}}
     try {
-        return await axios.patch(`${mainUrl}/update/${hotel.id}`, hotel).then((res) => res.data);
+        return await axios.patch(`${mainUrl}/update/${hotel.id}`, hotel, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }
@@ -29,9 +31,10 @@ export async function updateHotel(hotel){
 }
 
 
-export async function createHotel(data) {
+export async function createHotel(hotel, token) {
+    const config = {headers: {Authorization: `Bearer ${token}`}}
     try {
-        return await axios.post(`${mainUrl}/create`, data).then((res) => res.data);
+        return await axios.post(`${mainUrl}/create`, hotel, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

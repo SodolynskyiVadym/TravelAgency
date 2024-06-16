@@ -4,7 +4,7 @@
             <p class="title">Login</p>
             <input placeholder="Email" class="username input" type="text" v-model="user.email">
             <input placeholder="Password" class="password input" type="password" v-model="user.password">
-            <button class="btn" type="submit" @click="login">Login</button>
+            <button class="btn" type="submit" @click="login" :disabled="!user.email || user.password < 8">Login</button>
         </div>
     </div>
 
@@ -25,9 +25,12 @@ export default {
     },
     methods: {
         async login() {
-            const token = (await userAPI.login(this.user)).token;
-            localStorage.setItem('token', token);
-            this.$router.push('/');
+            const data = await userAPI.login(this.user);
+            const token = data.token;
+            if (token) {
+                localStorage.setItem('token', token);
+                this.$router.push('/');
+            }
         }
     }
 }

@@ -32,18 +32,20 @@ export async function getPlacesInfo() {
 }
 
 
-export async function updatePlace(id, data) {
-    try {
-        return await axios.patch(`${mainUrl}/update/${id}`, data).then((res) => res.data);
-    } catch (error) {
-        await router.push("/error");
-    }
+export async function updatePlace(id, place, token) {
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    return await axios.patch(`${mainUrl}/update/${id}`, place, config).then((res) => res.data);
+  } catch (error) {
+    await router.push("/error");
+  }
 }
 
-export async function createPlace(data) {
-    try {
-        return await axios.post(`${mainUrl}/create`, data).then((res) => res.data);
-    } catch (error) {
-        await router.push("/error");
-    }
+export async function createPlace(place, token) {
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  try {
+    return await axios.post(`${mainUrl}/create`, place, config).then((res) => res.data);
+  } catch (error) {
+    await router.push("/error");
+  }
 }

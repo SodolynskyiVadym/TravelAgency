@@ -14,6 +14,8 @@ import TransportListPage from '@/components/Lists/ListTransports.vue';
 import PlaceListPage from '@/components/Lists/ListPlaces.vue';
 import LoginPage from '@/components/Auth/LoginPage.vue';
 import RegistrationPage from '@/components/Auth/RegistrationPage.vue';
+import UserPage from '@/components/UserPage.vue';
+import AdminPage from '@/components/AdminPage.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
 import * as userAPI from '@/services/API/userAPI';
@@ -134,6 +136,24 @@ const routes = [
         path: '/registration',
         name: 'RegistrationPage',
         component: RegistrationPage,
+    },
+    {
+        path: "/admin",
+        name: "AdminPage",
+        component: AdminPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN"]
+        }
+    },
+    {
+        path: "/user",
+        name: "UserPage",
+        component: UserPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR", "USER"]
+        }
     }
 ];
 
@@ -149,7 +169,9 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth) {
         const token = localStorage.getItem('token');
         if (token) {
-            const role = await userAPI.getUserRoleByToken(token);
+            const user = await userAPI.getUserByToken(token);
+            if(!user) next('/login');
+            const role = user.role;
 
             if (to.meta.roles.includes(role)) {
                 next();
