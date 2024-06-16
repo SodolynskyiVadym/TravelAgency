@@ -15,8 +15,8 @@
             <input id="confirmPassword" placeholder="Confirm password" class="password input" type="password"
                 v-model="confirmPassword">
 
-            <p style="color: red; margin-top: 40px;">New password must be more than 8</p>
-            <button style="margin-top: 10px;" class="btn" type="submit" @click="login"
+            <p style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
+            <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword"
                 :disabled="user.password != confirmPassword || user.password < 8">Update password</button>
         </div>
     </div>
@@ -34,7 +34,14 @@ export default {
         }
     },
     methods: {
-
+        async updatePassword(){
+            const token = localStorage.getItem('token');
+            if (token) {
+                await userAPI.updatePassword(this.user.password, token);
+                this.user.password = "";
+                this.confirmPassword = "";
+            } else this.$router.push('/error');
+        }
     },
 
     async mounted() {
@@ -43,8 +50,6 @@ export default {
             this.user = await userAPI.getUserByToken(token);
             this.isLoaded = true
         } else this.$router.push('/error');
-        console.log(this.user);
-
     }
 }
 </script>

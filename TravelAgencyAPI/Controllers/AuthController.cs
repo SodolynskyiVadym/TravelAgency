@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
         return await _userRepository.GetAllAsync();
     }
     
-
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginRegistrationDto userLogin)
     {
@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
 
         for (var index = 0; index < passwordHash.Length; index++)
         {
-            if (passwordHash[index] != user.PasswordHash[index]) return StatusCode(401, "Incorrect password!");
+            if (passwordHash[index] != user.PasswordHash[index]) return StatusCode(400, "Incorrect password!");
         }
             
         
@@ -90,10 +90,22 @@ public class AuthController : ControllerBase
         return StatusCode(400, "Incorrect data entered");
     }
 
-    [HttpPatch("updatePassword")]
-    public async Task<IActionResult> UpdatePassword(UserLoginRegistrationDto user)
+    
+    [Authorize]
+    [HttpPost("updatePassword")]
+    public async Task<IActionResult> UpdatePassword([FromBody] string password)
     {
-        if (await _authHelper.UpdatePassword(user)) return Ok();
-        return BadRequest();
+        string? id = User.FindFirst("userId")?.Value;
+        if (id == null) return StatusCode(402, "Incorrect token!");
+
+        Console.WriteLine(id);
+        
+        User? user = await _userRepository.GetByIdAsync(int.Parse(id)); 
+        if(user == null) return StatusCode(402, "User not found!");
+
+        Console.WriteLine(password);
+        
+        if (await _authHelper.UpdatePassword(user, password)) return Ok();
+        return BadRequest("Password is less than 7 characters");
     }
 }

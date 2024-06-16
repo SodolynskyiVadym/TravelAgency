@@ -25,6 +25,7 @@ export default {
     methods: {
         async login() {
             const data = await userAPI.login(this.user);
+            console.log(data);
             const token = data.token;
             if (token) {
                 localStorage.setItem('token', token);
