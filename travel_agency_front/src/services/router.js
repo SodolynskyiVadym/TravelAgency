@@ -16,6 +16,7 @@ import LoginPage from '@/components/Auth/LoginPage.vue';
 import RegistrationPage from '@/components/Auth/RegistrationPage.vue';
 import UserPage from '@/components/UserPage.vue';
 import AdminPage from '@/components/AdminPage.vue';
+import CreateUserPage from '@/components/CreatePages/CreateUser.vue';
 import TestPage from '@/components/CreatePages/TestPage.vue';
 
 import * as userAPI from '@/services/API/userAPI';
@@ -153,6 +154,15 @@ const routes = [
         meta: {
             requiresAuth: true,
             roles: ["ADMIN", "EDITOR", "USER"]
+        }
+    },
+    {
+        path: "/createUser",
+        name: "CreateUserPage",
+        component: CreateUserPage,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN"]
         }
     }
 ];

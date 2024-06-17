@@ -16,11 +16,13 @@ public class AuthHelper
 {
     private readonly UserRepository _userRepository;
     private readonly AuthSetting _authSetting;
+    private readonly MailHelper _mailHelper;
     private readonly string possibleValuePassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-    public AuthHelper(IOptions<AuthSetting> authSetting, UserRepository userRepository)
+    public AuthHelper(IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting, UserRepository userRepository)
     {
         _userRepository = userRepository;
+        _mailHelper = new MailHelper(mailSetting);
         _authSetting = authSetting.Value;
     }
 
@@ -108,11 +110,37 @@ public class AuthHelper
     }
 
 
+    public async Task<bool> CreateUser(UserCreateDto user)
+    {
+        byte[] passwordSalt = new byte[128 / 8];
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
+            rng.GetNonZeroBytes(passwordSalt);
+        }
+        
+        string password = this.GenerateRandomPassword();
+
+        byte[] passwordHash = GetPasswordHash(password, passwordSalt);
+        
+        UserDto userDto = new UserDto()
+        {
+            Email = user.Email,
+            Role = user.Role,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt
+        };
+        
+        // if(await _userRepository.AddAsync(userDto))
+        // {
+            _mailHelper.SendPassword(user.Email, password, user.Role);
+            return true;
+        // }
+        // return false;
+    }
+
+
     public async Task<bool> UpdatePassword(User userUpdate, string password)
     {
-        if (password.Length < 7) return false;
-        Console.WriteLine("Code work");
-
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
         {

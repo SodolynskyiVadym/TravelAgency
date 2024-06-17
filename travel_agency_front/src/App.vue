@@ -9,6 +9,7 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ml-auto">
         <li><a href="/" class="nav-link px-2 text-white fs-4">Home</a></li>
+        <li><a href="/admin" class="nav-link px-2 text-white fs-4" v-if="user.role === 'ADMIN'">Admin</a></li>
         <li><a href="/listPlaces" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
             class="nav-link px-2 text-white fs-4">Locations</a></li>
         <li><a href="/listHotels" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"

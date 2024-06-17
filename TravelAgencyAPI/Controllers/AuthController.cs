@@ -20,10 +20,10 @@ public class AuthController : ControllerBase
     private readonly UserRepository _userRepository;
     private readonly AuthHelper _authHelper;
     
-    public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting)
+    public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting)
     {
         _userRepository = new UserRepository(context, mapper);
-        _authHelper = new AuthHelper(authSetting, _userRepository);
+        _authHelper = new AuthHelper(authSetting, mailSetting, _userRepository);
     }
     
     [Authorize(Roles = "ADMIN")]
@@ -72,6 +72,7 @@ public class AuthController : ControllerBase
     [HttpPost("registerUser")]
     public async Task<IActionResult> Register(UserLoginRegistrationDto userRegistration)
     {
+        userRegistration.Role = "USER";
         if (userRegistration.Email.IsNullOrEmpty() || userRegistration.Password.Length < 8)
         {
             return StatusCode(400, "Email is empty or password is less than 8");
@@ -88,6 +89,18 @@ public class AuthController : ControllerBase
         }
 
         return StatusCode(400, "Incorrect data entered");
+    }
+    
+    
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("createUser")]
+    public async Task<IActionResult> CreateUser(UserCreateDto user)
+    {
+        if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
+            return BadRequest("Incorrect data");
+
+        await _authHelper.CreateUser(user);
+        return Ok(user);
     }
 
     
@@ -107,5 +120,14 @@ public class AuthController : ControllerBase
         
         if (await _authHelper.UpdatePassword(user, password)) return Ok();
         return BadRequest("Password is less than 7 characters");
+    }
+    
+    
+    [Authorize(Roles = "ADMIN")]
+    [HttpDelete("deleteUser/{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        if (await _userRepository.DeleteAsync(id)) return Ok();
+        return NoContent();
     }
 }

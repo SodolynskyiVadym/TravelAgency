@@ -15,9 +15,27 @@ export async function getUserByToken(token){
 }
 
 
+export async function getAllUsers(token){
+    const config = {headers: {Authorization: `Bearer ${token}`}}
+    try{
+        return await axios.get(`${mainUrl}/getAllUsers`, config).then((res) => res.data);
+    }catch{
+        // router.push("/error");
+    }
+}
+
 export async function registerUser(user){
     try{
         return await axios.post(`${mainUrl}/registerUser`, user).then((res) => res.data);
+    }catch(error){
+        // router.push("/error");
+    }
+}
+
+export async function createUser(user, token){
+    const config = {headers: {Authorization: `Bearer ${token}`}}
+    try{
+        return await axios.post(`${mainUrl}/createUser`, user, config).then((res) => res.data);
     }catch(error){
         // router.push("/error");
     }
@@ -41,3 +59,15 @@ export async function updatePassword(password, token){
         // router.push("/error");
     }
 }
+
+export async function deleteUser(id, token){
+    const config = {headers: {Authorization: `Bearer ${token}`}}
+    try{
+        return await axios.delete(`${mainUrl}/deleteUser/${id}`, config).then((res) => res.data);
+    }catch{
+        // router.push("/error");
+    }
+}
+
+
+
