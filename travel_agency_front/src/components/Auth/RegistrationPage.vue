@@ -5,7 +5,10 @@
             <input placeholder="Email" class="username input" type="text" v-model="user.email">
             <input placeholder="Password" class="password input" type="password" v-model="user.password">
             <input placeholder="Confirm Password" class="password input" type="password" v-model="confirmPassword">
-            <button class="btn" :disabled="user.password != confirmPassword" type="submit" @click="signUp">Sign Up</button>
+
+            <div v-if="message">{{ message }}</div>
+            <button class="btn" :disabled="user.password != confirmPassword" type="submit" @click="signUp">Sign
+                Up</button>
         </div>
     </div>
 
@@ -21,18 +24,22 @@ export default {
                 email: '',
                 password: '',
             },
-            confirmPassword: ''
+            confirmPassword: '',
+            message: ""
 
         }
     },
     methods: {
         async signUp() {
+            this.message = "";
             const data = await userAPI.registerUser(this.user);
-            const token = data.token;
-            if (token){
-                localStorage.setItem('token', token);
+            if (data === false) {
+                this.message = "You haven't registered"
+            } else {
+                localStorage.setItem('token', data.token);
                 this.$router.push('/');
             }
+
         }
     }
 }

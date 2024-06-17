@@ -11,6 +11,7 @@
         </select>
         <div class="error" v-if="!user.role">Role is required</div>
 
+        <div v-if="message">{{ message }}</div>
         <button v-if="!isSendRequest" style="margin: 20px;" @click="createUser" :disabled="!isCorrectInputs">Add
             User</button>
         <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button"
@@ -32,7 +33,8 @@ export default {
                 role: ""
             },
             isSendRequest: false,
-            isCorrectInputs: false
+            isCorrectInputs: false,
+            message: ""
         }
     },
 
@@ -49,14 +51,20 @@ export default {
         },
 
         async createUser() {
+            this.message = "";
             const token = localStorage.getItem('token');
             if (this.isCorrectInputs && token) {
                 this.isSendRequest = true;
-                await userAPI.createUser(this.user, token);
-                await this.clearFields();
+                const result = await userAPI.createUser(this.user, token);
+                if (result === false) {
+                    this.message = "User wasn't created"
+                } else {
+                    await this.clearFields();
 
-                this.isCorrectInputs = false;
-                this.isSendRequest = false;
+                    this.isCorrectInputs = false;
+                    this.isSendRequest = false;
+                }
+
             }
         }
     },

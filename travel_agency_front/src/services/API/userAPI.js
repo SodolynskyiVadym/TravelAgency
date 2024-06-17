@@ -10,7 +10,7 @@ export async function getUserByToken(token){
     try{
         return await axios.get(`${mainUrl}/getUserByToken`, config).then((res) => res.data);
     }catch{
-        // router.push("/error");
+        router.push("/login");
     }
 }
 
@@ -20,7 +20,7 @@ export async function getAllUsers(token){
     try{
         return await axios.get(`${mainUrl}/getAllUsers`, config).then((res) => res.data);
     }catch{
-        // router.push("/error");
+        router.push("/error");
     }
 }
 
@@ -28,7 +28,7 @@ export async function registerUser(user){
     try{
         return await axios.post(`${mainUrl}/registerUser`, user).then((res) => res.data);
     }catch(error){
-        // router.push("/error");
+        return false;
     }
 }
 
@@ -37,7 +37,7 @@ export async function createUser(user, token){
     try{
         return await axios.post(`${mainUrl}/createUser`, user, config).then((res) => res.data);
     }catch(error){
-        // router.push("/error");
+        return false;
     }
 }
 
@@ -46,7 +46,7 @@ export async function login(user){
     try{
         return await axios.post(`${mainUrl}/login`, user).then((res) => res.data);
     }catch(error){
-        // router.push("/error");
+        router.push("/login");
     }
 }
 
@@ -55,8 +55,7 @@ export async function updatePassword(password, token){
     try{
         return await axios.post(`${mainUrl}/updatePassword`, password, config).then((res) => res.data);
     }catch(error){
-        console.log(error);
-        // router.push("/error");
+        return false
     }
 }
 
@@ -65,7 +64,7 @@ export async function deleteUser(id, token){
     try{
         return await axios.delete(`${mainUrl}/deleteUser/${id}`, config).then((res) => res.data);
     }catch{
-        // router.push("/error");
+        return false;
     }
 }
 

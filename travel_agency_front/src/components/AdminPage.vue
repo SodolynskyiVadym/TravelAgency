@@ -9,6 +9,7 @@
             <span class="input-border input-border-alt"></span>
         </div>
         <div class="error-search" v-if="searchedUsers.length === 0">Incorrect user email</div>
+        <div class="error-search" v-if="message">{{ message }}</div>
 
 
         <table class="list-table">
@@ -40,7 +41,8 @@ export default {
             users: [],
             searchedUsers: [],
             inputUserEmail: "",
-            user: {id : 0}
+            user: { id: 0 },
+            message: ""
         }
     },
     methods: {
@@ -54,14 +56,19 @@ export default {
         },
 
         async deleteUser(id) {
+            this.message = "";
             const token = localStorage.getItem('token');
-            await userAPI.deleteUser(id, token);
-
-            this.users = await userAPI.getAllUsers(token);
-            this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
-            this.users = this.users.filter(user => user.id !== this.user.id);
-            this.searchedUsers = this.users;
+            const result = await userAPI.deleteUser(id, token);
+            if (result === false) {
+                this.message = "User wasn't deleted";
+            } else {
+                this.users = await userAPI.getAllUsers(token);
+                this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
+                this.users = this.users.filter(user => user.id !== this.user.id);
+                this.searchedUsers = this.users;
+            }
             this.inputUserEmail = "";
+
         },
     },
 
@@ -73,7 +80,7 @@ export default {
             this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
             this.users = this.users.filter(user => user.id !== this.user.id);
             this.searchedUsers = this.users;
-        }else{
+        } else {
             this.$router.push('/login');
         }
 

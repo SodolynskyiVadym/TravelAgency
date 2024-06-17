@@ -16,6 +16,7 @@
                 v-model="confirmPassword">
 
             <p style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
+            <p style="color: red; margin-top: 40px;" v-if="message">{{ message }}</p>
             <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword"
                 :disabled="user.password != confirmPassword || user.password < 8">Update password</button>
         </div>
@@ -30,17 +31,23 @@ export default {
         return {
             user: null,
             confirmPassword: "",
+            message: "",
             isLoaded: false
         }
     },
     methods: {
-        async updatePassword(){
+        async updatePassword() {
+            this.message = "";
             const token = localStorage.getItem('token');
             if (token) {
-                await userAPI.updatePassword(this.user.password, token);
+                const result = await userAPI.updatePassword(this.user.password, token);
+                if (result === false) {
+                    this.message = "Password wasn't changed"
+
+                }
                 this.user.password = "";
                 this.confirmPassword = "";
-            } else this.$router.push('/error');
+            } else this.$router.push('/login');
         }
     },
 
