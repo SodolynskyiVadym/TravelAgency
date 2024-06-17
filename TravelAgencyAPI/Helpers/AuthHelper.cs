@@ -110,7 +110,7 @@ public class AuthHelper
     }
 
 
-    public async Task<bool> CreateUser(UserCreateDto user)
+    public async Task<bool> CreateUser(UserEmailRoleDto user)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -130,12 +130,8 @@ public class AuthHelper
             PasswordSalt = passwordSalt
         };
         
-        // if(await _userRepository.AddAsync(userDto))
-        // {
-            _mailHelper.SendPassword(user.Email, password, user.Role);
-            return true;
-        // }
-        // return false;
+        if(await _userRepository.AddAsync(userDto)) return _mailHelper.SendPassword(user.Email, password, user.Role);
+        return false;
     }
 
 

@@ -5,12 +5,16 @@
         <div class="error" v-if="!user.email">Email is required</div>
 
         <label for="role">Role:</label>
-        <input id="role" type="text" v-model="user.role" placeholder="Enter role" @input="checkCorrectInputs">
+        <select id="role" v-model="user.role" @input="checkCorrectInputs">
+            <option value="ADMIN">ADMIN</option>
+            <option value="EDITOR">EDITOR</option>
+        </select>
         <div class="error" v-if="!user.role">Role is required</div>
 
         <button v-if="!isSendRequest" style="margin: 20px;" @click="createUser" :disabled="!isCorrectInputs">Add
             User</button>
-        <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" :disabled="!isCorrectInputs">
+        <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button"
+            :disabled="!isCorrectInputs">
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span role="status">Loading...</span>
         </button>
@@ -35,7 +39,6 @@ export default {
     methods: {
         async checkCorrectInputs() {
             this.isCorrectInputs = this.user.email && this.user.role;
-            console.log(this.isCorrectInputs);
         },
 
 

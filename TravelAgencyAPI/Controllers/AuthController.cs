@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -19,35 +18,38 @@ public class AuthController : ControllerBase
 {
     private readonly UserRepository _userRepository;
     private readonly AuthHelper _authHelper;
+    private readonly IMapper _mapper;
     
     public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting)
     {
         _userRepository = new UserRepository(context, mapper);
         _authHelper = new AuthHelper(authSetting, mailSetting, _userRepository);
+        _mapper = mapper;
     }
     
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("getUserById")]
-    public async Task<User?> GetUserById(int id)
+    [HttpGet("{id}")]
+    public async Task<UserEmailRoleDto?> GetUserById(int id)
     {
-        return await _userRepository.GetByIdAsync(id);
+        return _mapper.Map<UserEmailRoleDto>(await _userRepository.GetByIdAsync(id));
     }
+    
     
     [Authorize]
     [HttpGet("getUserByToken")]
-    public async Task<User?> GetUserByToken(int id)
+    public async Task<UserEmailRoleDto?> GetUserByToken(int id)
     {
         int userId = 0;
         int.TryParse(User.FindFirst("userId")?.Value, out userId);
-        return await _userRepository.GetByIdAsync(userId);
+        return _mapper.Map<UserEmailRoleDto>(await _userRepository.GetByIdAsync(userId));
     }
     
     
     [Authorize(Roles = "ADMIN")]
     [HttpGet("getAllUsers")]
-    public async Task<List<User>> GetAllUsers()
+    public async Task<List<UserEmailRoleDto>> GetAllUsers()
     {
-        return await _userRepository.GetAllAsync();
+        return (await _userRepository.GetAllAsync()).Select(u => _mapper.Map<UserEmailRoleDto>(u)).ToList();
     }
     
     
@@ -94,7 +96,7 @@ public class AuthController : ControllerBase
     
     [Authorize(Roles = "ADMIN")]
     [HttpPost("createUser")]
-    public async Task<IActionResult> CreateUser(UserCreateDto user)
+    public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
         if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
             return BadRequest("Incorrect data");

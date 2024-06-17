@@ -31,6 +31,9 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
 
     public async Task<bool> AddAsync(UserDto user)
     {
+        List<string> emails = await _context.Users.Select(u => u.Email).ToListAsync();
+        if(emails.Contains(user.Email)) return false;
+        
         await _context.Users.AddAsync(_mapper.Map<User>(user));
         await _context.SaveChangesAsync();
         return true;

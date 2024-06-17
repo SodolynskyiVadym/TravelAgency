@@ -39,7 +39,8 @@ export default {
         return {
             users: [],
             searchedUsers: [],
-            inputUserEmail: ""
+            inputUserEmail: "",
+            user: {id : 0}
         }
     },
     methods: {
@@ -55,8 +56,10 @@ export default {
         async deleteUser(id) {
             const token = localStorage.getItem('token');
             await userAPI.deleteUser(id, token);
-            
+
             this.users = await userAPI.getAllUsers(token);
+            this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
+            this.users = this.users.filter(user => user.id !== this.user.id);
             this.searchedUsers = this.users;
             this.inputUserEmail = "";
         },
@@ -64,10 +67,16 @@ export default {
 
     async mounted() {
         const token = localStorage.getItem('token');
-        this.users = await userAPI.getAllUsers(token);
-        this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
-        this.searchedUsers = this.users;
-        console.log(this.users);
+        if (token) {
+            this.users = await userAPI.getAllUsers(token);
+            this.user = await userAPI.getUserByToken(token);
+            this.users = this.users.sort((a, b) => a.role.localeCompare(b.role));
+            this.users = this.users.filter(user => user.id !== this.user.id);
+            this.searchedUsers = this.users;
+        }else{
+            this.$router.push('/login');
+        }
+
     }
 }
 </script>
