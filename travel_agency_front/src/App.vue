@@ -96,8 +96,13 @@ export default {
 
   async mounted() {
     const token = localStorage.getItem('token');
-    if (token){
+    if (token) {
       this.user = await userAPI.getUserByToken(token);
+      if (!this.user) {
+        this.user.role = "";
+        localStorage.removeItem('token');
+      }
+      localStorage.removeItem('token');
     }
   }
 }

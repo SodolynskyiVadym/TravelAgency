@@ -16,13 +16,11 @@ public class AuthHelper
 {
     private readonly UserRepository _userRepository;
     private readonly AuthSetting _authSetting;
-    private readonly MailHelper _mailHelper;
     private readonly string possibleValuePassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-    public AuthHelper(IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting, UserRepository userRepository)
+    public AuthHelper(IOptions<AuthSetting> authSetting, UserRepository userRepository)
     {
         _userRepository = userRepository;
-        _mailHelper = new MailHelper(mailSetting);
         _authSetting = authSetting.Value;
     }
 
@@ -105,12 +103,11 @@ public class AuthHelper
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        await _userRepository.AddAsync(user);
-        return true;
+        return await _userRepository.AddAsync(user);
     }
 
 
-    public async Task<bool> CreateUser(UserEmailRoleDto user)
+    public async Task<string> CreateUser(UserEmailRoleDto user)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -130,8 +127,8 @@ public class AuthHelper
             PasswordSalt = passwordSalt
         };
         
-        if(await _userRepository.AddAsync(userDto)) return _mailHelper.SendPassword(user.Email, password, user.Role);
-        return false;
+        if(await _userRepository.AddAsync(userDto)) return password;
+        return string.Empty;
     }
 
 
@@ -151,7 +148,7 @@ public class AuthHelper
     }
     
 
-    public async Task<string> CreateReservePassword(int userId)
+    public async Task<string> CreateReservePassword(string email)
     {
         string password = this.GenerateRandomPassword();
         byte[] passwordSalt = new byte[128 / 8];
@@ -159,13 +156,23 @@ public class AuthHelper
         {
             rng.GetNonZeroBytes(passwordSalt);
         }
+
+        Console.WriteLine(password);
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
 
-        await _userRepository.CreateReservePasswordAsync(userId, passwordHash, passwordSalt);
+        await _userRepository.CreateReservePasswordAsync(email, passwordHash, passwordSalt);
 
         return password;
     }
-
-
-
+    
+    
+    public bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+    {
+        byte[] passwordHashToCheck = GetPasswordHash(password, passwordSalt);
+        for (var index = 0; index < passwordHashToCheck.Length; index++)
+        {
+            if (passwordHashToCheck[index] != passwordHash[index]) return false;
+        }
+        return true;
+    }
 }

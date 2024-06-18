@@ -19,9 +19,6 @@ public class Transport : IModel
     public string Type { get; set; }
     
     [Required]
-    public double PriceForHundredKm { get; set; }
-    
-    [Required]
     public int QuantitySeats { get; set; }
     
     [Required]

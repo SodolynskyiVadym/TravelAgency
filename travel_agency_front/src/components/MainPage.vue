@@ -65,11 +65,17 @@ export default {
 
   async mounted() {
     this.tours = await tourAPI.getAllTours();
-    for (let tour of this.tours) {
-      tour.startDate = await dateHelper.formatDate(tour.startDate);
-      tour.endDate = await dateHelper.formatDate(tour.endDate);
+    if (!this.tours) {
+      return;
+    } else {
+      console.log(this.tours)
+      for (let tour of this.tours) {
+        tour.startDate = await dateHelper.formatDate(tour.startDate);
+        tour.endDate = await dateHelper.formatDate(tour.endDate);
+      }
+      this.searchedTours = this.tours;
     }
-    this.searchedTours = this.tours;
+
   }
 }
 

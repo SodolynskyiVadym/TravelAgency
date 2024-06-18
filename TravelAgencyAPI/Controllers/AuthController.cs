@@ -18,12 +18,14 @@ public class AuthController : ControllerBase
 {
     private readonly UserRepository _userRepository;
     private readonly AuthHelper _authHelper;
+    private readonly MailHelper _mailHelper;
     private readonly IMapper _mapper;
     
     public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting)
     {
         _userRepository = new UserRepository(context, mapper);
-        _authHelper = new AuthHelper(authSetting, mailSetting, _userRepository);
+        _authHelper = new AuthHelper(authSetting, _userRepository);
+        _mailHelper = new MailHelper(mailSetting);
         _mapper = mapper;
     }
     
@@ -59,16 +61,39 @@ public class AuthController : ControllerBase
         User? user = await _userRepository.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
         
-        var passwordHash = _authHelper.GetPasswordHash(userLogin.Password, user.PasswordSalt);
-
-        for (var index = 0; index < passwordHash.Length; index++)
-        {
-            if (passwordHash[index] != user.PasswordHash[index]) return StatusCode(400, "Incorrect password!");
-        }
-            
-        
+        if(_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
+            return StatusCode(400, "Incorrect password!");
         return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}}); 
     }
+    
+    
+    [HttpPost("loginViaReservePassword")]
+    public async Task<IActionResult> LoginViaReservePassword(UserLoginRegistrationDto userLogin)
+    {
+        User? user = await _userRepository.GetUserByEmail(userLogin.Email);
+        if (user == null) return StatusCode(400, "User not found!");
+
+        if (_authHelper.CheckPassword(userLogin.Password, user.ReservePasswordHash, user.ReservePasswordSalt))
+            return StatusCode(400, "Incorrect password!");
+
+        await _userRepository.RemoveReservePassword(userLogin.Email);
+        return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}}); 
+    }
+
+
+    [HttpPost("createReservePassword")]
+    public async Task<IActionResult> CreateReservePassword(string email)
+    {
+        Console.WriteLine(email);
+        if(email.IsNullOrEmpty()) return StatusCode(401, "Email is empty");
+
+        string password = await _authHelper.CreateReservePassword(email);
+        if (password.IsNullOrEmpty()) return BadRequest("User not found!");
+        
+        if(_mailHelper.SendReservePassword(email, password)) return Ok();
+        return StatusCode(500, "Error sending email");
+    }
+    
     
     
     [HttpPost("registerUser")]
@@ -101,8 +126,11 @@ public class AuthController : ControllerBase
         if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
             return BadRequest("Incorrect data");
 
-        await _authHelper.CreateUser(user);
-        return Ok(user);
+        string password = await _authHelper.CreateUser(user);
+        if(password.IsNullOrEmpty()) return BadRequest("User already exists");
+        
+        if(_mailHelper.SendPassword(user.Email, password, user.Role)) return Ok();
+        return StatusCode(500, "Error sending email");
     }
 
     

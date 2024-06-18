@@ -43,7 +43,6 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         transport.Name = transportUpdate.Name ?? transport.Name;
         transport.Description = transportUpdate.Description ?? transport.Description;
         transport.Type = transportUpdate.Type ?? transport.Type;
-        transport.PriceForHundredKm = transportUpdate.PriceForHundredKm;
         transport.QuantitySeats = transportUpdate.QuantitySeats;
         transport.ImageUrl = transportUpdate.ImageUrl ?? transport.ImageUrl;
         await _context.SaveChangesAsync();

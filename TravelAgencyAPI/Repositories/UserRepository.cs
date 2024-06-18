@@ -73,15 +73,26 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
     }
 
     
-    public async Task<bool> CreateReservePasswordAsync(int id, byte[] reservePasswordHash, byte[] reservePasswordSalt)
+    public async Task<bool> CreateReservePasswordAsync(string email, byte[] reservePasswordHash, byte[] reservePasswordSalt)
     {
-        User? user = await _context.Users.FindAsync(id);
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return false;
         
-        user.PasswordHash = reservePasswordHash;
-        user.PasswordSalt = reservePasswordSalt;
+        user.ReservePasswordHash = reservePasswordHash;
+        user.ReservePasswordSalt = reservePasswordSalt;
         await _context.SaveChangesAsync();
 
+        return true;
+    }
+
+    public async Task<bool> RemoveReservePassword(string email)
+    {
+        User? user = _context.Users.FirstOrDefault(u => u.Email == email);
+        if (user == null) return false;
+        
+        user.ReservePasswordHash = null;
+        user.ReservePasswordSalt = null;
+        await _context.SaveChangesAsync();
         return true;
     }
 }

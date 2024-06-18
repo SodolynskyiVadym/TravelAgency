@@ -15,11 +15,6 @@
         <div class="error" v-if="!typeTransport">Type of transport is required</div>
 
 
-
-        <label for="price">Price for hundred km</label>
-        <input type="number" id="price" v-model="price" @input="checkCorrectInputs">
-        <div class="error" v-if="price <= 0">Price must be more than 0</div>
-
         <label for="seats">Number of seats</label>
         <input type="number" id="seats" v-model="seats" @input="checkCorrectInputs">
         <div class="error" v-if="seats <= 0">Number of seats must be more than 0</div>
@@ -53,7 +48,6 @@ export default {
             name: '',
             description: '',
             typeTransport: '',
-            price: 0,
             seats: 0,
             imageUrl: '',
             isCorrectImageUrl: false,
@@ -64,7 +58,7 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            this.isCorrectInputs = this.name && this.description && this.price > 0 && this.seats > 0 && this.isCorrectImageUrl;
+            this.isCorrectInputs = this.name && this.description && this.seats > 0 && this.isCorrectImageUrl;
         },
 
         async checkImageExists(imageUrl) {
@@ -85,7 +79,6 @@ export default {
             this.name = '';
             this.description = '';
             this.typeTransport = '';
-            this.price = 0;
             this.seats = 0;
             this.imageUrl = '';
             this.isCorrectImageUrl = false;
@@ -100,7 +93,6 @@ export default {
                     description: this.description,
                     type: this.typeTransport,
                     quantitySeats: this.seats,
-                    priceForHundredKm: this.price,
                     imageUrl: this.imageUrl
                 };
                 console.log(data)

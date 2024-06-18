@@ -16,7 +16,6 @@
                 <th>Image</th>
                 <th>Name</th>
                 <th>Type</th>
-                <th>Price for hundred km</th>
                 <th>Quantity of seats</th>
                 <th style="width: 400px;">Action</th>
             </tr>
@@ -24,7 +23,6 @@
                 <td><img :src="transport.imageUrl"></td>
                 <td>{{ transport.name }}</td>
                 <td>{{ transport.type }}</td>
-                <td>{{ transport.priceForHundredKm }}</td>
                 <td>{{ transport.quantitySeats }}</td>
                 <td>
                     <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"

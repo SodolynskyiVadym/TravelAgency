@@ -15,11 +15,6 @@
         <div class="error" v-if="!transport.type">Type of transport is required</div>
 
 
-
-        <label for="price">Price for hundred km</label>
-        <input type="number" id="price" v-model="transport.priceForHundredKm" @input="checkCorrectInputs">
-        <div class="error" v-if="transport.priceForHundredKm <= 0">Price must be more than 0</div>
-
         <label for="seats">Number of seats</label>
         <input type="number" id="seats" v-model="transport.quantitySeats" @input="checkCorrectInputs">
         <div class="error" v-if="transport.quantitySeats <= 0">Number of seats must be more than 0</div>
@@ -61,8 +56,7 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            this.isCorrectInputs = this.transport.name && this.transport.description && this.transport.priceForHundredKm > 0 
-                && this.transport.quantitySeats > 0 && this.isCorrectImageUrl;
+            this.isCorrectInputs = this.transport.name && this.transport.description && this.transport.quantitySeats > 0 && this.isCorrectImageUrl;
         },
 
         async checkImageExists(imageUrl) {

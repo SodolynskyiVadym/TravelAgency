@@ -5,6 +5,7 @@
             <input placeholder="Email" class="username input" type="text" v-model="user.email">
             <input placeholder="Password" class="password input" type="password" v-model="user.password">
             <button class="btn" type="submit" @click="login" :disabled="!user.email || user.password < 8">Login</button>
+            <div style="cursor: pointer;" class="username input" @click="forgotPassword">Forgot password</div>
         </div>
     </div>
 </template>
@@ -31,6 +32,10 @@ export default {
                 localStorage.setItem('token', token);
                 this.$router.push('/');
             }
+        },
+
+        async forgotPassword() {
+            this.$router.push('/forgotPassword');
         }
     }
 }
