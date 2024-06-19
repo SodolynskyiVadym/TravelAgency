@@ -86,7 +86,7 @@ public class AuthHelper
     }
 
 
-    public async Task<bool> RegisterUser(UserLoginRegistrationDto userRegistration, string userRole)
+    public async Task<int> RegisterUser(UserLoginRegistrationDto userRegistration)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -99,7 +99,7 @@ public class AuthHelper
         UserDto user = new UserDto()
         {
             Email = userRegistration.Email,
-            Role = userRole,
+            Role = "USER",
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
@@ -107,7 +107,7 @@ public class AuthHelper
     }
 
 
-    public async Task<string> CreateUser(UserEmailRoleDto user)
+    public async Task<string> CreateEditorAdmin(UserEmailRoleDto user)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -127,7 +127,7 @@ public class AuthHelper
             PasswordSalt = passwordSalt
         };
         
-        if(await _userRepository.AddAsync(userDto)) return password;
+        if((await _userRepository.AddAsync(userDto)) > 0) return password;
         return string.Empty;
     }
 

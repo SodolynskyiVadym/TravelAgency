@@ -8,9 +8,11 @@ const mainUrl = "http://localhost:5113/auth";
 export async function getUserByToken(token) {
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
-        return await axios.get(`${mainUrl}/getUserByToken`, config).then((res) => res.data);
+        const user = await axios.get(`${mainUrl}/getUserByToken`, config).then((res) => res.data);
+        if(user) return user;
+        else router.push("/login");
     } catch {
-        router.push("/login");
+        router.push("/error");
     }
 }
 

@@ -25,7 +25,4 @@ public class Payment : IModel
     [Required]
     public int TourId { get; set; }
     public Tour Tour { get; set; }
-
-    [NotMapped]
-    public int TotalPrice => Amount * Tour.Price;
 }

@@ -99,10 +99,13 @@ export default {
     if (token) {
       this.user = await userAPI.getUserByToken(token);
       if (!this.user) {
-        this.user.role = "";
+        this.user = {
+          role: "",
+          email: ""
+        }
         localStorage.removeItem('token');
       }
-      localStorage.removeItem('token');
+      // localStorage.removeItem('token');
     }
   }
 }

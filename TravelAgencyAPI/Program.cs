@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Settings;
 
@@ -16,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
 builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddDbContext<TravelDbContext>(options =>
 {

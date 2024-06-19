@@ -61,7 +61,7 @@ public class AuthController : ControllerBase
         User? user = await _userRepository.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
         
-        if(_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
+        if(!_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
             return StatusCode(400, "Incorrect password!");
         return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}}); 
     }
@@ -108,7 +108,7 @@ public class AuthController : ControllerBase
         IEnumerable<User> users = await _userRepository.GetAllAsync();
         if (users.FirstOrDefault(u => u.Email == userRegistration.Email) != null) return StatusCode(400, "User already exists");
 
-        bool isRegistered = await _authHelper.RegisterUser(userRegistration, "USER");
+        bool isRegistered = await _authHelper.RegisterUser(userRegistration) > 0;
         if (isRegistered)
         {
             User user = await _userRepository.GetUserByEmail(userRegistration.Email) ?? throw new InvalidOperationException();
@@ -126,7 +126,7 @@ public class AuthController : ControllerBase
         if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
             return BadRequest("Incorrect data");
 
-        string password = await _authHelper.CreateUser(user);
+        string password = await _authHelper.CreateEditorAdmin(user);
         if(password.IsNullOrEmpty()) return BadRequest("User already exists");
         
         if(_mailHelper.SendPassword(user.Email, password, user.Role)) return Ok();

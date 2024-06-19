@@ -26,11 +26,12 @@ export default {
     methods: {
         async login() {
             const data = await userAPI.login(this.user);
-            console.log(data);
-            const token = data.token;
-            if (token) {
+            if (data) {
+                const token = data.token;
                 localStorage.setItem('token', token);
                 this.$router.push('/');
+            }else{
+                alert('Invalid email or password');
             }
         },
 

@@ -32,7 +32,7 @@
         </div>
 
         <div style="margin-top: 30px; display: flex; flex-direction: column;">
-            <button class="button-action" @click="orderTour">Buy</button>
+            <button class="button-action" @click="reserveTour">Buy</button>
             <button class="button-action" @click="enterUpdatePage">Update</button>
         </div>
     </div>
@@ -41,12 +41,14 @@
 <script>
 import * as tourAPI from '@/services/API/tourAPI';
 import * as dateHelper from '@/js/dateHelper';
+import * as stripe from '@/js/stripe';
 
 export default {
     data() {
         return {
             isLoaded: false,
-            tour: null
+            tour: null,
+            quantity: 1
         }
     },
     methods: {
@@ -54,8 +56,17 @@ export default {
             this.$router.push(`/updateTour/${this.tour.id}`);
         },
 
-        orderTour(){
-            console.log("Tour ordered!");
+        async reserveTour(){
+            const data = {
+                tourId: this.tour.id,
+                quantity: this.quantity
+            }
+            const token = localStorage.getItem('token');
+            if (!token) {
+                this.$router.push('/login');
+            }
+
+            await stripe.reserveTour(data, token);
         }
     },
 

@@ -40,11 +40,12 @@ public class TourRepository : IRepository<Tour, TourDto>
         return await _context.Tours.ToListAsync();
     }
     
-    public async Task<bool> AddAsync(TourDto tour)
+    public async Task<int> AddAsync(TourDto tourDto)
     {
-        await _context.Tours.AddAsync(_mapper.Map<Tour>(tour));
-        await _context.SaveChangesAsync(); 
-        return true;
+        Tour tour = _mapper.Map<Tour>(tourDto);
+        await _context.Tours.AddAsync(tour);
+        await _context.SaveChangesAsync();
+        return tour.Id;
     }
     
     

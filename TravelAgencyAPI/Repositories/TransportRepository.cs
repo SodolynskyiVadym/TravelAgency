@@ -28,11 +28,12 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         return await _context.Transports.ToListAsync();
     }
     
-    public async Task<bool> AddAsync(TransportDto transport)
+    public async Task<int> AddAsync(TransportDto transportDto)
     {
-        await _context.Transports.AddAsync(_mapper.Map<Transport>(transport));
+        Transport transport = _mapper.Map<Transport>(transportDto);
+        await _context.Transports.AddAsync(transport);
         await _context.SaveChangesAsync();
-        return true;
+        return transport.Id;
     }
     
     public async Task<bool> UpdateAsync(int id, TransportDto transportUpdate)

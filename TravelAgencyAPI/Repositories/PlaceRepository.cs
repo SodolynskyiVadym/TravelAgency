@@ -37,23 +37,23 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
     }
 
 
-    public async Task<bool> AddAsync(PlaceDto place)
+    public async Task<int> AddAsync(PlaceDto placeDto)
     {
-        if (place.ImagesUrls == null || !place.ImagesUrls.Any()) return false;
+        if (placeDto.ImagesUrls == null || !placeDto.ImagesUrls.Any()) return 0;
         
-        Place newPlace = new Place()
+        Place place = new Place()
         {
-            Name = place.Name!,
-            Country = place.Country!,
-            Description = place.Description!
+            Name = placeDto.Name!,
+            Country = placeDto.Country!,
+            Description = placeDto.Description!
         };
-        await _context.Places.AddAsync(newPlace);
+        await _context.Places.AddAsync(place);
         await _context.SaveChangesAsync();
         
-        var placeImageUrls = place.ImagesUrls.Select(url => new PlaceImageUrl { Url = url, PlaceId = newPlace.Id });
+        var placeImageUrls = placeDto.ImagesUrls.Select(url => new PlaceImageUrl { Url = url, PlaceId = place.Id });
         await _context.PlaceImageUrls.AddRangeAsync(placeImageUrls);
         await _context.SaveChangesAsync();
-        return true;
+        return place.Id;
     }
 
     public async Task<bool> UpdateAsync(int id, PlaceDto placeUpdate)

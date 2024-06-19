@@ -32,11 +32,12 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
             .ToListAsync();
     }
 
-    public async Task<bool> AddAsync(HotelDto hotel)
+    public async Task<int> AddAsync(HotelDto hotelDto)
     {
-        await _context.Hotels.AddAsync(_mapper.Map<Hotel>(hotel));
+        Hotel hotel = _mapper.Map<Hotel>(hotelDto);
+        await _context.Hotels.AddAsync(hotel);
         await _context.SaveChangesAsync();
-        return true;
+        return hotel.Id;
     }
 
     public async Task<bool> UpdateAsync(int id, HotelDto hotelUpdate)

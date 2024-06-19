@@ -29,14 +29,15 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
         return await _context.Users.ToListAsync();
     }
 
-    public async Task<bool> AddAsync(UserDto user)
+    public async Task<int> AddAsync(UserDto userDto)
     {
         List<string> emails = await _context.Users.Select(u => u.Email).ToListAsync();
-        if(emails.Contains(user.Email)) return false;
+        if(emails.Contains(userDto.Email)) return 0;
         
-        await _context.Users.AddAsync(_mapper.Map<User>(user));
+        User user = _mapper.Map<User>(userDto);
+        await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
-        return true;
+        return user.Id;
     }
 
     public async Task<bool> UpdateAsync(int id, UserDto user)

@@ -16,7 +16,7 @@ export async function getAllTours() {
     try {
         return await axios.get(`${mainUrl}/getAllTours`).then((res) => res.data);
     } catch (error) {
-        await router.push("/error");
+        return [];
     }
 }
 

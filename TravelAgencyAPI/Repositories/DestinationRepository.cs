@@ -28,11 +28,11 @@ public class DestinationRepository : IRepository<Destination, DestinationDto>, I
         return await _context.Destinations.Include(d => d.Hotel).ToListAsync();
     }
     
-    public Task<bool> AddAsync(DestinationDto destination)
+    public async Task<int> AddAsync(DestinationDto destinationDto)
     {
         // await _context.Destinations.AddAsync(_mapper.Map<Destination>(destination));
         // await _context.SaveChangesAsync();
-        return Task.FromResult(true);
+        return 0;
     }
     
     public async Task<bool> UpdateAsync(int id, DestinationDto destinationUpdate)

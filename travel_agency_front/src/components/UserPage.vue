@@ -9,16 +9,16 @@
             <input id="role" placeholder="Role" class="username input" type="text" v-model="user.role" readonly>
 
             <label for="password">Password:</label>
-            <input id="password" placeholder="Password" class="password input" type="password" v-model="user.password">
+            <input id="password" placeholder="Password" class="password input" type="password" v-model="password">
 
-            <label for="confirmPassword">Confirm Password:</label>
+            <label for="confirmPassword">Confirm new password:</label>
             <input id="confirmPassword" placeholder="Confirm password" class="password input" type="password"
                 v-model="confirmPassword">
 
             <p style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
             <p style="color: red; margin-top: 40px;" v-if="message">{{ message }}</p>
             <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword"
-                :disabled="user.password != confirmPassword || user.password < 8">Update password</button>
+                :disabled="password != confirmPassword || password.length < 8">Update password</button>
         </div>
     </div>
 </template>
@@ -30,6 +30,7 @@ export default {
     data() {
         return {
             user: null,
+            password: "",
             confirmPassword: "",
             message: "",
             isLoaded: false
@@ -40,12 +41,12 @@ export default {
             this.message = "";
             const token = localStorage.getItem('token');
             if (token) {
-                const result = await userAPI.updatePassword(this.user.password, token);
+                const result = await userAPI.updatePassword(this.password, token);
                 if (result === false) {
                     this.message = "Password wasn't changed"
 
                 }
-                this.user.password = "";
+                this.password = "";
                 this.confirmPassword = "";
             } else this.$router.push('/login');
         }
@@ -56,7 +57,10 @@ export default {
         if (token) {
             this.user = await userAPI.getUserByToken(token);
             this.isLoaded = true
-        } else this.$router.push('/error');
+        } else{
+            localStorage.removeItem('token');
+            this.$router.push('/login');
+        }
     }
 }
 </script>
