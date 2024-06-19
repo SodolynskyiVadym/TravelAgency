@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -15,9 +16,9 @@ public class PlaceController : ControllerBase
 {
     private readonly PlaceRepository _placeRepository;
 
-    public PlaceController(TravelDbContext context, IMapper mapper)
+    public PlaceController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _placeRepository = new PlaceRepository(context, mapper);
+        _placeRepository = new PlaceRepository(context, mapper, redis);
     }
 
     [HttpGet("{id}")]

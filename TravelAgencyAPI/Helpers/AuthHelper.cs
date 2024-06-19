@@ -168,10 +168,15 @@ public class AuthHelper
     
     public bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
     {
+        Console.WriteLine(password);
         byte[] passwordHashToCheck = GetPasswordHash(password, passwordSalt);
         for (var index = 0; index < passwordHashToCheck.Length; index++)
         {
-            if (passwordHashToCheck[index] != passwordHash[index]) return false;
+            if (passwordHashToCheck[index] != passwordHash[index])
+            {
+                Console.WriteLine("Password is incorrect");
+                return false;
+            }
         }
         return true;
     }

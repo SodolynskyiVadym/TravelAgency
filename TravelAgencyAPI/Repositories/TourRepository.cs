@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -11,35 +13,47 @@ public class TourRepository : IRepository<Tour, TourDto>
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IDatabase _redis;
 
-    public TourRepository(TravelDbContext context, IMapper mapper)
+    public TourRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
+        _redis = redisConnection.GetDatabase();
     }
-    
+
     public async Task<Tour?> GetByIdAsync(int id)
     {
-        return await _context.Tours
+        string redisKey = "tour" + id;
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            string jsonData = await _redis.StringGetAsync(redisKey);
+            return JsonConvert.DeserializeObject<Tour>(jsonData);
+        }
+
+        Tour? tour = await _context.Tours
             .Include(t => t.PlaceStart)
-                .ThenInclude(p => p.ImagesUrls)
+            .ThenInclude(p => p.ImagesUrls)
             .Include(t => t.PlaceEnd)
-                .ThenInclude(p => p.ImagesUrls)
+            .ThenInclude(p => p.ImagesUrls)
             .Include(t => t.Destinations)
-                .ThenInclude(d => d.Hotel)
-                    .ThenInclude(h => h.Place)
-                        .ThenInclude(p => p.ImagesUrls)
+            .ThenInclude(d => d.Hotel)
+            .ThenInclude(h => h.Place)
+            .ThenInclude(p => p.ImagesUrls)
             .Include(t => t.Destinations)
-                .ThenInclude(d => d.Transport)
+            .ThenInclude(d => d.Transport)
             .Include(t => t.TransportToEnd)
             .FirstOrDefaultAsync(t => t.Id == id);
+        if (tour != null)
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour));
+        return tour;
     }
-    
+
     public async Task<List<Tour>> GetAllAsync()
     {
         return await _context.Tours.ToListAsync();
     }
-    
+
     public async Task<int> AddAsync(TourDto tourDto)
     {
         Tour tour = _mapper.Map<Tour>(tourDto);
@@ -47,8 +61,8 @@ public class TourRepository : IRepository<Tour, TourDto>
         await _context.SaveChangesAsync();
         return tour.Id;
     }
-    
-    
+
+
     public async Task<bool> UpdateAsync(int id, TourDto tourUpdate)
     {
         Tour? tour = await _context.Tours.Include(t => t.Destinations).FirstOrDefaultAsync(t => t.Id == id);
@@ -66,20 +80,26 @@ public class TourRepository : IRepository<Tour, TourDto>
         tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
         tour.IsAvailable = tourUpdate.IsAvailable;
-        tour.Destinations = tourUpdate.Destinations?.Count() > 0 ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList() : tour.Destinations;
-        
+        tour.Destinations = tourUpdate.Destinations?.Count() > 0
+            ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList()
+            : tour.Destinations;
+
         await _context.SaveChangesAsync();
+        
+        string redisKey = "tour" + id;
+        if (await _redis.KeyExistsAsync(redisKey))
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour));
         return true;
-    }  
-    
+    }
+
     public async Task<bool> DeleteAsync(int id)
     {
         Tour? tour = await _context.Tours.FindAsync(id);
         if (tour == null) return false;
-        
+
         _context.Tours.Remove(tour);
         await _context.SaveChangesAsync();
-        
+        await _redis.KeyDeleteAsync("tour" + id);
         return true;
     }
 }

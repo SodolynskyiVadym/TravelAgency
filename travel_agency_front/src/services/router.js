@@ -18,7 +18,6 @@ import UserPage from '@/components/UserPage.vue';
 import AdminPage from '@/components/AdminPage.vue';
 import CreateUserPage from '@/components/CreatePages/CreateUser.vue';
 import ForgotPasswordPage from '@/components/Auth/ForgotPasswordPage.vue';
-import TestPage from '@/components/CreatePages/TestPage.vue';
 
 import * as userAPI from '@/services/API/userAPI';
 
@@ -108,11 +107,6 @@ const routes = [
             requiresAuth: true,
             roles: ["ADMIN", "EDITOR"]
         }
-    },
-    {
-        path: '/test',
-        name: 'TestPage',
-        component: TestPage,
     },
     {
         path: '/listHotels',

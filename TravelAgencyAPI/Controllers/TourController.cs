@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -16,9 +17,9 @@ public class TourController : ControllerBase
     private readonly TourRepository _tourRepository;
     private readonly IMapper _mapper;
     
-    public TourController(TravelDbContext context, IMapper mapper)
+    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _tourRepository = new TourRepository(context, mapper);
+        _tourRepository = new TourRepository(context, mapper, redis);
         _mapper = mapper;
     }
     

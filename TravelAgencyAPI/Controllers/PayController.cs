@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -24,10 +25,10 @@ public class PayController : ControllerBase
     private readonly IConfiguration _config;
 
     public PayController(TravelDbContext context, IMapper mapper, IConfiguration config,
-        IOptions<MailSetting> mailSetting)
+        IOptions<MailSetting> mailSetting, IConnectionMultiplexer redis)
     {
         _userRepository = new UserRepository(context, mapper);
-        _tourRepository = new TourRepository(context, mapper);
+        _tourRepository = new TourRepository(context, mapper, redis);
         _paymentRepository = new PaymentRepository(context, mapper);
         _mailHelper = new MailHelper(mailSetting);
         _stripeHelper = new StripeHelper(config);

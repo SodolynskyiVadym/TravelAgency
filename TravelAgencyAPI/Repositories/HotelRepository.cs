@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -11,18 +13,29 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
-    public HotelRepository(TravelDbContext context, IMapper mapper)
+    private readonly IDatabase _redis;
+    public HotelRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
+        _redis = redisConnection.GetDatabase();
     }
     
     
     public async Task<Hotel?> GetByIdAsync(int id)
     {
-        return await _context.Hotels
+        string redisKey = "hotel" + id;
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            string jsonData = await _redis.StringGetAsync(redisKey);
+            return JsonConvert.DeserializeObject<Hotel>(jsonData);
+        }
+        Hotel? hotel =  await _context.Hotels
             .Include(h => h.Place)
             .FirstOrDefaultAsync(h => h.Id == id);
+        if(hotel != null) 
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel));
+        return hotel;
     }
 
     public async Task<List<Hotel>> GetAllAsync()
@@ -45,6 +58,8 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
         Hotel? hotel = await _context.Hotels.FindAsync(id);
         if (hotel == null) return false;
         
+        string redisKey = "hotel" + id;
+        
         hotel.Name = hotelUpdate.Name ?? hotel.Name ;
         hotel.Address = hotelUpdate.Address ?? hotel.Address;
         hotel.Description = hotelUpdate.Description ?? hotel.Description;
@@ -53,6 +68,8 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
         hotel.ImageUrl = hotelUpdate.ImageUrl ?? hotel.ImageUrl;
 
         await _context.SaveChangesAsync();
+        if(await _redis.KeyExistsAsync(redisKey))
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel));
         return true;
     }
 
@@ -60,10 +77,10 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
     {
         Hotel? hotel = await _context.Hotels.FindAsync(id);
         if (hotel == null) return false;
-
+        
         _context.Hotels.Remove(hotel);
         await _context.SaveChangesAsync();
-
+        await _redis.KeyDeleteAsync("hotel" + id);
         return true;
     }
 }

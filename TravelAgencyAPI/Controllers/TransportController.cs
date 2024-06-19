@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -15,10 +17,11 @@ public class TransportController : ControllerBase
 {
     private readonly TransportRepository _transportRepository;
     
-    public TransportController(TravelDbContext context, IMapper mapper)
+    public TransportController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _transportRepository = new TransportRepository(context, mapper);
+        _transportRepository = new TransportRepository(context, mapper, redis);
     }
+    
     
     [HttpGet("{id}")]
     public async Task<Transport?> GetTransport(int id)

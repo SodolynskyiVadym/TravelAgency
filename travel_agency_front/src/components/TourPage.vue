@@ -27,19 +27,29 @@
             </div>
         </div>
 
-        <div>
-            <h2 style="margin-top: 100px;">Price: {{ tour.price }}</h2>
+
+
+        <div v-if="user.role">
+            <div style="margin-top: 60px; text-align: center;">
+                <h2>Quantity</h2>
+                <input type="number" v-model="quantity" min="1" max="10" @input="calculatePrice">
+            </div>
+            <div>
+                <h2 style="margin-top: 30px;">Price: {{ tour.price }}</h2>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; flex-direction: column;">
+                <button class="button-action" @click="reserveTour">Buy</button>
+                <button class="button-action" @click="enterUpdatePage" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
+            </div>
         </div>
 
-        <div style="margin-top: 30px; display: flex; flex-direction: column;">
-            <button class="button-action" @click="reserveTour">Buy</button>
-            <button class="button-action" @click="enterUpdatePage">Update</button>
-        </div>
     </div>
 </template>
 
 <script>
 import * as tourAPI from '@/services/API/tourAPI';
+import * as userAPI from '@/services/API/userAPI';
 import * as dateHelper from '@/js/dateHelper';
 import * as stripe from '@/js/stripe';
 
@@ -47,8 +57,10 @@ export default {
     data() {
         return {
             isLoaded: false,
+            user: { role: "" },
             tour: null,
-            quantity: 1
+            quantity: 1,
+            priceForOne: 0
         }
     },
     methods: {
@@ -56,7 +68,7 @@ export default {
             this.$router.push(`/updateTour/${this.tour.id}`);
         },
 
-        async reserveTour(){
+        async reserveTour() {
             const data = {
                 tourId: this.tour.id,
                 quantity: this.quantity
@@ -67,17 +79,32 @@ export default {
             }
 
             await stripe.reserveTour(data, token);
+        },
+
+        async calculatePrice() {
+            if (this.quantity < 1) {
+                this.quantity = 1;
+            }
+            this.tour.price = this.priceForOne * this.quantity;
         }
     },
 
     async mounted() {
         this.tour = await tourAPI.getTourById(this.$route.params.id);
+        this.priceForOne = this.tour.price;
         this.tour.startDate = await dateHelper.formatDate(this.tour.startDate);
         this.tour.endDate = await dateHelper.formatDate(this.tour.endDate);
         for (let destination of this.tour.destinations) {
             destination.startDate = await dateHelper.formatDate(destination.startDate);
             destination.endDate = await dateHelper.formatDate(destination.endDate);
         }
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            this.user = await userAPI.getUserByToken(token);
+            if (!this.user) this.user = { role: "" };
+        }
+
         this.isLoaded = true;
     }
 }

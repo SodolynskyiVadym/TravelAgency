@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -11,18 +13,29 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IDatabase _redis;
 
-    public PlaceRepository(TravelDbContext context, IMapper mapper)
+    public PlaceRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction)
     {
         _context = context;
         _mapper = mapper;
+        _redis = redisConnecction.GetDatabase();
     }
 
     public async Task<Place?> GetByIdAsync(int id)
     {
-        return await _context.Places
+        string redisKey = "place" + id;
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            string jsonData = await _redis.StringGetAsync(redisKey);
+            return JsonConvert.DeserializeObject<Place>(jsonData);
+        }
+        Place? place =  await _context.Places
             .Include(p => p.ImagesUrls)
             .FirstOrDefaultAsync(place => place.Id == id);
+        if(place != null) 
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place));
+        return place;
     }
 
     public async Task<List<Place>> GetAllAsync()
@@ -72,6 +85,10 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
             : place.ImagesUrls;
         
         await _context.SaveChangesAsync();
+        
+        string redisKey = "place" + id;
+        if(await _redis.KeyExistsAsync(redisKey))
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place));
         return true;
     }
 
@@ -82,7 +99,7 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
 
         _context.Places.Remove(place);
         await _context.SaveChangesAsync();
-
+        await _redis.KeyDeleteAsync("place" + id);
         return true;
     }
 }

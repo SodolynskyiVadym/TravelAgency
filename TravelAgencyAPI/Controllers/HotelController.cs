@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
@@ -14,9 +16,9 @@ namespace TravelAgencyAPI.Controllers;
 public class HotelController : ControllerBase
 {
     private readonly HotelRepository _hotelRepository;
-    public HotelController(TravelDbContext context, IMapper mapper)
+    public HotelController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _hotelRepository = new HotelRepository(context, mapper);
+        _hotelRepository = new HotelRepository(context, mapper, redis);
     }
     
     
