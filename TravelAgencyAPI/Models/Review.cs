@@ -2,7 +2,7 @@
 
 namespace TravelAgencyAPI.Models;
 
-public class Review
+public class Review : IModel
 {
     public int Id { get; set; }
     public string? Text { get; set; }
