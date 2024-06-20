@@ -22,7 +22,7 @@ export async function getAllUsers(token) {
     try {
         return await axios.get(`${mainUrl}/getAllUsers`, config).then((res) => res.data);
     } catch {
-        router.push("/error");
+        return [];
     }
 }
 

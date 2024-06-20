@@ -17,7 +17,7 @@ export async function getAllTransports() {
     try {
         return await axios.get(`${mainUrl}/getAllTransports`).then((res) => res.data);
     } catch (error) {
-        await router.push("/error");
+        return [];
     }
 }
 

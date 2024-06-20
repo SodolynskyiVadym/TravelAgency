@@ -98,4 +98,9 @@ public class PayController : ControllerBase
         await _paymentRepository.DeleteAsync(payment.Id);
         return Redirect(_config.GetSection("Urls:Client").Value + "/error");
     }
+    
+    public async Task DeleteUnpaidPaymentsAsync()
+    {
+        await _paymentRepository.DeleteUnpaid();
+    }
 }

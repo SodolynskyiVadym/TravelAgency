@@ -10,6 +10,9 @@
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="EntityFramework" Version="6.5.0-preview2-24180-01" />
+      <PackageReference Include="Hangfire" Version="1.8.14" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+      <PackageReference Include="Hangfire.SqlServer" Version="1.8.14" />
       <PackageReference Include="MailKit" Version="4.5.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
       <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />

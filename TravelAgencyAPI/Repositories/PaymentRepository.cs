@@ -7,7 +7,7 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class PaymentRepository : IRepository<Payment, PaymentDto>
+public class PaymentRepository : IRepository<Payment, PaymentDto>, IPaymentRepository
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
@@ -60,5 +60,12 @@ public class PaymentRepository : IRepository<Payment, PaymentDto>
         _context.Payments.Remove(payment);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task DeleteUnpaid()
+    {
+        IEnumerable<Payment> payments = _context.Payments.Where(p => !p.IsPaid);
+        _context.Payments.RemoveRange(payments);
+        await _context.SaveChangesAsync();
     }
 }

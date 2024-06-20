@@ -19,7 +19,7 @@ export async function getAllPlaces() {
   try {
     return await axios.get(`${mainUrl}/getAllPlaces`).then((res) => res.data);
   } catch (error) {
-    await router.push("/error");
+    return [];
   }
 }
 

@@ -1,10 +1,13 @@
 using System.Text;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Stripe;
 using TravelAgencyAPI.Helpers;
+using TravelAgencyAPI.Repositories;
 using TravelAgencyAPI.Settings;
 
 
@@ -20,14 +23,34 @@ builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSe
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+string connectionString = builder.Configuration["ConnectionString:DefaultConnection"] ?? throw new InvalidOperationException();
+
 builder.Services.AddDbContext<TravelDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration["ConnectionString:DefaultConnection"]);
+    options.UseSqlServer(connectionString);
 });
 
-var redisConnectionString = builder.Configuration["ConnectionString:RedisConnection"];
+string redisConnectionString = builder.Configuration["ConnectionString:RedisConnection"] ?? throw new InvalidOperationException();
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect(redisConnectionString));
+
+
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+    {
+        SchemaName = "HangfireSchema",
+        PrepareSchemaIfNecessary = true,
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -58,6 +81,16 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
+app.UseHangfireDashboard();
+var recurringJobManager = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IRecurringJobManager>();
+recurringJobManager.AddOrUpdate<PaymentRepository>(
+    recurringJobId: "DeleteUnpaidPaymentsJob", 
+    methodCall: r => r.DeleteUnpaid(), 
+    cronExpression: "00 13 * * *", 
+    options: new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -39,7 +39,7 @@
             </div>
 
             <div style="margin-top: 30px; display: flex; flex-direction: column;">
-                <button class="button-action" @click="reserveTour">Buy</button>
+                <button class="button-action" @click="reserveTour" v-if="!isSendRequest" :disabled="isSendRequest">Buy</button>
                 <button class="button-action" @click="enterUpdatePage" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
             </div>
         </div>
@@ -60,7 +60,8 @@ export default {
             user: { role: "" },
             tour: null,
             quantity: 1,
-            priceForOne: 0
+            priceForOne: 0,
+            isSendRequest: false
         }
     },
     methods: {
@@ -69,6 +70,7 @@ export default {
         },
 
         async reserveTour() {
+            this.isSendRequest = true;
             const data = {
                 tourId: this.tour.id,
                 quantity: this.quantity
