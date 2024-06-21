@@ -6,9 +6,11 @@ const mainUrl = "http://localhost:5113/tour";
 
 export async function getTourById(id) {
     try {
-        return await axios.get(`${mainUrl}/${id}`).then((res) => res.data);
+        const tour = await axios.get(`${mainUrl}/${id}`).then((res) => res.data);
+        if (tour) return tour;
+        else await router.push("/");
     } catch (error) {
-        await router.push("/error");
+        await router.push("/");
     }
 }
 
@@ -29,9 +31,10 @@ export async function getAllToursForeignKeys() {
 }
 
 export async function updateTour(id, tour, token) {
+    tour.id = id;
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
-        return await axios.patch(`${mainUrl}/update/${id}`, tour, config).then((res) => res.data);
+        return await axios.patch(`${mainUrl}/update`, tour, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

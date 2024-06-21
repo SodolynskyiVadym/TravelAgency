@@ -23,7 +23,7 @@ export async function getAllHotels() {
 export async function updateHotel(hotel, token){
     const config = {headers: {Authorization: `Bearer ${token}`}}
     try {
-        return await axios.patch(`${mainUrl}/update/${hotel.id}`, hotel, config).then((res) => res.data);
+        return await axios.patch(`${mainUrl}/update`, hotel, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

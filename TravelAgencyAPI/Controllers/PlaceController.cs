@@ -56,10 +56,10 @@ public class PlaceController : ControllerBase
     
     
     [Authorize(Roles = "EDITOR, ADMIN")]
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdatePlace(int id, PlaceDto place)
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdatePlace(PlaceDto place)
     {
-        if (await _placeRepository.UpdateAsync(id, place)) return Ok();
+        if (await _placeRepository.UpdateAsync(place)) return Ok();
         return NoContent();
     }
 }

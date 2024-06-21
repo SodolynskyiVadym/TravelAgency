@@ -46,10 +46,10 @@ public class TransportController : ControllerBase
     
     
     [Authorize(Roles = "EDITOR, ADMIN")]
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateTransport(int id, TransportDto transport)
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateTransport(TransportDto transport)
     {
-        if (await _transportRepository.UpdateAsync(id, transport)) return Ok();
+        if (await _transportRepository.UpdateAsync(transport)) return Ok();
         return NoContent();
     }
     

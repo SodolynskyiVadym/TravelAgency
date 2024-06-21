@@ -63,9 +63,10 @@ public class TourRepository : IRepository<Tour, TourDto>
     }
 
 
-    public async Task<bool> UpdateAsync(int id, TourDto tourUpdate)
+    public async Task<bool> UpdateAsync(TourDto tourUpdate)
     {
-        Tour? tour = await _context.Tours.Include(t => t.Destinations).FirstOrDefaultAsync(t => t.Id == id);
+        Tour? tour = await _context.Tours.Include(t => t.Destinations)
+            .FirstOrDefaultAsync(t => t.Id == tourUpdate.Id);
         if (tour == null) return false;
 
         _context.Destinations.RemoveRange(tour.Destinations);
@@ -86,7 +87,7 @@ public class TourRepository : IRepository<Tour, TourDto>
 
         await _context.SaveChangesAsync();
         
-        string redisKey = "tour" + id;
+        string redisKey = "tour" + tourUpdate.Id;
         if (await _redis.KeyExistsAsync(redisKey))
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour));
         return true;

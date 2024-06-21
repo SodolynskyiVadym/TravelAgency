@@ -18,7 +18,7 @@ public class ReviewController : ControllerBase
     
     public ReviewController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _reviewRepository = new ReviewRepository(context, mapper, redis);
+        _reviewRepository = new ReviewRepository(context, mapper);
     }
     
     [Authorize]
@@ -42,30 +42,36 @@ public class ReviewController : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("createReview")]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateReview(ReviewDto review)
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
-        if(userId != review.UserId) return Unauthorized("You can only create reviews for yourself");
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
-
+        if (await _reviewRepository.GetUserReview(userId, review.TourId) != null) return BadRequest("You have already reviewed this tour");
+        
         review.UserId = userId;
-        if (await _reviewRepository.AddAsync(review) != 0) return Ok(review);
+        if (await _reviewRepository.AddAsync(review) != 0) return Ok();
         return BadRequest();
     }
     
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateReview(int id, ReviewDto review)
+    [Authorize]
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateReview(ReviewDto review)
     {
+        int userId = int.Parse(User.FindFirst("userId")?.Value);
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
-        if (await _reviewRepository.UpdateAsync(id, review)) return Ok();
+        if (await _reviewRepository.UpdateAsync(review)) return Ok();
         return NoContent();
     }
     
-    [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteReview(int id)
+    [Authorize]
+    [HttpDelete("delete/{tourId}")]
+    public async Task<IActionResult> DeleteReview(int tourId)
     {
-        if (await _reviewRepository.DeleteAsync(id)) return Ok();
-        return NoContent();
+        Console.WriteLine("TourId: " + tourId);
+        int userId = int.Parse(User.FindFirst("userId")?.Value);
+        
+        if (await _reviewRepository.DeleteUserReviewAsync(userId, tourId)) return Ok();
+        return BadRequest("You have not reviewed this tour");
     }
 }

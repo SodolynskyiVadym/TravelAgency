@@ -40,9 +40,15 @@ public class UserRepository : IRepository<User, UserDto>, IUserRepository
         return user.Id;
     }
 
-    public async Task<bool> UpdateAsync(int id, UserDto user)
+    public async Task<bool> UpdateAsync(UserDto user)
     {
-        await this.UpdatePasswordAsync(user.Email, user.PasswordHash, user.PasswordSalt);
+        User? userToUpdate = await _context.Users.FindAsync(user.Id);
+        if (userToUpdate == null) return false;
+        
+        userToUpdate.Email = user.Email ?? userToUpdate.Email;
+        userToUpdate.Role = user.Role ?? userToUpdate.Role;
+        
+        await _context.SaveChangesAsync();
         return true;
     }
 

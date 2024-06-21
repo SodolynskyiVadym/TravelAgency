@@ -22,9 +22,10 @@ export async function getAllTransports() {
 }
 
 export async function updateTransport(id, transport, token) {
+    transport.id = id;
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
-        return await axios.patch(`${mainUrl}/update/${id}`, transport, config).then((res) => res.data);
+        return await axios.patch(`${mainUrl}/update`, transport, config).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }

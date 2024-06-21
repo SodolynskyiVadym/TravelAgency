@@ -35,9 +35,9 @@ public class DestinationRepository : IRepository<Destination, DestinationDto>
         return 0;
     }
     
-    public async Task<bool> UpdateAsync(int id, DestinationDto destinationUpdate)
+    public async Task<bool> UpdateAsync(DestinationDto destinationUpdate)
     {
-        Destination? destination = await _context.Destinations.FindAsync(id);
+        Destination? destination = await _context.Destinations.FindAsync(destinationUpdate.Id);
         if (destination == null) return false;
         
         destination.StartDate = destinationUpdate.StartDate ?? destination.StartDate;

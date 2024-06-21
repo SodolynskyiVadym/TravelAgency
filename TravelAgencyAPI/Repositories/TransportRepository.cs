@@ -49,9 +49,9 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         return transport.Id;
     }
     
-    public async Task<bool> UpdateAsync(int id, TransportDto transportUpdate)
+    public async Task<bool> UpdateAsync(TransportDto transportUpdate)
     {
-        Transport? transport = await _context.Transports.FindAsync(id);
+        Transport? transport = await _context.Transports.FindAsync(transportUpdate.Id);
         if (transport == null) return false;
         
         transport.Name = transportUpdate.Name ?? transport.Name;
@@ -61,7 +61,7 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         transport.ImageUrl = transportUpdate.ImageUrl ?? transport.ImageUrl;
         await _context.SaveChangesAsync();
         
-        string redisKey = "transport" + id;
+        string redisKey = "transport" + transportUpdate.Id;
         if (await _redis.KeyExistsAsync(redisKey))
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport));
         return true;

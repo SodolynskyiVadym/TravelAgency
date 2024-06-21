@@ -13,26 +13,16 @@ public class ReviewRepository : IRepository<Review, ReviewDto>, IReviewRepositor
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IDatabase _redis;
 
-    public ReviewRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public ReviewRepository(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _redis = redisConnection.GetDatabase();
     }
 
     public async Task<Review?> GetByIdAsync(int id)
     {
-        string redisKey = "review" + id;
-        if (await _redis.KeyExistsAsync(redisKey))
-        {
-            string jsonData = await _redis.StringGetAsync(redisKey);
-            return JsonConvert.DeserializeObject<Review>(jsonData);
-        }
         Review? review = await _context.Reviews.FirstOrDefaultAsync(review => review.Id == id);
-        if(review != null) 
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(review));
         return review;
     }
 
@@ -49,19 +39,15 @@ public class ReviewRepository : IRepository<Review, ReviewDto>, IReviewRepositor
         return review.Id;
     }
 
-    public async Task<bool> UpdateAsync(int id, ReviewDto reviewUpdate)
+    public async Task<bool> UpdateAsync(ReviewDto reviewUpdate)
     {
-        Review? review = await _context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
+        Review? review = await _context.Reviews.FindAsync(reviewUpdate.Id);
         if (review == null) return false;
         
         review.Text = reviewUpdate.Text ?? review.Text;
-        review.Rating = review.Rating;
+        review.Rating = reviewUpdate.Rating;
         
         await _context.SaveChangesAsync();
-        
-        string redisKey = "review" + id;
-        if(await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(review));
         return true;
     }
 
@@ -72,26 +58,29 @@ public class ReviewRepository : IRepository<Review, ReviewDto>, IReviewRepositor
 
         _context.Reviews.Remove(review);
         await _context.SaveChangesAsync();
-        await _redis.KeyDeleteAsync("review" + id);
         return true;
     }
 
     public async Task<Review?> GetUserReview(int userId, int tourId)
     {
-        string redisKey =  userId + "userReview" + tourId;
-        if (await _redis.KeyExistsAsync(redisKey))
-        {
-            string jsonData = await _redis.StringGetAsync(redisKey);
-            return JsonConvert.DeserializeObject<Review>(jsonData);
-        }
         Review? review = await _context.Reviews.FirstOrDefaultAsync(review => review.UserId == userId && review.TourId == tourId);
-        if(review != null) 
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(review));
         return review;
     }
 
     public Task<List<Review>> GetTourReviews(int tourId)
     {
         return _context.Reviews.Where(r => r.TourId == tourId).ToListAsync();
+    }
+
+    public async Task<bool> DeleteUserReviewAsync(int userId, int tourId)
+    {
+        Console.WriteLine(userId);
+        Console.WriteLine(tourId);
+        Review? review = _context.Reviews.FirstOrDefault(r => r.UserId == userId && r.TourId == tourId);
+
+        if (review == null) return false;
+        _context.Reviews.Remove(review);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

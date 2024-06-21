@@ -19,5 +19,7 @@ public class AutoMapperProfile : Profile
         CreateMap<User, UserEmailRoleDto>();
         CreateMap<PaymentDto, Payment>();
         CreateMap<Payment, PaymentDto>();
+        CreateMap<Review, ReviewDto>();
+        CreateMap<ReviewDto, Review>();
     }
 }

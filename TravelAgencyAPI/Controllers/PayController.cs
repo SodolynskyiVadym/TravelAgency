@@ -77,7 +77,7 @@ public class PayController : ControllerBase
         if (payment == null) return StatusCode(400, "Payment not found!");
 
         payment.IsPaid = true;
-        await _paymentRepository.UpdateAsync(payment.Id, _mapper.Map<PaymentDto>(payment));
+        await _paymentRepository.UpdateAsync(_mapper.Map<PaymentDto>(payment));
 
         return Redirect(_config.GetSection("Urls:Client").Value);
     }

@@ -54,10 +54,10 @@ public class TourController : ControllerBase
     
     
     [Authorize(Roles = "EDITOR, ADMIN")]
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateTour(int id, TourDto tour)
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateTour(TourDto tour)
     {
-        if (await _tourRepository.UpdateAsync(id, tour)) return Ok();
+        if (await _tourRepository.UpdateAsync(tour)) return Ok();
         return NoContent();
     }
     

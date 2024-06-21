@@ -36,9 +36,9 @@ public class PaymentRepository : IRepository<Payment, PaymentDto>, IPaymentRepos
         return payment.Id;
     }
 
-    public async Task<bool> UpdateAsync(int id, PaymentDto paymentDto)
+    public async Task<bool> UpdateAsync(PaymentDto paymentDto)
     {
-        Payment? payment = await _context.Payments.FindAsync(id);
+        Payment? payment = await _context.Payments.FindAsync(paymentDto.Id);
         if (payment == null) return false;
         
         payment.UserId = paymentDto.UserId;

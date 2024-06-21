@@ -69,9 +69,10 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
         return place.Id;
     }
 
-    public async Task<bool> UpdateAsync(int id, PlaceDto placeUpdate)
+    public async Task<bool> UpdateAsync(PlaceDto placeUpdate)
     {
-        Place? place = await _context.Places.Include(p => p.ImagesUrls).FirstOrDefaultAsync(p => p.Id == id);
+        Place? place = await _context.Places.Include(p => p.ImagesUrls)
+            .FirstOrDefaultAsync(p => p.Id == placeUpdate.Id);
         if (place == null) return false;
         
         _context.PlaceImageUrls.RemoveRange(place.ImagesUrls);
@@ -86,7 +87,7 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
         
         await _context.SaveChangesAsync();
         
-        string redisKey = "place" + id;
+        string redisKey = "place" + placeUpdate.Id;
         if(await _redis.KeyExistsAsync(redisKey))
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place));
         return true;

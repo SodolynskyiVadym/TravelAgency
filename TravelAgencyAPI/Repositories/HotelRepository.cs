@@ -53,12 +53,12 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
         return hotel.Id;
     }
 
-    public async Task<bool> UpdateAsync(int id, HotelDto hotelUpdate)
+    public async Task<bool> UpdateAsync(HotelDto hotelUpdate)
     {
-        Hotel? hotel = await _context.Hotels.FindAsync(id);
+        Hotel? hotel = await _context.Hotels.FindAsync(hotelUpdate.Id);
         if (hotel == null) return false;
         
-        string redisKey = "hotel" + id;
+        string redisKey = "hotel" + hotelUpdate.Id;
         
         hotel.Name = hotelUpdate.Name ?? hotel.Name ;
         hotel.Address = hotelUpdate.Address ?? hotel.Address;

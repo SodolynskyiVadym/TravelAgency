@@ -33,9 +33,10 @@ export async function getPlacesInfo() {
 
 
 export async function updatePlace(id, place, token) {
+  place.id = id;
   const config = { headers: { Authorization: `Bearer ${token}` } }
   try {
-    return await axios.patch(`${mainUrl}/update/${id}`, place, config).then((res) => res.data);
+    return await axios.patch(`${mainUrl}/update`, place, config).then((res) => res.data);
   } catch (error) {
     await router.push("/error");
   }

@@ -46,10 +46,10 @@ public class HotelController : ControllerBase
     
     
     [Authorize(Roles = "EDITOR, ADMIN")]
-    [HttpPatch("update/{id}")]
-    public async Task<IActionResult> UpdateHotel(int id, HotelDto hotel)
+    [HttpPatch("update")]
+    public async Task<IActionResult> UpdateHotel(HotelDto hotel)
     {
-        if (await _hotelRepository.UpdateAsync(id, hotel)) return Ok();
+        if (await _hotelRepository.UpdateAsync(hotel)) return Ok();
         // Replace NoContent
         return NoContent();
     }
