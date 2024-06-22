@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
@@ -46,6 +46,7 @@ public class PaymentRepository : IRepository<Payment, PaymentDto>, IPaymentRepos
         payment.Amount = paymentDto.Amount;
         payment.Date = DateTime.Now;
         payment.IsPaid = paymentDto.IsPaid;
+        payment.StripeSession ??= paymentDto.StripeSession;
         
         await _context.SaveChangesAsync();
         return true;
@@ -62,9 +63,21 @@ public class PaymentRepository : IRepository<Payment, PaymentDto>, IPaymentRepos
         return true;
     }
 
+    public async Task<Payment?> GetByUserIdTourId(int userId, int tourId)
+    {
+        return await _context.Payments.FirstOrDefaultAsync(p => p.UserId == userId && p.TourId == tourId);
+    }
+
+    public async Task<List<Payment>> GetByUserId(int userId)
+    {
+        return await _context.Payments
+            .Include(p => p.Tour)
+            .Where(p => p.UserId == userId).ToListAsync();
+    }
+
     public async Task DeleteUnpaid()
     {
-        IEnumerable<Payment> payments = _context.Payments.Where(p => !p.IsPaid);
+        List<Payment> payments = await _context.Payments.Where(p => !p.IsPaid).ToListAsync();
         _context.Payments.RemoveRange(payments);
         await _context.SaveChangesAsync();
     }

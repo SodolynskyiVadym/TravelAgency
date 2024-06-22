@@ -21,15 +21,46 @@
                 :disabled="password != confirmPassword || password.length < 8">Update password</button>
         </div>
     </div>
+
+    <div>
+        <table class="list-table">
+            <tr>
+                <th>Image</th>
+                <th>Tour</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Purchased seats</th>
+                <th>Total price</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <tr v-for="payment in userPayments" :key="payment.id">
+                <td><img :src="payment.tour.imageUrl"></td>
+                <td>{{ payment.tour.name }}</td>
+                <td>{{ payment.tour.startDate }}</td>
+                <td>{{ payment.tour.endDate }}</td>
+                <td>{{ payment.amount }}</td>
+                <td>{{ payment.amount * payment.tour.price }}</td>
+                <td>{{ payment.isPaid }}</td>
+                <td>
+                    <button v-if="!payment.isPaid" class="button-update-delete button-update-delete-hover-green" @click="payExistStripeSession(payment.stripeSession)">Pay</button>
+                    <button v-else class="button-update-delete button-update-delete-hover-black" @click="$router.push(`tour/${payment.tourId}`)">View</button>
+                </td>
+            </tr>
+        </table>
+    </div>
 </template>
 
 <script>
 import * as userAPI from '@/services/API/userAPI';
+import * as payAPI from '@/services/API/payAPI';
+import * as dateHelper from '@/js/dateHelper';
 
 export default {
     data() {
         return {
             user: null,
+            userPayments : [],
             password: "",
             confirmPassword: "",
             message: "",
@@ -49,6 +80,11 @@ export default {
                 this.password = "";
                 this.confirmPassword = "";
             } else this.$router.push('/login');
+        },
+
+
+        async payExistStripeSession(sessionStripeId){
+            await payAPI.payExistingPayment(sessionStripeId);
         }
     },
 
@@ -56,6 +92,11 @@ export default {
         const token = localStorage.getItem('token');
         if (token) {
             this.user = await userAPI.getUserByToken(token);
+            this.userPayments = await payAPI.getPaymentsByUser(token);
+            for(let payment of this.userPayments){
+                payment.tour.startDate = await dateHelper.formatDate(payment.tour.startDate);
+                payment.tour.endDate = await dateHelper.formatDate(payment.tour.endDate);
+            }
             this.isLoaded = true
         } else{
             localStorage.removeItem('token');
@@ -67,4 +108,6 @@ export default {
 
 <style>
 @import "./../assets/css/styleLoginSignup.css";
+@import "./../assets/css/styleTable.css";
+@import "./../assets/css/styleButtonCreate.css";
 </style>

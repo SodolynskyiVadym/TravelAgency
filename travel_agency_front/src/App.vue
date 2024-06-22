@@ -16,7 +16,6 @@
             class="nav-link px-2 text-white fs-4">Hotels</a></li>
         <li><a href="/listTransports" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
             class="nav-link px-2 text-white fs-4">Transports</a></li>
-        <li><a href="/test" class="nav-link px-2 text-white fs-4">Test</a></li>
       </ul>
 
       <div class="text-end" v-if="!user.role">

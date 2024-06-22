@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure;
 
 namespace TravelAgencyAPI.Models;
 
@@ -17,6 +18,8 @@ public class Payment : IModel
     
     [Required]
     public DateTime Date { get; set; }
+    
+    public string? StripeSession { get; set; }
     
     [Required]
     public int UserId { get; set; }

@@ -39,7 +39,7 @@
             </div>
 
             <div style="margin-top: 30px; display: flex; flex-direction: column;">
-                <button class="button-action" @click="reserveTour" v-if="!isSendRequest"
+                <button class="button-action" @click="reserveTour" v-if="!isSendRequest && !haveUserTour"
                     :disabled="isSendRequest">Buy</button>
                 <button class="button-action" @click="enterUpdatePage"
                     v-if="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
@@ -86,10 +86,10 @@
 
 <script>
 import * as tourAPI from '@/services/API/tourAPI';
+import * as payAPI from '@/services/API/payAPI';
 import * as userAPI from '@/services/API/userAPI';
 import * as reviewAPI from '@/services/API/reviewAPI';
 import * as dateHelper from '@/js/dateHelper';
-import * as stripe from '@/js/stripe';
 
 export default {
     data() {
@@ -102,7 +102,8 @@ export default {
             priceForOne: 0,
             isSendRequest: false,
             isLoaded: false,
-            isReviewFromDb: false
+            isReviewFromDb: false,
+            haveUserTour: true
         }
     },
     methods: {
@@ -121,7 +122,7 @@ export default {
                 this.$router.push('/login');
             }
 
-            await stripe.reserveTour(data, token);
+            await payAPI.reserveTour(data, token);
         },
 
 
@@ -201,6 +202,8 @@ export default {
         }
 
         this.reviews = await reviewAPI.getTourReviews(this.tour.id);
+        this.haveUserTour = await payAPI.haveUserPayment(this.tour.id, token);
+        console.log(this.haveUserTour);
     }
 }
 </script>

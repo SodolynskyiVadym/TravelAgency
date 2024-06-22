@@ -35,18 +35,43 @@ public class PayController : ControllerBase
         _mapper = mapper;
         _config = config;
     }
+    
+    
+    [Authorize]
+    [HttpGet("getUserPayments")]
+    public async Task<List<Payment>> GetUserPayments()
+    {
+        int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
+        return await _paymentRepository.GetByUserId(userId);
+    }
+    
+    
+    [Authorize]
+    [HttpGet("haveUserPayment/{tourId}")]
+    public async Task<bool> GetUserPayment(int tourId)
+    {
+        int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
+        Payment? payment = await _paymentRepository.GetByUserIdTourId(userId, tourId);
+        if (payment == null) return false;
+        else return true;
+    }
+    
 
     [Authorize]
     [HttpPost("reserveTour")]
-    public async Task<string> ReserveTour(PaymentDataDto paymentData)
+    public async Task<IActionResult> ReserveTour(PaymentDataDto paymentData)
     {
-        Console.WriteLine("Code work");
         int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
         User? user = await _userRepository.GetByIdAsync(userId);
-        if (user == null) return "0";
-
         Tour? tour = await _tourRepository.GetByIdAsync(paymentData.TourId);
-        if (tour == null) return "0";
+        if (user == null || tour == null) return BadRequest("User or tour not found!");
+        
+        Payment? paymentFromDb = await _paymentRepository.GetByUserIdTourId(userId, tour.Id);
+        if (paymentFromDb != null)
+        {
+            Console.WriteLine("Payment already exists!");
+            return BadRequest("Payment already exists!");
+        }
 
         PaymentDto payment = new PaymentDto
         {
@@ -57,10 +82,12 @@ public class PayController : ControllerBase
             IsPaid = false
         };
         int paymentId = await _paymentRepository.AddAsync(payment);
-        
         string sessionId = await _stripeHelper.CreateStripeSession(paymentData, payment, tour, paymentId);
-
-        return sessionId;
+        
+        payment.Id = paymentId;
+        payment.StripeSession = sessionId;
+        await _paymentRepository.UpdateAsync(payment);
+        return Ok(sessionId);
     }
 
 
