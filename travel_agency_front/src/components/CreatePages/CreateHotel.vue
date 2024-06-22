@@ -133,7 +133,9 @@ export default {
         async createHotel() {
             if (this.isCorrectInputs) {
                 this.isSendRequest = true;
-                await hotelAPI.createHotel(this.tour);
+                const token = localStorage.getItem('token');
+                if (!token) this.$router.push('/login');
+                await hotelAPI.createHotel(this.tour, token);
                 await this.clearFields();
                 this.isCorrectInputs = false;
                 this.isCorrectPlace = false;

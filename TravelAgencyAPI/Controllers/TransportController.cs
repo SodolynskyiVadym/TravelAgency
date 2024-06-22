@@ -15,24 +15,24 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class TransportController : ControllerBase
 {
-    private readonly TransportRepository _transportRepository;
+    private readonly TransportService _transportService;
     
     public TransportController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _transportRepository = new TransportRepository(context, mapper, redis);
+        _transportService = new TransportService(context, mapper, redis);
     }
     
     
     [HttpGet("{id}")]
     public async Task<Transport?> GetTransport(int id)
     {
-        return await _transportRepository.GetByIdAsync(id);
+        return await _transportService.GetByIdAsync(id);
     }
     
     [HttpGet("getAllTransports")]
     public async Task<List<Transport>> GetAllTransports()
     {
-        return await _transportRepository.GetAllAsync();
+        return await _transportService.GetAllAsync();
     }
     
     
@@ -40,7 +40,7 @@ public class TransportController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> AddTransport(TransportDto transport)
     {
-        await _transportRepository.AddAsync(transport);
+        await _transportService.AddAsync(transport);
         return Ok(transport);
     }
     
@@ -49,7 +49,7 @@ public class TransportController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateTransport(TransportDto transport)
     {
-        if (await _transportRepository.UpdateAsync(transport)) return Ok();
+        if (await _transportService.UpdateAsync(transport)) return Ok();
         return NoContent();
     }
     
@@ -58,7 +58,7 @@ public class TransportController : ControllerBase
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteTransport(int id)
     {
-        if (await _transportRepository.DeleteAsync(id)) return Ok();
+        if (await _transportService.DeleteAsync(id)) return Ok();
         return NoContent();
     }
 }

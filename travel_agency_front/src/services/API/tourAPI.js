@@ -30,8 +30,7 @@ export async function getAllToursForeignKeys() {
     }
 }
 
-export async function updateTour(id, tour, token) {
-    tour.id = id;
+export async function updateTour(tour, token) {
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
         return await axios.patch(`${mainUrl}/update`, tour, config).then((res) => res.data);

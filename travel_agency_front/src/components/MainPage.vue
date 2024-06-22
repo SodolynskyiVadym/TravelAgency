@@ -13,6 +13,10 @@
     </div>
   </div>
 
+  <div style="text-align: center;" v-if="user.role === 'ADMIN' || user.role === 'EDITOR'">
+    <button class="button-create-action" @click="$router.push('/createTour')">Add tour</button>
+  </div>
+
   <div style="text-align: center; margin-bottom: 30px;">
     <div class="form-control">
       <input class="input input-alt" placeholder="Type name of tour" type="text" v-model="inputTour"
@@ -42,6 +46,7 @@
 
 <script>
 import * as tourAPI from '@/services/API/tourAPI';
+import * as userAPI from '@/services/API/userAPI';
 import * as dateHelper from '@/js/dateHelper';
 
 export default {
@@ -50,6 +55,7 @@ export default {
       tours: [],
       searchedTours: [],
       inputTour: "",
+      user: { role: "" }
     }
   },
 
@@ -68,12 +74,17 @@ export default {
     if (!this.tours) {
       return;
     } else {
-      console.log(this.tours)
       for (let tour of this.tours) {
         tour.startDate = await dateHelper.formatDate(tour.startDate);
         tour.endDate = await dateHelper.formatDate(tour.endDate);
       }
       this.searchedTours = this.tours;
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.user = await userAPI.getUserByToken(token);
+      if (!this.user) this.user = { role: "" };
     }
 
   }
@@ -83,4 +94,5 @@ export default {
 
 <style>
 @import "./../assets/css/styleInputSearch.css";
+@import "./../assets/css/styleButtonCreate.css";
 </style>

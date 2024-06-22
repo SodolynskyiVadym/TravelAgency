@@ -71,7 +71,6 @@ export default {
                 pricePerNight: 0,
                 imageUrl: '',
             },
-            startHotel: {},
             places: [],
             country: '',
             countries: countries,
@@ -84,10 +83,8 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            const isChanged = JSON.stringify(this.startHotel) !== JSON.stringify(this.hotel);
-
             this.isCorrectInputs = this.hotel.placeId != 0 && this.hotel.address && this.hotel.description && this.hotel.pricePerNight > 0
-                && this.isCorrectImageUrl && this.countries.includes(this.country) && isChanged;
+                && this.isCorrectImageUrl && this.countries.includes(this.country);
         },
 
         async checkPrice() {
@@ -124,8 +121,9 @@ export default {
 
         async updateHotel() {
             this.isSendRequest = true;
-            await hotelAPI.updateHotel(this.hotel);
-            this.startHotel = JSON.parse(JSON.stringify(this.hotel));
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await hotelAPI.updateHotel(this.hotel, token);
             await this.checkCorrectInputs();
             this.isSendRequest = false;
         }
@@ -137,8 +135,6 @@ export default {
         this.placeName = this.places.find(place => place.id === this.hotel.placeId).name;
         this.country = this.places.find(place => place.id === this.hotel.placeId).country;
         await this.checkImage();
-        this.startHotel = JSON.parse(JSON.stringify(this.hotel));
-
         await this.checkCorrectInputs();
     }
 }

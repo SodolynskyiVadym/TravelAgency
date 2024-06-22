@@ -9,12 +9,12 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class HotelRepository : IRepository<Hotel, HotelDto>
+public class HotelService : IRepository<Hotel, HotelDto>
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
-    public HotelRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public HotelService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
@@ -34,7 +34,7 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
             .Include(h => h.Place)
             .FirstOrDefaultAsync(h => h.Id == id);
         if(hotel != null) 
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
         return hotel;
     }
 
@@ -69,7 +69,7 @@ public class HotelRepository : IRepository<Hotel, HotelDto>
 
         await _context.SaveChangesAsync();
         if(await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
         return true;
     }
 

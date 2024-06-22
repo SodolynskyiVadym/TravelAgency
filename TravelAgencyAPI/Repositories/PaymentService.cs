@@ -7,12 +7,12 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class PaymentRepository : IRepository<Payment, PaymentDto>, IPaymentRepository
+public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
 
-    public PaymentRepository(TravelDbContext context, IMapper mapper)
+    public PaymentService(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

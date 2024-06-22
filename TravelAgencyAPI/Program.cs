@@ -82,11 +82,21 @@ WebApplication app = builder.Build();
 // app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
 app.UseHangfireDashboard();
+
 var recurringJobManager = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IRecurringJobManager>();
-recurringJobManager.AddOrUpdate<PaymentRepository>(
+recurringJobManager.AddOrUpdate<PaymentService>(
     recurringJobId: "DeleteUnpaidPaymentsJob", 
     methodCall: r => r.DeleteUnpaid(), 
-    cronExpression: "00 13 * * *", 
+    cronExpression: "59 23 * * *", 
+    options: new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+recurringJobManager.AddOrUpdate<TourService>(
+    recurringJobId: "CheckActiveToursJob", 
+    methodCall: t => t.CheckTourAvailability(), 
+    cronExpression: "01 00 * * *", 
     options: new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.Local

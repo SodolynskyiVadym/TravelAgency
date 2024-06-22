@@ -9,13 +9,13 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class TransportRepository : IRepository<Transport, TransportDto>
+public class TransportService : IRepository<Transport, TransportDto>
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
 
-    public TransportRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public TransportService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
@@ -32,7 +32,7 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         }
         Transport? transport = await _context.Transports.FindAsync(id);
         if(transport != null) 
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport), TimeSpan.FromMinutes(10));
         return transport;
     }
     
@@ -63,7 +63,7 @@ public class TransportRepository : IRepository<Transport, TransportDto>
         
         string redisKey = "transport" + transportUpdate.Id;
         if (await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport), TimeSpan.FromMinutes(10));
         return true;
     }
 

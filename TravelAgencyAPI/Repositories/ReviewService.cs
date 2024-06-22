@@ -9,12 +9,12 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class ReviewRepository : IRepository<Review, ReviewDto>, IReviewRepository
+public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
 
-    public ReviewRepository(TravelDbContext context, IMapper mapper)
+    public ReviewService(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

@@ -2,7 +2,7 @@
 
 namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
-public interface IReviewRepository
+public interface IReviewService
 {
     public Task<Review?> GetUserReview(int userId, int tourId);
     public Task<List<Review>> GetTourReviews(int tourId);

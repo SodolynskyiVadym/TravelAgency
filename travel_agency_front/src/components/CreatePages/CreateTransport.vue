@@ -95,9 +95,10 @@ export default {
                     quantitySeats: this.seats,
                     imageUrl: this.imageUrl
                 };
-                console.log(data)
                 this.isSendRequest = true;
-                await transportAPI.createTransport(data);
+                const token = localStorage.getItem('token');
+                if (!token) this.$router.push('/login');
+                await transportAPI.createTransport(data, token);
                 await this.clearFields();
                 this.isCorrectInputs = false;
                 this.isSendRequest = false;

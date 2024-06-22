@@ -5,7 +5,7 @@
         <div class="error" v-if="!user.email">Email is required</div>
 
         <label for="role">Role:</label>
-        <select id="role" v-model="user.role" @input="checkCorrectInputs">
+        <select id="role" v-model="user.role" @change="checkCorrectInputs">
             <option value="ADMIN">ADMIN</option>
             <option value="EDITOR">EDITOR</option>
         </select>

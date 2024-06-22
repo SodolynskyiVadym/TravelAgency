@@ -14,11 +14,11 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class ReviewController : ControllerBase
 {
-    private readonly ReviewRepository _reviewRepository;
+    private readonly ReviewService _reviewService;
     
     public ReviewController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _reviewRepository = new ReviewRepository(context, mapper);
+        _reviewService = new ReviewService(context, mapper);
     }
     
     [Authorize]
@@ -26,19 +26,19 @@ public class ReviewController : ControllerBase
     public async Task<Review?> GetReview(int tourId)
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
-        return await _reviewRepository.GetUserReview(userId, tourId);
+        return await _reviewService.GetUserReview(userId, tourId);
     }
     
     [HttpGet("getTourReviews/{tourId}")]
     public async Task<List<Review>> GetAllReviews(int tourId)
     {
-        return await _reviewRepository.GetTourReviews(tourId);
+        return await _reviewService.GetTourReviews(tourId);
     }
     
     [HttpGet("getAllReviews")]
     public async Task<List<Review>> GetAllReviews()
     {
-        return await _reviewRepository.GetAllAsync();
+        return await _reviewService.GetAllAsync();
     }
     
     [Authorize]
@@ -47,10 +47,10 @@ public class ReviewController : ControllerBase
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
-        if (await _reviewRepository.GetUserReview(userId, review.TourId) != null) return BadRequest("You have already reviewed this tour");
+        if (await _reviewService.GetUserReview(userId, review.TourId) != null) return BadRequest("You have already reviewed this tour");
         
         review.UserId = userId;
-        if (await _reviewRepository.AddAsync(review) != 0) return Ok();
+        if (await _reviewService.AddAsync(review) != 0) return Ok();
         return BadRequest();
     }
     
@@ -60,7 +60,7 @@ public class ReviewController : ControllerBase
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
-        if (await _reviewRepository.UpdateAsync(review)) return Ok();
+        if (await _reviewService.UpdateAsync(review)) return Ok();
         return NoContent();
     }
     
@@ -71,7 +71,7 @@ public class ReviewController : ControllerBase
         Console.WriteLine("TourId: " + tourId);
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         
-        if (await _reviewRepository.DeleteUserReviewAsync(userId, tourId)) return Ok();
+        if (await _reviewService.DeleteUserReviewAsync(userId, tourId)) return Ok();
         return BadRequest("You have not reviewed this tour");
     }
 }

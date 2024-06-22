@@ -16,9 +16,9 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class PayController : ControllerBase
 {
-    private readonly UserRepository _userRepository;
-    private readonly TourRepository _tourRepository;
-    private readonly PaymentRepository _paymentRepository;
+    private readonly UserService _userService;
+    private readonly TourService _tourService;
+    private readonly PaymentService _paymentService;
     private readonly StripeHelper _stripeHelper;
     private readonly MailHelper _mailHelper;
     private readonly IMapper _mapper;
@@ -27,9 +27,9 @@ public class PayController : ControllerBase
     public PayController(TravelDbContext context, IMapper mapper, IConfiguration config,
         IOptions<MailSetting> mailSetting, IConnectionMultiplexer redis)
     {
-        _userRepository = new UserRepository(context, mapper);
-        _tourRepository = new TourRepository(context, mapper, redis);
-        _paymentRepository = new PaymentRepository(context, mapper);
+        _userService = new UserService(context, mapper);
+        _tourService = new TourService(context, mapper, redis);
+        _paymentService = new PaymentService(context, mapper);
         _mailHelper = new MailHelper(mailSetting);
         _stripeHelper = new StripeHelper(config);
         _mapper = mapper;
@@ -42,7 +42,7 @@ public class PayController : ControllerBase
     public async Task<List<Payment>> GetUserPayments()
     {
         int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
-        return await _paymentRepository.GetByUserId(userId);
+        return await _paymentService.GetByUserId(userId);
     }
     
     
@@ -51,7 +51,7 @@ public class PayController : ControllerBase
     public async Task<bool> GetUserPayment(int tourId)
     {
         int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
-        Payment? payment = await _paymentRepository.GetByUserIdTourId(userId, tourId);
+        Payment? payment = await _paymentService.GetByUserIdTourId(userId, tourId);
         if (payment == null) return false;
         else return true;
     }
@@ -62,11 +62,11 @@ public class PayController : ControllerBase
     public async Task<IActionResult> ReserveTour(PaymentDataDto paymentData)
     {
         int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
-        User? user = await _userRepository.GetByIdAsync(userId);
-        Tour? tour = await _tourRepository.GetByIdAsync(paymentData.TourId);
+        User? user = await _userService.GetByIdAsync(userId);
+        Tour? tour = await _tourService.GetByIdAsync(paymentData.TourId);
         if (user == null || tour == null) return BadRequest("User or tour not found!");
         
-        Payment? paymentFromDb = await _paymentRepository.GetByUserIdTourId(userId, tour.Id);
+        Payment? paymentFromDb = await _paymentService.GetByUserIdTourId(userId, tour.Id);
         if (paymentFromDb != null)
         {
             Console.WriteLine("Payment already exists!");
@@ -81,12 +81,12 @@ public class PayController : ControllerBase
             Date = DateTime.Now,
             IsPaid = false
         };
-        int paymentId = await _paymentRepository.AddAsync(payment);
+        int paymentId = await _paymentService.AddAsync(payment);
         string sessionId = await _stripeHelper.CreateStripeSession(paymentData, payment, tour, paymentId);
         
         payment.Id = paymentId;
         payment.StripeSession = sessionId;
-        await _paymentRepository.UpdateAsync(payment);
+        await _paymentService.UpdateAsync(payment);
         return Ok(sessionId);
     }
 
@@ -100,11 +100,11 @@ public class PayController : ControllerBase
         string? paymentId = session.Metadata["PaymentId"];
         if (paymentId == null) return StatusCode(400, "Payment id not found!");
 
-        Payment? payment = await _paymentRepository.GetByIdAsync(int.Parse(paymentId));
+        Payment? payment = await _paymentService.GetByIdAsync(int.Parse(paymentId));
         if (payment == null) return StatusCode(400, "Payment not found!");
 
         payment.IsPaid = true;
-        await _paymentRepository.UpdateAsync(_mapper.Map<PaymentDto>(payment));
+        await _paymentService.UpdateAsync(_mapper.Map<PaymentDto>(payment));
 
         return Redirect(_config.GetSection("Urls:Client").Value);
     }
@@ -119,15 +119,15 @@ public class PayController : ControllerBase
         string? paymentId = session.Metadata["PaymentId"];
         if (paymentId == null) return StatusCode(400, "Payment id not found!");
 
-        Payment? payment = await _paymentRepository.GetByIdAsync(int.Parse(paymentId));
+        Payment? payment = await _paymentService.GetByIdAsync(int.Parse(paymentId));
         if (payment == null) return StatusCode(400, "Payment not found!");
 
-        await _paymentRepository.DeleteAsync(payment.Id);
+        await _paymentService.DeleteAsync(payment.Id);
         return Redirect(_config.GetSection("Urls:Client").Value + "/error");
     }
     
     public async Task DeleteUnpaidPaymentsAsync()
     {
-        await _paymentRepository.DeleteUnpaid();
+        await _paymentService.DeleteUnpaid();
     }
 }

@@ -7,12 +7,12 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class DestinationRepository : IRepository<Destination, DestinationDto>
+public class DestinationService : IRepository<Destination, DestinationDto>
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
     
-    public DestinationRepository(TravelDbContext context, IMapper mapper)
+    public DestinationService(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

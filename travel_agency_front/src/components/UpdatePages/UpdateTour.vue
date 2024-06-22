@@ -48,8 +48,9 @@
             <div v-for="(destination, index) in tour.destinations" :key="index" class="create-form">
                 <h2>Destination {{ index + 1 }}</h2>
                 <label :for="'country' + index">Country:</label>
-                <input :id="'country' + index" type="search" :list="'countries' + index" @input="getDestinationPlaceIdByPlaceName(index)"
-                    v-model="destinationsCountries[index]" placeholder="Type to choose country">
+                <input :id="'country' + index" type="search" :list="'countries' + index"
+                    @input="getDestinationPlaceIdByPlaceName(index)" v-model="destinationsCountries[index]"
+                    placeholder="Type to choose country">
                 <datalist :id="'countries' + index">
                     <option v-for="country in allCountries" :key="country" :value="country">
                         {{ country }}
@@ -159,7 +160,8 @@
         <div class="error" v-if="tour.price <= 0">Price is required</div>
 
 
-        <button v-if="!isSendRequest" style="margin: 20px;" @click="updateTour" :disabled="!isCorrectInputs">Update Tour</button>
+        <button v-if="!isSendRequest" style="margin: 20px;" @click="updateTour" :disabled="!isCorrectInputs">Update
+            Tour</button>
         <button v-else style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span role="status">Loading...</span>
@@ -178,7 +180,6 @@ export default {
     data() {
         return {
             tour: null,
-            startTour: null,
             allPlaces: [],
             allTransports: [],
             allHotels: [],
@@ -202,40 +203,17 @@ export default {
         }
     },
     methods: {
-        async areDifferentSourceTourAndCurrentTour(){
-            if(this.startTour.name !== this.tour.name) return true;
-            if(this.startTour.imageUrl !== this.tour.imageUrl) return true;
-            if(this.startTour.description !== this.tour.description) return true;
-            if(this.startTour.quantitySeats !== this.tour.quantitySeats) return true;
-            if(this.startTour.price !== this.tour.price) return true;
-            if(this.startTour.placeStartId !== this.tour.placeStartId) return true;
-            if(this.startTour.placeEndId !== this.tour.placeEndId) return true;
-            if(this.startTour.transportToEndId !== this.tour.transportToEndId) return true;
-            if(this.startTour.startDate !== this.tour.startDate) return true;
-            if(this.startTour.endDate !== this.tour.endDate) return true;
-            if(this.startTour.destinations.length !== this.tour.destinations.length) return true;
-            for(let i = 0; i < this.startTour.destinations.length; i++){
-                if(this.startTour.destinations[i].startDate !== this.tour.destinations[i].startDate) return true;
-                if(this.startTour.destinations[i].endDate !== this.tour.destinations[i].endDate) return true;
-                if(this.startTour.destinations[i].placeId !== this.tour.destinations[i].placeId) return true;
-                if(this.startTour.destinations[i].hotelId !== this.tour.destinations[i].hotelId) return true;
-                if(this.startTour.destinations[i].transportId !== this.tour.destinations[i].transportId) return true;
-            }
-            return false;
-        },
-
         async checkCorrectInputs() {
             const hotelsIds = this.tour.destinations.map(destination => destination.hotelId);
             const transportsIds = this.tour.destinations.map(destination => destination.transportId);
             const isCorrectHotels = hotelsIds.filter(id => id != 0).length === this.tour.destinations.length;
             const isCorrectTransports = transportsIds.filter(id => id != 0).length === this.tour.destinations.length;
-            const areDifferentSourceTourAndCurrentTour = await this.areDifferentSourceTourAndCurrentTour();
 
 
             this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 && this.tour.price > 0
                 && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.transportToEndId > 0 && this.tour.startDate < this.tour.endDate
                 && this.tour.destinations.length > 0 && this.isCorrectDestinationsStartDates.every(date => date) && this.isCorrectDestinationsEndDates.every(date => date)
-                && this.isCorrectPlacesNames.every(name => name) && isCorrectHotels && isCorrectTransports && areDifferentSourceTourAndCurrentTour;
+                && this.isCorrectPlacesNames.every(name => name) && isCorrectHotels && isCorrectTransports;
         },
 
         async findPlaceIdByPlaceName(placeName, countryName) {
@@ -253,10 +231,10 @@ export default {
             return this.allTransports.find(transport => transport.name === transportName).id;
         },
 
-        async checkDestinationsPlacesNames(){
+        async checkDestinationsPlacesNames() {
             const destinationsPlaceAndCountry = this.tour.destinations.map((destination, index) => [this.destinationsPlacesNames[index], this.destinationsCountries[index]]);
-            for(let i = 0; i < destinationsPlaceAndCountry.length; i++){
-                this.isCorrectPlacesNames[i] = destinationsPlaceAndCountry.filter(arr => arr[0] === destinationsPlaceAndCountry[i][0] 
+            for (let i = 0; i < destinationsPlaceAndCountry.length; i++) {
+                this.isCorrectPlacesNames[i] = destinationsPlaceAndCountry.filter(arr => arr[0] === destinationsPlaceAndCountry[i][0]
                     && arr[1] === destinationsPlaceAndCountry[i][1]).length === 1 && this.allPlaces.find(place => place.name === destinationsPlaceAndCountry[i][0] && place.country === destinationsPlaceAndCountry[i][1]);
             }
         },
@@ -265,7 +243,6 @@ export default {
             console.log(this.startPlaceName, this.startPlaceCountry);
             this.tour.placeStartId = await this.findPlaceIdByPlaceName(this.startPlaceName, this.startPlaceCountry);
             await this.checkCorrectInputs();
-            console.log(this.tour.placeStartId)
         },
 
         async getEndPlaceId() {
@@ -369,8 +346,9 @@ export default {
 
         async updateTour() {
             this.isSendRequest = true;
-            console.log(this.tour);
-            await tourAPI.updateTour(this.$route.params.id, this.tour);
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await tourAPI.updateTour(this.tour, token);
             this.isSendRequest = false;
         }
     },
@@ -380,7 +358,7 @@ export default {
         this.allTransports = await transportAPI.getAllTransports();
         this.allHotels = await hotelAPI.getAllHotels();
         this.tour = await tourAPI.getTourById(this.$route.params.id);
-        
+
         this.tour.startDate = this.tour.startDate.split('T')[0];
         this.tour.endDate = this.tour.endDate.split('T')[0];
         this.startPlaceCountry = this.tour.placeStart.country;
@@ -391,7 +369,7 @@ export default {
 
         this.tour.destinations = this.tour.destinations.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
-        for(let destination of this.tour.destinations){
+        for (let destination of this.tour.destinations) {
             destination.startDate = destination.startDate.split('T')[0];
             destination.endDate = destination.endDate.split('T')[0];
             this.destinationsCountries.push(destination.hotel.place.country);
@@ -402,7 +380,6 @@ export default {
             this.isCorrectDestinationsStartDates.push(false);
             this.isCorrectPlacesNames.push(false);
         }
-        this.startTour = JSON.parse(JSON.stringify(this.tour));
         await this.checkDestinationDates();
         await this.checkDestinationsPlacesNames();
         await this.checkImage();

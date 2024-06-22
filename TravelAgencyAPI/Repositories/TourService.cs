@@ -9,13 +9,13 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class TourRepository : IRepository<Tour, TourDto>
+public class TourService : IRepository<Tour, TourDto>, ITourService
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
 
-    public TourRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public TourService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
@@ -45,7 +45,7 @@ public class TourRepository : IRepository<Tour, TourDto>
             .Include(t => t.TransportToEnd)
             .FirstOrDefaultAsync(t => t.Id == id);
         if (tour != null)
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour), TimeSpan.FromMinutes(10));
         return tour;
     }
 
@@ -89,7 +89,7 @@ public class TourRepository : IRepository<Tour, TourDto>
         
         string redisKey = "tour" + tourUpdate.Id;
         if (await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour), TimeSpan.FromMinutes(10));
         return true;
     }
 
@@ -102,5 +102,15 @@ public class TourRepository : IRepository<Tour, TourDto>
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("tour" + id);
         return true;
+    }
+
+    public async Task CheckTourAvailability()
+    {
+        List<Tour> tours = await _context.Tours.Where(t => t.StartDate < DateTime.Now).ToListAsync();
+        foreach (var tour in tours)
+        {
+            tour.IsAvailable = false;
+        }
+        await _context.SaveChangesAsync();
     }
 }

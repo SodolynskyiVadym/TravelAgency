@@ -90,9 +90,11 @@ export default {
                 description: this.description,
                 imagesUrls: this.imagesUrls
             }
-
+            
             this.isSendRequest = true;
-            await placeAPI.createPlace(data);
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await placeAPI.createPlace(data, token);
             await this.clearFields();
             await this.checkCountryFromList();
             await this.validateImageUrl();

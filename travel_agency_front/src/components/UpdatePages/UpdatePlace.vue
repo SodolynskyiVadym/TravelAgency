@@ -62,7 +62,6 @@ export default {
                 description: '',
                 imagesUrls: [],
             },
-            startPlace: {},
             countries: countries,
             isCorrectImageUrl: [],
             isSendRequest: false,
@@ -73,10 +72,8 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            const isDifferent = JSON.stringify(this.place) !== JSON.stringify(this.startPlace);
-
             this.isCorrectInputs = this.place.name && this.place.description && this.isCorrectImageUrl.every((isCorrect) => isCorrect)
-                && this.place.imagesUrls.length === 3 && this.countries.includes(this.place.country) && isDifferent;
+                && this.place.imagesUrls.length === 3 && this.countries.includes(this.place.country);
         },
 
 
@@ -109,8 +106,9 @@ export default {
 
         async updatePlace(){
             this.isSendRequest = true;
-            await placeAPI.updatePlace(this.place.id, this.place);
-            this.startPlace = JSON.parse(JSON.stringify(this.place));
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await placeAPI.updatePlace(this.place, token);
             this.checkCorrectInputs();
             this.isSendRequest = false;        
         }
@@ -119,7 +117,6 @@ export default {
     async mounted() {
         this.place = await placeAPI.getPlaceById(this.$route.params.id);
         this.place.imagesUrls = this.place.imagesUrls.map(imageUrl => imageUrl.url);
-        this.startPlace = JSON.parse(JSON.stringify(this.place));
         for(let i = 0; i < this.place.imagesUrls.length; i++) {
             this.validateImageUrl(i);
         }

@@ -9,13 +9,13 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
+public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
 {
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
 
-    public PlaceRepository(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction)
+    public PlaceService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction)
     {
         _context = context;
         _mapper = mapper;
@@ -34,7 +34,7 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
             .Include(p => p.ImagesUrls)
             .FirstOrDefaultAsync(place => place.Id == id);
         if(place != null) 
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
         return place;
     }
 
@@ -89,7 +89,7 @@ public class PlaceRepository : IRepository<Place, PlaceDto>, IPlaceRepository
         
         string redisKey = "place" + placeUpdate.Id;
         if(await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place));
+            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
         return true;
     }
 

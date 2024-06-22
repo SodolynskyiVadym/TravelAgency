@@ -2,7 +2,7 @@
 
 namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
-public interface IPaymentRepository
+public interface IPaymentService
 {
     public Task<Payment?> GetByUserIdTourId(int userId, int tourId);
     public Task<List<Payment>> GetByUserId(int userId);

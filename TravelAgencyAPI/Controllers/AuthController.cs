@@ -16,15 +16,15 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly UserRepository _userRepository;
+    private readonly UserService _userService;
     private readonly AuthHelper _authHelper;
     private readonly MailHelper _mailHelper;
     private readonly IMapper _mapper;
     
     public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting)
     {
-        _userRepository = new UserRepository(context, mapper);
-        _authHelper = new AuthHelper(authSetting, _userRepository);
+        _userService = new UserService(context, mapper);
+        _authHelper = new AuthHelper(authSetting, _userService);
         _mailHelper = new MailHelper(mailSetting);
         _mapper = mapper;
     }
@@ -33,7 +33,7 @@ public class AuthController : ControllerBase
     [HttpGet("{id}")]
     public async Task<UserEmailRoleDto?> GetUserById(int id)
     {
-        return _mapper.Map<UserEmailRoleDto>(await _userRepository.GetByIdAsync(id));
+        return _mapper.Map<UserEmailRoleDto>(await _userService.GetByIdAsync(id));
     }
     
     
@@ -43,7 +43,7 @@ public class AuthController : ControllerBase
     {
         int userId = 0;
         int.TryParse(User.FindFirst("userId")?.Value, out userId);
-        return _mapper.Map<UserEmailRoleDto>(await _userRepository.GetByIdAsync(userId));
+        return _mapper.Map<UserEmailRoleDto>(await _userService.GetByIdAsync(userId));
     }
     
     
@@ -51,14 +51,14 @@ public class AuthController : ControllerBase
     [HttpGet("getAllUsers")]
     public async Task<List<UserEmailRoleDto>> GetAllUsers()
     {
-        return (await _userRepository.GetAllAsync()).Select(u => _mapper.Map<UserEmailRoleDto>(u)).ToList();
+        return (await _userService.GetAllAsync()).Select(u => _mapper.Map<UserEmailRoleDto>(u)).ToList();
     }
     
     
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginRegistrationDto userLogin)
     {
-        User? user = await _userRepository.GetUserByEmail(userLogin.Email);
+        User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
         
         if(!_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
@@ -70,13 +70,13 @@ public class AuthController : ControllerBase
     [HttpPost("loginViaReservePassword")]
     public async Task<IActionResult> LoginViaReservePassword(UserLoginRegistrationDto userLogin)
     {
-        User? user = await _userRepository.GetUserByEmail(userLogin.Email);
+        User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
 
         if (!_authHelper.CheckPassword(userLogin.Password, user.ReservePasswordHash, user.ReservePasswordSalt))
             return StatusCode(400, "Incorrect password!");
 
-        await _userRepository.RemoveReservePassword(userLogin.Email);
+        await _userService.RemoveReservePassword(userLogin.Email);
         return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}}); 
     }
 
@@ -104,13 +104,13 @@ public class AuthController : ControllerBase
             return StatusCode(400, "Email is empty or password is less than 8");
         }
 
-        IEnumerable<User> users = await _userRepository.GetAllAsync();
+        IEnumerable<User> users = await _userService.GetAllAsync();
         if (users.FirstOrDefault(u => u.Email == userRegistration.Email) != null) return StatusCode(400, "User already exists");
 
         bool isRegistered = await _authHelper.RegisterUser(userRegistration) > 0;
         if (isRegistered)
         {
-            User user = await _userRepository.GetUserByEmail(userRegistration.Email) ?? throw new InvalidOperationException();
+            User user = await _userService.GetUserByEmail(userRegistration.Email) ?? throw new InvalidOperationException();
             return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}});
         }
 
@@ -141,7 +141,7 @@ public class AuthController : ControllerBase
         string? id = User.FindFirst("userId")?.Value;
         if (id == null) return StatusCode(402, "Incorrect token!");
         
-        User? user = await _userRepository.GetByIdAsync(int.Parse(id)); 
+        User? user = await _userService.GetByIdAsync(int.Parse(id)); 
         if(user == null) return StatusCode(402, "User not found!");
         
         if (await _authHelper.UpdatePassword(user, password)) return Ok();
@@ -153,7 +153,7 @@ public class AuthController : ControllerBase
     [HttpDelete("deleteUser/{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        if (await _userRepository.DeleteAsync(id)) return Ok();
+        if (await _userService.DeleteAsync(id)) return Ok();
         return NoContent();
     }
 }

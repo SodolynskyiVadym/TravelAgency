@@ -14,13 +14,13 @@ namespace TravelAgencyAPI.Helpers;
 
 public class AuthHelper
 {
-    private readonly UserRepository _userRepository;
+    private readonly UserService _userService;
     private readonly AuthSetting _authSetting;
     private readonly string possibleValuePassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
-    public AuthHelper(IOptions<AuthSetting> authSetting, UserRepository userRepository)
+    public AuthHelper(IOptions<AuthSetting> authSetting, UserService userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
         _authSetting = authSetting.Value;
     }
 
@@ -103,7 +103,7 @@ public class AuthHelper
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        return await _userRepository.AddAsync(user);
+        return await _userService.AddAsync(user);
     }
 
 
@@ -127,7 +127,7 @@ public class AuthHelper
             PasswordSalt = passwordSalt
         };
         
-        if((await _userRepository.AddAsync(userDto)) > 0) return password;
+        if((await _userService.AddAsync(userDto)) > 0) return password;
         return string.Empty;
     }
 
@@ -142,7 +142,7 @@ public class AuthHelper
 
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
 
-        await _userRepository.UpdatePasswordAsync(userUpdate.Email, passwordHash, passwordSalt);
+        await _userService.UpdatePasswordAsync(userUpdate.Email, passwordHash, passwordSalt);
 
         return true;
     }
@@ -160,7 +160,7 @@ public class AuthHelper
         Console.WriteLine(password);
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
 
-        await _userRepository.CreateReservePasswordAsync(email, passwordHash, passwordSalt);
+        await _userService.CreateReservePasswordAsync(email, passwordHash, passwordSalt);
 
         return password;
     }

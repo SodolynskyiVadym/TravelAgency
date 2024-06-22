@@ -194,6 +194,7 @@ export default {
 
         if (this.user.role){
             const userReviewFromDb = await reviewAPI.getUserReview(this.tour.id, token);
+            this.haveUserTour = await payAPI.haveUserPayment(this.tour.id, token);
             if (userReviewFromDb){
                 this.userReview = userReviewFromDb;
                 this.isReviewFromDb = true;
@@ -202,8 +203,6 @@ export default {
         }
 
         this.reviews = await reviewAPI.getTourReviews(this.tour.id);
-        this.haveUserTour = await payAPI.haveUserPayment(this.tour.id, token);
-        console.log(this.haveUserTour);
     }
 }
 </script>

@@ -7,12 +7,12 @@ using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
 namespace TravelAgencyAPI.Repositories;
 
-public class UserRepository : IRepository<User, UserDto>, IUserRepository
+public class UserService : IRepository<User, UserDto>, IUserService
 {
     private TravelDbContext _context;
     private readonly IMapper _mapper;
 
-    public UserRepository(TravelDbContext context, IMapper mapper)
+    public UserService(TravelDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

@@ -76,7 +76,9 @@ export default {
         async updateTransport() {
             this.isSendRequest = true;
             this.isSendRequest = true;
-            await transportAPI.updateTransport(this.transport.id, this.transport);
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await transportAPI.updateTransport(this.transport, token);
             this.isSendRequest = false;
         }
     },

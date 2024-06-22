@@ -15,24 +15,24 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class HotelController : ControllerBase
 {
-    private readonly HotelRepository _hotelRepository;
+    private readonly HotelService _hotelService;
     public HotelController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _hotelRepository = new HotelRepository(context, mapper, redis);
+        _hotelService = new HotelService(context, mapper, redis);
     }
     
     
     [HttpGet("{id}")]
     public async Task<Hotel?> GetHotel(int id)
     {
-        return await _hotelRepository.GetByIdAsync(id);
+        return await _hotelService.GetByIdAsync(id);
     }
     
     
     [HttpGet("getAllHotels")]
     public async Task<List<Hotel>> GetAllHotels()
     {
-        return await _hotelRepository.GetAllAsync();
+        return await _hotelService.GetAllAsync();
     }
     
     
@@ -40,7 +40,7 @@ public class HotelController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> AddHotel(HotelDto hotel)
     {
-        await _hotelRepository.AddAsync(hotel);
+        await _hotelService.AddAsync(hotel);
         return Ok(hotel);
     }
     
@@ -49,7 +49,7 @@ public class HotelController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateHotel(HotelDto hotel)
     {
-        if (await _hotelRepository.UpdateAsync(hotel)) return Ok();
+        if (await _hotelService.UpdateAsync(hotel)) return Ok();
         // Replace NoContent
         return NoContent();
     }

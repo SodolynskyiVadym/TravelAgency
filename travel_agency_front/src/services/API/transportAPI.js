@@ -21,8 +21,7 @@ export async function getAllTransports() {
     }
 }
 
-export async function updateTransport(id, transport, token) {
-    transport.id = id;
+export async function updateTransport(transport, token) {
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
         return await axios.patch(`${mainUrl}/update`, transport, config).then((res) => res.data);

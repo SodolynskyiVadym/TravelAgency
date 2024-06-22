@@ -90,7 +90,7 @@
                     v-model="destinationsTransportsNames[index]" placeholder="Type to choose transport"
                     @input="getDestinationTransportIdByTransportIdName(index)">
                 <datalist id="transports">
-                    <option v-for="transport in transports" :key="transport.type" :value="transport.name">
+                    <option v-for="transport in allTransports" :key="transport.type" :value="transport.name">
                         {{ transport.name }}
                     </option>
                 </datalist>
@@ -141,7 +141,7 @@
         <input id="endPlaceTransport" type="search" list="transports" v-model="endTransportName"
             placeholder="Type to choose transport" @input="getEndPlaceTransport">
         <datalist id="transports">
-            <option v-for="transport in transports" :key="transport.id" :value="transport.name">
+            <option v-for="transport in allTransports" :key="transport.id" :value="transport.name">
                 {{ transport.name }}
             </option>
         </datalist>
@@ -352,8 +352,9 @@ export default {
 
         async createTour() {
             this.isSendRequest = true;
-            console.log(this.tour);
-            await tourAPI.createTour(this.tour);
+            const token = localStorage.getItem('token');
+            if (!token) this.$router.push('/login');
+            await tourAPI.createTour(this.tour, token);
             window.location.reload();
         }
     },
@@ -361,6 +362,7 @@ export default {
     async mounted() {
         this.allPlaces = await placeAPI.getAllPlaces();
         this.allTransports = await transportAPI.getAllTransports();
+        console.log(this.allTransports);
         this.allHotels = await hotelAPI.getAllHotels();
     }
 }
