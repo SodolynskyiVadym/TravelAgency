@@ -70,7 +70,7 @@ export default {
   },
 
   async mounted() {
-    this.tours = await tourAPI.getAllTours();
+    this.tours = await tourAPI.getAvailableTours();
     if (!this.tours) {
       return;
     } else {

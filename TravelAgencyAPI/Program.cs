@@ -101,6 +101,7 @@ recurringJobManager.AddOrUpdate<TourService>(
     {
         TimeZone = TimeZoneInfo.Local
     });
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

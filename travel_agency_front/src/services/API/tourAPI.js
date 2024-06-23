@@ -22,6 +22,26 @@ export async function getAllTours() {
     }
 }
 
+
+export async function getAvailableTours(){
+    try {
+        return await axios.get(`${mainUrl}/getAvailableTours`).then((res) => res.data);
+    } catch (error) {
+        return [];
+    }
+}
+
+
+export async function getUnavailableTours(token){
+    const config = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+        return await axios.get(`${mainUrl}/getUnavailableTours`, config).then((res) => res.data);
+    } catch (error) {
+        return [];
+    }
+
+}
+
 export async function getAllToursForeignKeys() {
     try {
         return await axios.get(`${mainUrl}/getToursForeignKeys`).then((res) => res.data);

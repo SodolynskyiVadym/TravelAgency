@@ -109,9 +109,11 @@
                 <button @click="removeDestination(index)">Remove destination</button>
             </div>
 
-            <button @click="addDestination">Add destination</button>
+
         </div>
 
+        <button @click="addDestination">Add destination</button>
+        
         <label for="endDate">End date</label>
         <input id="endDate" type="date" v-model="tour.endDate" @input="checkDestinationDates">
 
@@ -166,6 +168,10 @@
             <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span role="status">Loading...</span>
         </button>
+
+        <label for="changeDate">Change date</label>
+        <input id="changeDate" type="number" v-model="quantityDays">
+        <button @click="changeTourDates">Change tour dates</button>
     </div>
 </template>
 
@@ -199,7 +205,8 @@ export default {
             isCorrectInputs: false,
             isCorrectImageUrl: false,
             isSendRequest: false,
-            isLoaded: false
+            isLoaded: false,
+            quantityDays: 0
         }
     },
     methods: {
@@ -343,6 +350,30 @@ export default {
             this.isCorrectImageUrl = await this.checkImageExists(this.tour.imageUrl);
             await this.checkCorrectInputs();
         },
+
+        async changeTourDates(){
+            this.quantityDays;
+            for(let destination of this.tour.destinations){
+                let dateStart = new Date(destination.startDate);
+                dateStart.setDate(dateStart.getDate() + this.quantityDays);
+                destination.startDate = dateStart.toISOString().split('T')[0];
+
+                let dateEnd = new Date(destination.endDate);
+                dateEnd.setDate(dateEnd.getDate() + this.quantityDays);
+                destination.endDate = dateEnd.toISOString().split('T')[0];
+            }
+
+            let startDate = new Date(this.tour.startDate);
+            startDate.setDate(startDate.getDate() + this.quantityDays);
+            this.tour.startDate = startDate.toISOString().split('T')[0];
+
+            let endDate = new Date(this.tour.endDate);
+            endDate.setDate(endDate.getDate() + this.quantityDays);
+            this.tour.endDate = endDate.toISOString().split('T')[0];
+
+            await this.checkDestinationDates();
+        },
+
 
         async updateTour() {
             this.isSendRequest = true;

@@ -23,16 +23,31 @@ public class TourController : ControllerBase
         _mapper = mapper;
     }
     
+    
     [HttpGet("{id}")]
     public async Task<Tour?> GetTour(int id)
     {
         return await _tourService.GetByIdAsync(id);
     }
     
+    
     [HttpGet("getAllTours")]
     public async Task<List<Tour>> GetAllTours()
     {
         return await _tourService.GetAllAsync();
+    }
+    
+    
+    [HttpGet("getAvailableTours")]
+    public async Task<List<Tour>> GetAvailableTours()
+    {
+        return await _tourService.GetAvailableTours();
+    }
+    
+    [HttpGet("getUnavailableTours")]
+    public async Task<List<Tour>> GetUnavailableTours()
+    {
+        return await _tourService.GetUnavailableTours();
     }
     
     

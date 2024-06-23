@@ -65,7 +65,18 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
 
     public async Task<bool> UpdateAsync(TourDto tourUpdate)
     {
-        Tour? tour = await _context.Tours.Include(t => t.Destinations)
+        Tour? tour = await _context.Tours
+            .Include(t => t.PlaceStart)
+            .ThenInclude(p => p.ImagesUrls)
+            .Include(t => t.PlaceEnd)
+            .ThenInclude(p => p.ImagesUrls)
+            .Include(t => t.Destinations)
+            .ThenInclude(d => d.Hotel)
+            .ThenInclude(h => h.Place)
+            .ThenInclude(p => p.ImagesUrls)
+            .Include(t => t.Destinations)
+            .ThenInclude(d => d.Transport)
+            .Include(t => t.TransportToEnd)
             .FirstOrDefaultAsync(t => t.Id == tourUpdate.Id);
         if (tour == null) return false;
 
@@ -80,7 +91,7 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         tour.TransportToEndId = tourUpdate.TransportToEndId != 0 ? tourUpdate.TransportToEndId : tour.TransportToEndId;
         tour.StartDate = tourUpdate.StartDate ?? tour.StartDate;
         tour.EndDate = tourUpdate.EndDate ?? tour.EndDate;
-        tour.IsAvailable = tourUpdate.IsAvailable;
+        tour.IsAvailable = tour.StartDate > DateTime.Now;
         tour.Destinations = tourUpdate.Destinations?.Count() > 0
             ? tourUpdate.Destinations.Select(d => _mapper.Map<Destination>(d)).ToList()
             : tour.Destinations;
@@ -102,6 +113,16 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("tour" + id);
         return true;
+    }
+
+    public async Task<List<Tour>> GetAvailableTours()
+    {
+        return await _context.Tours.Where(t => t.IsAvailable).ToListAsync();
+    }
+
+    public async Task<List<Tour>> GetUnavailableTours()
+    {
+        return await _context.Tours.Where(t => !t.IsAvailable).ToListAsync();
     }
 
     public async Task CheckTourAvailability()

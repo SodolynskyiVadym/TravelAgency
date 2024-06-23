@@ -11,6 +11,7 @@ import UpdateTransportPage from '@/components/UpdatePages/UpdateTransport.vue';
 import UpdatePlacePage from '@/components/UpdatePages/UpdatePlace.vue';
 import HotelListPage from '@/components/Lists/ListHotels.vue';
 import TransportListPage from '@/components/Lists/ListTransports.vue';
+import ListUnavailableTours from '@/components/Lists/ListUnavailableTours.vue';
 import PlaceListPage from '@/components/Lists/ListPlaces.vue';
 import LoginPage from '@/components/Auth/LoginPage.vue';
 import RegistrationPage from '@/components/Auth/RegistrationPage.vue';
@@ -164,6 +165,15 @@ const routes = [
         path: "/forgotPassword",
         name: "ForgotPasswordPage",
         component: ForgotPasswordPage,
+    },
+    {
+        path: "/listUnavailableTours",
+        name: "ListUnavailableTours",
+        component: ListUnavailableTours,
+        meta: {
+            requiresAuth: true,
+            roles: ["ADMIN", "EDITOR"]
+        }
     }
 ];
 
