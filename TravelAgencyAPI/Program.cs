@@ -79,15 +79,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 WebApplication app = builder.Build();
 
-// app.UseMiddleware<ExceptionMiddlewareHandler>();
+app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
 app.UseHangfireDashboard();
 
 var recurringJobManager = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IRecurringJobManager>();
 recurringJobManager.AddOrUpdate<PaymentService>(
     recurringJobId: "DeleteUnpaidPaymentsJob", 
-    methodCall: r => r.DeleteUnpaid(), 
+    methodCall: p => p.DeleteUnpaid(), 
     cronExpression: "59 23 * * *", 
+    options: new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+recurringJobManager.AddOrUpdate<PaymentService>(
+    recurringJobId: "DeleteOldPaymentsJob", 
+    methodCall: p => p.DeleteOldPayments(), 
+    cronExpression: "01 00 * * *", 
     options: new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.Local
@@ -95,7 +104,7 @@ recurringJobManager.AddOrUpdate<PaymentService>(
 
 recurringJobManager.AddOrUpdate<TourService>(
     recurringJobId: "CheckActiveToursJob", 
-    methodCall: t => t.CheckTourAvailability(), 
+    methodCall: p => p.CheckTourAvailability(), 
     cronExpression: "01 00 * * *", 
     options: new RecurringJobOptions
     {

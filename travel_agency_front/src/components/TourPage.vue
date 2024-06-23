@@ -2,6 +2,9 @@
     <div v-if="isLoaded" class="main">
         <h1>{{ tour.name }}</h1>
         <p class="tourDescription">{{ tour.description }}</p>
+        <h5 style="margin-top: 30px;">Start location: {{ tour.placeStart.name }}</h5>
+        <h5>End location: {{ tour.placeEnd.name }}</h5>
+        <h5>Transport to {{ tour.placeEnd.name }}: {{ tour.transportToEnd.name }}</h5>
         <h5>{{ tour.startDate }} --- {{ tour.endDate }}</h5>
         <img :src="tour.imageUrl" alt="tour image" class="tourImage">
 
@@ -24,6 +27,12 @@
                     <p style="margin-top: 30px;">{{ destination.hotel.description }}</p>
                     <img :src="destination.hotel.imageUrl" alt="hotel image" class="hotelImage">
                 </div>
+                <div class="transport">
+                    <h3>Transport(to {{ destination.hotel.place.name }})</h3>
+                    <h4>{{ destination.transport.name }}</h4>
+                    <h4>{{ destination.transport.description }}</h4>
+                    <img :src="destination.transport.imageUrl" alt="transport image" class="transportImage">
+                </div>
             </div>
         </div>
 
@@ -32,7 +41,7 @@
         <div v-if="user.role">
             <div style="margin-top: 60px; text-align: center;">
                 <h2>Quantity</h2>
-                <input type="number" v-model="quantity" min="1" max="10" @input="calculatePrice">
+                <input type="number" v-model="quantity" min="1" :max="freeSeats" @input="calculatePrice">
             </div>
             <div>
                 <h2 style="margin-top: 30px;">Price: {{ tour.price }}</h2>
@@ -47,7 +56,6 @@
         </div>
 
     </div>
-
 
 
     <div style="text-align: center; margin-top: 70px;">
@@ -103,7 +111,8 @@ export default {
             isSendRequest: false,
             isLoaded: false,
             isReviewFromDb: false,
-            haveUserTour: true
+            haveUserTour: true,
+            freeSeats: 0
         }
     },
     methods: {
@@ -127,7 +136,9 @@ export default {
 
 
         async calculatePrice() {
-            if (this.quantity < 1) {
+            if (this.freeSeats < this.quantity){
+                this.quantity = this.freeSeats;
+            }else if (this.quantity < 1) {
                 this.quantity = 1;
             }
             this.tour.price = this.priceForOne * this.quantity;
@@ -176,6 +187,7 @@ export default {
 
     async mounted() {
         this.tour = await tourAPI.getTourById(this.$route.params.id);
+        this.freeSeats = await payAPI.getTourFreeSeats(this.tour.id);
         this.priceForOne = this.tour.price;
         this.tour.startDate = await dateHelper.formatDate(this.tour.startDate);
         this.tour.endDate = await dateHelper.formatDate(this.tour.endDate);

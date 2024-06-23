@@ -11,6 +11,17 @@ const initializeStripe = async () => {
 
 initializeStripe();
 
+
+
+export function getTourFreeSeats(tourId) {
+    try{
+        return axios.get(`${mainUrl}/getTourFreeSeats/${tourId}`).then((res) => res.data);
+    }catch(error){
+        router.push("/error");
+    }
+}
+
+
 export const reserveTour = async (paymentData, token) => {
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {

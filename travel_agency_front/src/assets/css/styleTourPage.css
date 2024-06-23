@@ -59,6 +59,17 @@
 }
 
 
+.transport {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.transport img {
+  width: 500px;
+  border-radius: 10%;
+}
+
+
 
 .button-action {
   all: unset;

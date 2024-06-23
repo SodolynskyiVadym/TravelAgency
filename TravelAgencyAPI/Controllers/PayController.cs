@@ -36,6 +36,18 @@ public class PayController : ControllerBase
         _config = config;
     }
     
+    [HttpGet("getTourFreeSeats/{id}")]
+    public async Task<int> GetTourFreeSeats(int id)
+    {
+        Tour? tour = await _tourService.GetByIdAsync(id);
+        if (tour == null) return 0;
+        
+        List<Payment> payments = await _paymentService.GetByTourId(id);
+        Console.WriteLine(tour.QuantitySeats);
+        Console.WriteLine(payments.Sum(p => p.Amount));
+        return tour.QuantitySeats - payments.Sum(p => p.Amount);
+    }
+    
     
     [Authorize]
     [HttpGet("getUserPayments")]

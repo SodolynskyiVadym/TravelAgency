@@ -75,9 +75,24 @@ public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
             .Where(p => p.UserId == userId).ToListAsync();
     }
 
+    public Task<List<Payment>> GetByTourId(int tourId)
+    {
+        return _context.Payments
+            .Include(p => p.User)
+            .Where(p => p.TourId == tourId).ToListAsync();
+    }
+
     public async Task DeleteUnpaid()
     {
         List<Payment> payments = await _context.Payments.Where(p => !p.IsPaid).ToListAsync();
+        _context.Payments.RemoveRange(payments);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task DeleteOldPayments()
+    {
+        List<Payment> payments = await _context.Payments.Include(p => p.Tour)
+            .Where(p => p.Tour.StartDate < DateTime.Now.AddDays(-1)).ToListAsync();
         _context.Payments.RemoveRange(payments);
         await _context.SaveChangesAsync();
     }

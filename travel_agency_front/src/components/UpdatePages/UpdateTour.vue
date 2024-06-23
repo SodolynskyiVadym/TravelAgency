@@ -149,9 +149,9 @@
         </datalist>
         <div class="error" v-if="tour.transportToEndId === 0">Transport is required</div>
 
-        <label for="quantitySeats">Quantity of Seats:</label>
-        <input id="quantitySeats" type="number" v-model="tour.quantitySeats" @input="checkCorrectInputs">
-        <div class="error" v-if="tour.quantitySeats <= 0">Quantity of seats is required</div>
+        <label for="quantitySeats">Quantity of Seats(max {{ maxSeats }} seats):</label>
+        <input id="quantitySeats" type="number" v-model="tour.quantitySeats" min="0" :max="maxSeats" @input="checkQuantitySeats">
+        <div class="error" v-if="tour.quantitySeats <= 0 || tour.quantitySeats > maxSeats">Quantity of seats is required</div>
 
         <label for="description">Description:</label>
         <textarea id="description" v-model="tour.description" @input="checkCorrectInputs"></textarea>
@@ -206,7 +206,8 @@ export default {
             isCorrectImageUrl: false,
             isSendRequest: false,
             isLoaded: false,
-            quantityDays: 0
+            quantityDays: 0,
+            maxSeats: 0
         }
     },
     methods: {
@@ -217,10 +218,21 @@ export default {
             const isCorrectTransports = transportsIds.filter(id => id != 0).length === this.tour.destinations.length;
 
 
-            this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 && this.tour.price > 0
-                && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.transportToEndId > 0 && this.tour.startDate < this.tour.endDate
-                && this.tour.destinations.length > 0 && this.isCorrectDestinationsStartDates.every(date => date) && this.isCorrectDestinationsEndDates.every(date => date)
-                && this.isCorrectPlacesNames.every(name => name) && isCorrectHotels && isCorrectTransports;
+            
+            this.isCorrectInputs = this.tour.name && this.isCorrectImageUrl && this.tour.description && this.tour.quantitySeats > 0 
+            && this.tour.price > 0 && this.tour.placeStartId > 0 && this.tour.placeEndId > 0 && this.tour.transportToEndId > 0  && this.tour.quantitySeats <= this.maxSeats
+            && this.tour.startDate < this.tour.endDate && this.tour.destinations.length > 0 && this.isCorrectDestinationsStartDates.every(date => date) && this.isCorrectDestinationsEndDates.every(date => date)
+            && this.isCorrectPlacesNames.every(name => name) && isCorrectHotels && isCorrectTransports;
+        },
+
+
+        async calculateMaxSeats() {
+            const tourTransports = this.allTransports.filter(transport => this.destinationsTransportsNames.includes(transport.name));
+            if (tourTransports.length === 0) this.maxSeats = 0;
+            else if (tourTransports.length === 1) this.maxSeats = tourTransports[0].quantitySeats;
+            else this.maxSeats = tourTransports.min(transport => transport.quantitySeats);
+
+            await this.checkCorrectInputs();
         },
 
         async findPlaceIdByPlaceName(placeName, countryName) {
@@ -246,8 +258,17 @@ export default {
             }
         },
 
+        async checkQuantitySeats(){
+            if(this.tour.quantitySeats > this.maxSeats){
+                this.tour.quantitySeats = this.maxSeats;
+            }else if(this.tour.quantitySeats < 0){
+                this.tour.quantitySeats = 0;
+            }
+
+            await this.checkCorrectInputs();
+        },
+
         async getStartPlaceId() {
-            console.log(this.startPlaceName, this.startPlaceCountry);
             this.tour.placeStartId = await this.findPlaceIdByPlaceName(this.startPlaceName, this.startPlaceCountry);
             await this.checkCorrectInputs();
         },
@@ -271,11 +292,13 @@ export default {
 
         async getDestinationTransportIdByTransportIdName(index) {
             this.tour.destinations[index].transportId = await this.findTransportIdByTransportName(this.destinationsTransportsNames[index]);
+            await this.calculateMaxSeats();
             await this.checkCorrectInputs();
         },
 
         async getEndPlaceTransport() {
             this.tour.transportToEndId = await this.findTransportIdByTransportName(this.endTransportName);
+            await this.calculateMaxSeats();
             await this.checkCorrectInputs();
         },
 
@@ -414,6 +437,7 @@ export default {
         await this.checkDestinationDates();
         await this.checkDestinationsPlacesNames();
         await this.checkImage();
+        await this.calculateMaxSeats();
         await this.checkCorrectInputs();
 
         this.isLoaded = true;
