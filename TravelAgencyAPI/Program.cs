@@ -23,17 +23,15 @@ builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSe
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
-string connectionString = builder.Configuration["ConnectionString:DefaultConnection"] ?? throw new InvalidOperationException();
-
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
 builder.Services.AddDbContext<TravelDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
 
-string redisConnectionString = builder.Configuration["ConnectionString:RedisConnection"] ?? throw new InvalidOperationException();
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect(redisConnectionString));
 
+string redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -81,6 +79,13 @@ WebApplication app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<TravelDbContext>();
+    context.Database.EnsureCreated();
+}
+
 app.UseHangfireDashboard();
 
 var recurringJobManager = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IRecurringJobManager>();

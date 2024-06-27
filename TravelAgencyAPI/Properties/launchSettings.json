@@ -18,7 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "watch" : {
+    "watch": {
       "commandName": "Executable",
       "executablePath": "dotnet",
       "commandLineArgs": "watch run",

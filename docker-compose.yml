@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  api:
+    image: travel_agency_api
+    build:
+      context: ./TravelAgencyAPI
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_CONNECTION_STRING=Server=172.26.0.4;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
+      - REDIS_CONNECTION_STRING=172.26.0.5:6379
+    ports:
+      - "5113:5113"
+    depends_on:
+      - database
+      - redis
+    networks:
+      travel_network:
+        ipv4_address: 172.26.0.6
+
+  client:
+    image: travel_agency_client
+    build:
+      context: ./travel_agency_front
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_ADDRESS=172.26.0.6
+      - SERVER_PORT=5113
+    networks:
+      - travel_network
+
+  database:
+    image: mssqlserver
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test1234
+    ports:
+      - "1433:1433"
+    networks:
+      travel_network:
+        ipv4_address: 172.26.0.4
+  
+  redis:
+    image: redis
+    build:
+        context: ./redis
+        dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    networks:
+      travel_network:
+        ipv4_address:
+          172.26.0.5
+
+networks:
+  travel_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.26.0.0/16
