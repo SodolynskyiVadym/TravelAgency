@@ -44,18 +44,21 @@ services:
     networks:
       travel_network:
         ipv4_address: 172.26.0.4
-  
+    volumes:
+      - ./database/db_data:/var/opt/mssql/data
+
   redis:
     image: redis
     build:
-        context: ./redis
-        dockerfile: Dockerfile
+      context: ./redis
+      dockerfile: Dockerfile
     ports:
       - "6379:6379"
     networks:
       travel_network:
-        ipv4_address:
-          172.26.0.5
+        ipv4_address: 172.26.0.5
+    volumes:
+      - ./redis/redis_data:/data
 
 networks:
   travel_network:
@@ -64,3 +67,9 @@ networks:
       driver: default
       config:
         - subnet: 172.26.0.0/16
+
+#volumes:
+#  api_data:
+#  client_data:
+#  db_data:
+#  redis_data:

@@ -15,6 +15,10 @@
 }
 
 
+li {
+  cursor: pointer;
+}
+
 .sign {
   width: 100%;
   transition-duration: .3s;

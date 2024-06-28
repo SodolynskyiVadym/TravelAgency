@@ -77,7 +77,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 WebApplication app = builder.Build();
 
-app.UseMiddleware<ExceptionMiddlewareHandler>();
+// app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
 
 using (var scope = app.Services.CreateScope())

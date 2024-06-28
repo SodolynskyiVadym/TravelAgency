@@ -9,15 +9,16 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ml-auto">
         <li><a href="/" class="nav-link px-2 text-white fs-4">Home</a></li>
-        <li><a href="/admin" class="nav-link px-2 text-white fs-4" v-if="user.role === 'ADMIN'">Admin</a></li>
-        <li><a href="/listPlaces" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
-            class="nav-link px-2 text-white fs-4">Locations</a></li>
-        <li><a href="/listHotels" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
-            class="nav-link px-2 text-white fs-4">Hotels</a></li>
-        <li><a href="/listTransports" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
-            class="nav-link px-2 text-white fs-4">Transports</a></li>
-        <li><a href="/listUnavailableTours" v-if="user.role === 'EDITOR' || user.role === 'ADMIN'"
-            class="nav-link px-2 text-white fs-4">Unavailable Tours</a></li>
+        <li v-if="user.role === 'ADMIN'" class="nav-link px-2 text-white fs-4" @click="enterAdminPage">Admin</li>
+        <li v-if="user.role === 'EDITOR' || user.role === 'ADMIN'" class="nav-link px-2 text-white fs-4"
+          @click="enterListPlacesPage">Locations</li>
+        <li v-if="user.role === 'EDITOR' || user.role === 'ADMIN'" class="nav-link px-2 text-white fs-4"
+          @click="enterListHotelsPage">Hotels</li>
+        <li v-if="user.role === 'EDITOR' || user.role === 'ADMIN'" class="nav-link px-2 text-white fs-4"
+          @click="enterListTransportsPage">Transports</li>
+        <li v-if="user.role === 'EDITOR' || user.role === 'ADMIN'" class="nav-link px-2 text-white fs-4"
+          @click="enterListUnavailableToursPage">Unavailable
+          Tours</li>
       </ul>
 
       <div class="text-end" v-if="!user.role">
@@ -86,6 +87,22 @@ export default {
 
     async enterAdminPage() {
       this.$router.push('/admin');
+    },
+
+    async enterListPlacesPage() {
+      this.$router.push('/listPlaces');
+    },
+
+    async enterListHotelsPage() {
+      this.$router.push('/listHotels');
+    },
+
+    async enterListTransportsPage() {
+      this.$router.push('/listTransports');
+    },
+
+    async enterListUnavailableToursPage() {
+      this.$router.push('/listUnavailableTours');
     },
 
     async logout() {
