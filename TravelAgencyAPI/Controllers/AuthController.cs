@@ -70,9 +70,13 @@ public class AuthController : ControllerBase
     [HttpPost("loginViaReservePassword")]
     public async Task<IActionResult> LoginViaReservePassword(UserLoginRegistrationDto userLogin)
     {
+        Console.WriteLine(userLogin.Email);
+        Console.WriteLine(userLogin.Password);
         User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
-
+        
+        Console.WriteLine(user.ReservePasswordHash);
+        Console.WriteLine(user.ReservePasswordSalt);
         if (!_authHelper.CheckPassword(userLogin.Password, user.ReservePasswordHash, user.ReservePasswordSalt))
             return StatusCode(400, "Incorrect password!");
 

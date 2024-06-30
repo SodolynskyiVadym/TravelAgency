@@ -4,8 +4,8 @@
             <p class="title">Login</p>
             <input placeholder="Email" class="username input" type="text" v-model="user.email">
             <input placeholder="Password" class="password input" type="password" v-model="user.password">
-            <button class="btn" type="submit" @click="login" :disabled="!user.email || user.password.length < 8">Login</button>
             <div style="cursor: pointer;" class="username input" @click="forgotPassword">Forgot password</div>
+            <button class="btn" type="submit" @click="login" v-if="user.email && user.password.length >= 8">Login</button>
         </div>
     </div>
 </template>
@@ -30,6 +30,7 @@ export default {
                 const token = data.token;
                 localStorage.setItem('token', token);
                 this.$router.push('/');
+                setTimeout(() => { window.location.reload(); }, 10);
             }else{
                 alert('Invalid email or password');
             }

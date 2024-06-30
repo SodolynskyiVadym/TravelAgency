@@ -156,8 +156,7 @@ public class AuthHelper
         {
             rng.GetNonZeroBytes(passwordSalt);
         }
-
-        Console.WriteLine(password);
+        
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
 
         await _userService.CreateReservePasswordAsync(email, passwordHash, passwordSalt);
@@ -168,7 +167,6 @@ public class AuthHelper
     
     public bool CheckPassword(string password, byte[] passwordHash, byte[] passwordSalt)
     {
-        Console.WriteLine(password);
         byte[] passwordHashToCheck = GetPasswordHash(password, passwordSalt);
         for (var index = 0; index < passwordHashToCheck.Length; index++)
         {

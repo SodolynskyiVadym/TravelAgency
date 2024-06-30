@@ -15,14 +15,14 @@
             <input id="confirmPassword" placeholder="Confirm password" class="password input" type="password"
                 v-model="confirmPassword">
 
-            <p style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
             <p style="color: red; margin-top: 40px;" v-if="message">{{ message }}</p>
-            <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword"
-                :disabled="password != confirmPassword || password.length < 8">Update password</button>
+            <p v-if="password != confirmPassword || password.length < 8" style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
+            <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword" v-else>Update password</button>
         </div>
     </div>
 
-    <div>
+    <div style="margin-top: 40px;">
+        <h2 style="text-align: center;">Your payments</h2>
         <table class="list-table">
             <tr>
                 <th>Image</th>
@@ -75,7 +75,6 @@ export default {
                 const result = await userAPI.updatePassword(this.password, token);
                 if (result === false) {
                     this.message = "Password wasn't changed"
-
                 }
                 this.password = "";
                 this.confirmPassword = "";
