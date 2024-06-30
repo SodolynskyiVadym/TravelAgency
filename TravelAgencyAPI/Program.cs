@@ -13,6 +13,24 @@ using TravelAgencyAPI.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connectionString;
+string redisConnectionString;;
+
+if (builder.Environment.IsDevelopment())
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
+    redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException();
+}else if (builder.Environment.IsEnvironment("DockerEnv"))
+{
+    connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
+    redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
+    redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
+}
+
 
 builder.Services.AddControllers();
 
@@ -23,14 +41,12 @@ builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSe
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
 builder.Services.AddDbContext<TravelDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
 
 
-string redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddHangfire(config => config
@@ -77,7 +93,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 WebApplication app = builder.Build();
 
-// app.UseMiddleware<ExceptionMiddlewareHandler>();
+app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
 
 using (var scope = app.Services.CreateScope())

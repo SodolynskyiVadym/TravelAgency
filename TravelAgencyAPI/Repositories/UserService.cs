@@ -17,8 +17,13 @@ public class UserService : IRepository<User, UserDto>, IUserService
         _context = context;
         _mapper = mapper;
     }
-    
-    
+
+
+    public async Task<User?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Users.FindAsync(id);
+    }
+
     public async Task<User?> GetByIdAsync(int id)
     {
         return await _context.Users.FindAsync(id);

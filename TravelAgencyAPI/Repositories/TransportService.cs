@@ -14,6 +14,7 @@ public class TransportService : IRepository<Transport, TransportDto>
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
+    private IRepository<Transport, TransportDto> _repositoryImplementation;
 
     public TransportService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
@@ -21,7 +22,12 @@ public class TransportService : IRepository<Transport, TransportDto>
         _mapper = mapper;
         _redis = redisConnection.GetDatabase();
     }
-    
+
+    public async Task<Transport?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Transports.FindAsync(id);
+    }
+
     public async Task<Transport?> GetByIdAsync(int id)
     {
         string redisKey = "transport" + id;

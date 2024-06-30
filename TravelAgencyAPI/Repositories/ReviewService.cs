@@ -20,6 +20,14 @@ public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
         _mapper = mapper;
     }
 
+    public async Task<Review?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Reviews
+            .Include(r => r.User)
+            .Include(r => r.Tour)
+            .FirstOrDefaultAsync(r => r.Id == id);
+    }
+
     public async Task<Review?> GetByIdAsync(int id)
     {
         Review? review = await _context.Reviews.FirstOrDefaultAsync(review => review.Id == id);

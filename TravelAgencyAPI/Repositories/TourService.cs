@@ -14,6 +14,7 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
     private TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
+    private readonly ComparatorHelper _comparatorHelper = new();
 
     public TourService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
@@ -22,16 +23,9 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         _redis = redisConnection.GetDatabase();
     }
 
-    public async Task<Tour?> GetByIdAsync(int id)
+    public async Task<Tour?> GetByIdWithIncludeAsync(int id)
     {
-        string redisKey = "tour" + id;
-        if (await _redis.KeyExistsAsync(redisKey))
-        {
-            string jsonData = await _redis.StringGetAsync(redisKey);
-            return JsonConvert.DeserializeObject<Tour>(jsonData);
-        }
-
-        Tour? tour = await _context.Tours
+        return await _context.Tours
             .Include(t => t.PlaceStart)
             .ThenInclude(p => p.ImagesUrls)
             .Include(t => t.PlaceEnd)
@@ -44,6 +38,18 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
             .ThenInclude(d => d.Transport)
             .Include(t => t.TransportToEnd)
             .FirstOrDefaultAsync(t => t.Id == id);
+    }
+
+    public async Task<Tour?> GetByIdAsync(int id)
+    {
+        string redisKey = "tour" + id;
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            string jsonData = await _redis.StringGetAsync(redisKey);
+            return JsonConvert.DeserializeObject<Tour>(jsonData);
+        }
+
+        Tour? tour = await this.GetByIdWithIncludeAsync(id);
         if (tour != null)
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour), TimeSpan.FromMinutes(10));
         return tour;
@@ -65,20 +71,14 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
 
     public async Task<bool> UpdateAsync(TourDto tourUpdate)
     {
-        Tour? tour = await _context.Tours
-            .Include(t => t.PlaceStart)
-            .ThenInclude(p => p.ImagesUrls)
-            .Include(t => t.PlaceEnd)
-            .ThenInclude(p => p.ImagesUrls)
-            .Include(t => t.Destinations)
-            .ThenInclude(d => d.Hotel)
-            .ThenInclude(h => h.Place)
-            .ThenInclude(p => p.ImagesUrls)
-            .Include(t => t.Destinations)
-            .ThenInclude(d => d.Transport)
-            .Include(t => t.TransportToEnd)
-            .FirstOrDefaultAsync(t => t.Id == tourUpdate.Id);
+        Tour? tour = await this.GetByIdWithIncludeAsync(tourUpdate.Id);
         if (tour == null) return false;
+
+        tour.Destinations = tour.Destinations.OrderBy(d => d.StartDate).ToList();
+        tourUpdate.Destinations = tourUpdate.Destinations.OrderBy(d => d.StartDate).ToList();
+
+        bool isChangedForeignKey = tour.PlaceStartId != tourUpdate.PlaceStartId || tour.PlaceEndId != tourUpdate.PlaceEndId 
+            || tour.TransportToEndId != tourUpdate.TransportToEndId || _comparatorHelper.IsTourDestinationsChanged(tour.Destinations, tourUpdate.Destinations);
 
         _context.Destinations.RemoveRange(tour.Destinations);
         tour.Name = tourUpdate.Name ?? tour.Name;
@@ -97,10 +97,15 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
             : tour.Destinations;
 
         await _context.SaveChangesAsync();
-        
+
         string redisKey = "tour" + tourUpdate.Id;
         if (await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour), TimeSpan.FromMinutes(10));
+        {
+            if (isChangedForeignKey) await _redis.StringSetAsync(redisKey,
+                    JsonConvert.SerializeObject(await this.GetByIdWithIncludeAsync(tour.Id)), TimeSpan.FromMinutes(10));
+            else await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(tour), TimeSpan.FromMinutes(10));
+        }
+
         return true;
     }
 
@@ -132,6 +137,7 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         {
             tour.IsAvailable = false;
         }
+
         await _context.SaveChangesAsync();
     }
 }

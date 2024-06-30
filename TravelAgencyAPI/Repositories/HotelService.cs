@@ -14,14 +14,22 @@ public class HotelService : IRepository<Hotel, HotelDto>
     private TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
+
     public HotelService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
     {
         _context = context;
         _mapper = mapper;
         _redis = redisConnection.GetDatabase();
     }
-    
-    
+
+
+    public async Task<Hotel?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Hotels
+            .Include(h => h.Place)
+            .FirstOrDefaultAsync(h => h.Id == id);
+    }
+
     public async Task<Hotel?> GetByIdAsync(int id)
     {
         string redisKey = "hotel" + id;
@@ -30,10 +38,10 @@ public class HotelService : IRepository<Hotel, HotelDto>
             string jsonData = await _redis.StringGetAsync(redisKey);
             return JsonConvert.DeserializeObject<Hotel>(jsonData);
         }
-        Hotel? hotel =  await _context.Hotels
-            .Include(h => h.Place)
-            .FirstOrDefaultAsync(h => h.Id == id);
-        if(hotel != null) 
+
+        Hotel? hotel = await this.GetByIdWithIncludeAsync(id);
+
+        if (hotel != null)
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
         return hotel;
     }
@@ -55,21 +63,26 @@ public class HotelService : IRepository<Hotel, HotelDto>
 
     public async Task<bool> UpdateAsync(HotelDto hotelUpdate)
     {
-        Hotel? hotel = await _context.Hotels.FindAsync(hotelUpdate.Id);
+        Hotel? hotel = await this.GetByIdWithIncludeAsync(hotelUpdate.Id);
         if (hotel == null) return false;
-        
-        string redisKey = "hotel" + hotelUpdate.Id;
-        
-        hotel.Name = hotelUpdate.Name ?? hotel.Name ;
+
+        bool isChangedForeignKey = hotel.PlaceId != hotelUpdate.PlaceId;
+
+        hotel.Name = hotelUpdate.Name ?? hotel.Name;
         hotel.Address = hotelUpdate.Address ?? hotel.Address;
         hotel.Description = hotelUpdate.Description ?? hotel.Description;
         hotel.PricePerNight = hotelUpdate.PricePerNight;
         hotel.PlaceId = hotelUpdate.PlaceId != 0 ? hotelUpdate.PlaceId : hotel.PlaceId;
         hotel.ImageUrl = hotelUpdate.ImageUrl ?? hotel.ImageUrl;
-
         await _context.SaveChangesAsync();
-        if(await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
+
+        string redisKey = "hotel" + hotelUpdate.Id;
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            if (isChangedForeignKey) await _redis.StringSetAsync(redisKey, 
+                JsonConvert.SerializeObject(await this.GetByIdWithIncludeAsync(hotel.Id)), TimeSpan.FromMinutes(10));
+            else await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
+        }
         return true;
     }
 
@@ -77,7 +90,7 @@ public class HotelService : IRepository<Hotel, HotelDto>
     {
         Hotel? hotel = await _context.Hotels.FindAsync(id);
         if (hotel == null) return false;
-        
+
         _context.Hotels.Remove(hotel);
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("hotel" + id);

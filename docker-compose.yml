@@ -9,6 +9,7 @@ services:
     environment:
       - DATABASE_CONNECTION_STRING=Server=172.26.0.4;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=172.26.0.5:6379
+      - ASPNETCORE_ENVIRONMENT=DockerEnv
     ports:
       - "5113:5113"
     depends_on:

@@ -17,7 +17,12 @@ public class DestinationService : IRepository<Destination, DestinationDto>
         _context = context;
         _mapper = mapper;
     }
-    
+
+    public async Task<Destination?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Destinations.Include(d => d.Hotel).FirstOrDefaultAsync(d => d.Id == id);
+    }
+
     public async Task<Destination?> GetByIdAsync(int id)
     {
         return await _context.Destinations.FindAsync(id);

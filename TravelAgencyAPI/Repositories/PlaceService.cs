@@ -14,12 +14,20 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
     private readonly TravelDbContext _context;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
+    private readonly ComparatorHelper _comparatorHelper = new();
 
     public PlaceService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction)
     {
         _context = context;
         _mapper = mapper;
         _redis = redisConnecction.GetDatabase();
+    }
+
+    public async Task<Place?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Places
+            .Include(p => p.ImagesUrls)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Place?> GetByIdAsync(int id)
@@ -30,9 +38,9 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
             string jsonData = await _redis.StringGetAsync(redisKey);
             return JsonConvert.DeserializeObject<Place>(jsonData);
         }
-        Place? place =  await _context.Places
-            .Include(p => p.ImagesUrls)
-            .FirstOrDefaultAsync(place => place.Id == id);
+
+        Place? place = await this.GetByIdWithIncludeAsync(id);
+        
         if(place != null) 
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
         return place;
@@ -71,9 +79,10 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
 
     public async Task<bool> UpdateAsync(PlaceDto placeUpdate)
     {
-        Place? place = await _context.Places.Include(p => p.ImagesUrls)
-            .FirstOrDefaultAsync(p => p.Id == placeUpdate.Id);
+        Place? place = await this.GetByIdWithIncludeAsync(placeUpdate.Id);
         if (place == null) return false;
+        
+        bool isChangedForeignKey = _comparatorHelper.IsPlaceImageUrlsChanged(place.ImagesUrls, placeUpdate.ImagesUrls);
         
         _context.PlaceImageUrls.RemoveRange(place.ImagesUrls);
         
@@ -88,8 +97,12 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
         await _context.SaveChangesAsync();
         
         string redisKey = "place" + placeUpdate.Id;
-        if(await _redis.KeyExistsAsync(redisKey))
-            await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
+        if (await _redis.KeyExistsAsync(redisKey))
+        {
+            if(isChangedForeignKey) await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(await this.GetByIdWithIncludeAsync(place.Id)), TimeSpan.FromMinutes(10));
+            else await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
+        }
+
         return true;
     }
 

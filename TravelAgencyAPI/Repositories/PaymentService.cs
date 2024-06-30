@@ -17,7 +17,15 @@ public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
         _context = context;
         _mapper = mapper;
     }
-    
+
+    public async Task<Payment?> GetByIdWithIncludeAsync(int id)
+    {
+        return await _context.Payments
+            .Include(p => p.User)
+            .Include(p => p.Tour)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task<Payment?> GetByIdAsync(int id)
     {
         return await _context.Payments.FindAsync(id);
