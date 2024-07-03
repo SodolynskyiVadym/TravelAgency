@@ -58,8 +58,6 @@ services:
     networks:
       travel_network:
         ipv4_address: 172.26.0.5
-    volumes:
-      - ./redis/redis_data:/data
 
 networks:
   travel_network:
