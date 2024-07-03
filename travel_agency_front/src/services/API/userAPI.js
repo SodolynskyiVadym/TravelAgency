@@ -74,7 +74,8 @@ export async function loginViaReservePassword(user) {
 export async function updatePassword(password, token) {
     const config = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
     try {
-        return await axios.post(`${mainUrl}/updatePassword`, password, config).then((res) => res.data);
+        const data = { password: password}
+        return await axios.post(`${mainUrl}/updatePassword`, data, config).then((res) => res.data);
     } catch (error) {
         return false
     }

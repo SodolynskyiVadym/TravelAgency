@@ -43,8 +43,6 @@ public class PayController : ControllerBase
         if (tour == null) return 0;
         
         List<Payment> payments = await _paymentService.GetByTourId(id);
-        Console.WriteLine(tour.QuantitySeats);
-        Console.WriteLine(payments.Sum(p => p.Amount));
         return tour.QuantitySeats - payments.Sum(p => p.Amount);
     }
     
@@ -81,7 +79,6 @@ public class PayController : ControllerBase
         Payment? paymentFromDb = await _paymentService.GetByUserIdTourId(userId, tour.Id);
         if (paymentFromDb != null)
         {
-            Console.WriteLine("Payment already exists!");
             return BadRequest("Payment already exists!");
         }
 
@@ -113,10 +110,17 @@ public class PayController : ControllerBase
         if (paymentId == null) return StatusCode(400, "Payment id not found!");
 
         Payment? payment = await _paymentService.GetByIdAsync(int.Parse(paymentId));
-        if (payment == null) return StatusCode(400, "Payment not found!");
+        if(payment == null) return StatusCode(400, "Payment not found!");
+        
+        Tour? tour = await _tourService.GetByIdAsync(payment.TourId);
+        if (tour == null) return StatusCode(400, "Tour not found!");
+        User? user = await _userService.GetByIdAsync(payment.UserId);
+        if (user == null) return StatusCode(400, "User not found!");
 
         payment.IsPaid = true;
         await _paymentService.UpdateAsync(_mapper.Map<PaymentDto>(payment));
+        
+        _mailHelper.SendTourMessage(user.Email, tour);
 
         return Redirect(_config.GetSection("Urls:Client").Value);
     }

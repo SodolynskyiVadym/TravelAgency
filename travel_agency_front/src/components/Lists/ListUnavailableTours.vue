@@ -1,6 +1,6 @@
 <template>
     <div style="text-align: center;">
-        <h1>tours</h1>
+        <h1>Tours</h1>
         <div class="form-control">
             <input class="input input-alt" placeholder="Type name of tours" type="text" v-model="inputTour" @input="searchTour">
             <span class="input-border input-border-alt"></span>

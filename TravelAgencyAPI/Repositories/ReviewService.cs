@@ -82,8 +82,6 @@ public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
 
     public async Task<bool> DeleteUserReviewAsync(int userId, int tourId)
     {
-        Console.WriteLine(userId);
-        Console.WriteLine(tourId);
         Review? review = _context.Reviews.FirstOrDefault(r => r.UserId == userId && r.TourId == tourId);
 
         if (review == null) return false;

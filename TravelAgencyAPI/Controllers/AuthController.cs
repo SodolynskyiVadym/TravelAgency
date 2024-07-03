@@ -70,13 +70,9 @@ public class AuthController : ControllerBase
     [HttpPost("loginViaReservePassword")]
     public async Task<IActionResult> LoginViaReservePassword(UserLoginRegistrationDto userLogin)
     {
-        Console.WriteLine(userLogin.Email);
-        Console.WriteLine(userLogin.Password);
         User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
         
-        Console.WriteLine(user.ReservePasswordHash);
-        Console.WriteLine(user.ReservePasswordSalt);
         if (!_authHelper.CheckPassword(userLogin.Password, user.ReservePasswordHash, user.ReservePasswordSalt))
             return StatusCode(400, "Incorrect password!");
 
@@ -139,16 +135,15 @@ public class AuthController : ControllerBase
     
     [Authorize]
     [HttpPost("updatePassword")]
-    public async Task<IActionResult> UpdatePassword([FromBody] string password)
+    public async Task<IActionResult> UpdatePassword(UserUpdatePasswordDto userPassword)
     {
-        Console.WriteLine(password);
         string? id = User.FindFirst("userId")?.Value;
         if (id == null) return StatusCode(402, "Incorrect token!");
         
         User? user = await _userService.GetByIdAsync(int.Parse(id)); 
         if(user == null) return StatusCode(402, "User not found!");
         
-        if (await _authHelper.UpdatePassword(user, password)) return Ok();
+        if (await _authHelper.UpdatePassword(user, userPassword.Password)) return Ok();
         return BadRequest("Password is less than 7 characters");
     }
     

@@ -68,7 +68,6 @@ public class ReviewController : ControllerBase
     [HttpDelete("delete/{tourId}")]
     public async Task<IActionResult> DeleteReview(int tourId)
     {
-        Console.WriteLine("TourId: " + tourId);
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         
         if (await _reviewService.DeleteUserReviewAsync(userId, tourId)) return Ok();
