@@ -38,6 +38,7 @@ public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
 
     public async Task<int> AddAsync(PaymentDto paymentDto)
     {
+        if (await IsUsedUniqueAttributes(paymentDto)) return 0;
         Payment payment = _mapper.Map<Payment>(paymentDto);
         await _context.Payments.AddAsync(payment);
         await _context.SaveChangesAsync();
@@ -46,6 +47,7 @@ public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
 
     public async Task<bool> UpdateAsync(PaymentDto paymentDto)
     {
+        if (await IsUsedUniqueAttributes(paymentDto)) return false;
         Payment? payment = await _context.Payments.FindAsync(paymentDto.Id);
         if (payment == null) return false;
         
@@ -69,6 +71,13 @@ public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
         _context.Payments.Remove(payment);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> IsUsedUniqueAttributes(PaymentDto entity)
+    {
+        Payment? payment = await _context.Payments.FirstOrDefaultAsync(p => p.UserId == entity.UserId && p.TourId == entity.TourId);
+        if(payment == null) return false;
+        return payment.Id != entity.Id;
     }
 
     public async Task<Payment?> GetByUserIdTourId(int userId, int tourId)

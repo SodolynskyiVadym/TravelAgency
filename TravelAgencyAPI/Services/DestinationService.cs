@@ -61,4 +61,9 @@ public class DestinationService : IRepository<Destination, DestinationDto>
         
         return true;
     }
+
+    public async Task<bool> IsUsedUniqueAttributes(DestinationDto entity)
+    {
+        return false;
+    }
 }

@@ -11,4 +11,5 @@ public interface IRepository<T, in TDto> where T : class, IModel where TDto : cl
     Task<int> AddAsync(TDto entity);
     Task<bool> UpdateAsync(TDto entity);
     Task<bool> DeleteAsync(int id);
+    Task<bool> IsUsedUniqueAttributes(TDto entity);
 }

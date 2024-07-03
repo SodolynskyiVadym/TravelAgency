@@ -75,12 +75,6 @@ public class PayController : ControllerBase
         User? user = await _userService.GetByIdAsync(userId);
         Tour? tour = await _tourService.GetByIdAsync(paymentData.TourId);
         if (user == null || tour == null) return BadRequest("User or tour not found!");
-        
-        Payment? paymentFromDb = await _paymentService.GetByUserIdTourId(userId, tour.Id);
-        if (paymentFromDb != null)
-        {
-            return BadRequest("Payment already exists!");
-        }
 
         PaymentDto payment = new PaymentDto
         {
@@ -91,6 +85,7 @@ public class PayController : ControllerBase
             IsPaid = false
         };
         int paymentId = await _paymentService.AddAsync(payment);
+        if(paymentId == 0) return StatusCode(400, "User already have this tour!");
         string sessionId = await _stripeHelper.CreateStripeSession(paymentData, payment, tour, paymentId);
         
         payment.Id = paymentId;

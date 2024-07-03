@@ -104,8 +104,7 @@ public class AuthController : ControllerBase
             return StatusCode(400, "Email is empty or password is less than 8");
         }
 
-        IEnumerable<User> users = await _userService.GetAllAsync();
-        if (users.FirstOrDefault(u => u.Email == userRegistration.Email) != null) return StatusCode(400, "User already exists");
+        if(await _userService.IsUsedEmail(userRegistration.Email)) return BadRequest("Email is already used!");
 
         bool isRegistered = await _authHelper.RegisterUser(userRegistration) > 0;
         if (isRegistered)
@@ -114,18 +113,18 @@ public class AuthController : ControllerBase
             return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}});
         }
 
-        return StatusCode(400, "Incorrect data entered");
+        return StatusCode(400, "IUser was not registered!");
     }
     
     
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("createUser")]
+    [HttpPost("registerEditorAdmin")]
     public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
         if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
             return BadRequest("Incorrect data");
 
-        string password = await _authHelper.CreateEditorAdmin(user);
+        string password = await _authHelper.RegisterEditorAdmin(user);
         if(password.IsNullOrEmpty()) return BadRequest("User already exists");
         
         if(_mailHelper.SendPassword(user.Email, password, user.Role)) return Ok();

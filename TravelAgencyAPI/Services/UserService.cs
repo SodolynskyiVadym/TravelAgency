@@ -36,22 +36,21 @@ public class UserService : IRepository<User, UserDto>, IUserService
 
     public async Task<int> AddAsync(UserDto userDto)
     {
-        List<string> emails = await _context.Users.Select(u => u.Email).ToListAsync();
-        if(emails.Contains(userDto.Email)) return 0;
-        
         User user = _mapper.Map<User>(userDto);
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
         return user.Id;
     }
 
-    public async Task<bool> UpdateAsync(UserDto user)
+    public async Task<bool> UpdateAsync(UserDto userDto)
     {
-        User? userToUpdate = await _context.Users.FindAsync(user.Id);
-        if (userToUpdate == null) return false;
+        if (await IsUsedUniqueAttributes(userDto)) return false;
+
+        User? user = await _context.Users.FindAsync(userDto.Id);
+        if (user == null) return false;
         
-        userToUpdate.Email = user.Email ?? userToUpdate.Email;
-        userToUpdate.Role = user.Role ?? userToUpdate.Role;
+        user.Email = userDto.Email ?? user.Email;
+        user.Role = userDto.Role ?? user.Role;
         
         await _context.SaveChangesAsync();
         return true;
@@ -65,6 +64,13 @@ public class UserService : IRepository<User, UserDto>, IUserService
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> IsUsedUniqueAttributes(UserDto entity)
+    {
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entity.Email);
+        if (user == null) return false;
+        return user.Id != entity.Id;
     }
 
     public async Task<User?> GetUserByEmail(string email)
@@ -106,5 +112,10 @@ public class UserService : IRepository<User, UserDto>, IUserService
         user.ReservePasswordSalt = null;
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> IsUsedEmail(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email) != null;
     }
 }

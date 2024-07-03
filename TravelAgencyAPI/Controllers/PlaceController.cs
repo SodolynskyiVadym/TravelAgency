@@ -50,6 +50,7 @@ public class PlaceController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreatePlace(PlaceDto place)
     {
+        if(await _placeService.IsUsedUniqueAttributes(place)) return BadRequest("Place already exists!");
         await _placeService.AddAsync(place);
         return Ok(place);
     }
@@ -59,6 +60,7 @@ public class PlaceController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdatePlace(PlaceDto place)
     {
+        if(await _placeService.IsUsedUniqueAttributes(place)) return BadRequest("Place already exists!");
         if (await _placeService.UpdateAsync(place)) return Ok();
         return NoContent();
     }

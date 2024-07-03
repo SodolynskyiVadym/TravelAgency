@@ -40,6 +40,7 @@ public class HotelController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> AddHotel(HotelDto hotel)
     {
+        if(await _hotelService.IsUsedUniqueAttributes(hotel)) return BadRequest("This hotel already exists!");
         await _hotelService.AddAsync(hotel);
         return Ok(hotel);
     }
@@ -49,8 +50,8 @@ public class HotelController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateHotel(HotelDto hotel)
     {
+        if(await _hotelService.IsUsedUniqueAttributes(hotel)) return BadRequest("This hotel already exists!");
         if (await _hotelService.UpdateAsync(hotel)) return Ok();
-        // Replace NoContent
-        return NoContent();
+        return BadRequest();
     }
 }

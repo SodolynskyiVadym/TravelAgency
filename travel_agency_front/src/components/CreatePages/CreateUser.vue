@@ -24,6 +24,7 @@
 
 <script>
 import * as userAPI from '@/services/API/userAPI';
+import * as validEmail from '@/js/validEmail';
 
 export default {
     data() {
@@ -40,7 +41,7 @@ export default {
 
     methods: {
         async checkCorrectInputs() {
-            this.isCorrectInputs = this.user.email && this.user.role;
+            this.isCorrectInputs = await validEmail.isValidEmail(this.user.email) && this.user.role;
         },
 
 

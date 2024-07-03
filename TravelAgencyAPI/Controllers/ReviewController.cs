@@ -47,7 +47,7 @@ public class ReviewController : ControllerBase
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
-        if (await _reviewService.GetUserReview(userId, review.TourId) != null) return BadRequest("You have already reviewed this tour");
+        if(await _reviewService.IsUsedUniqueAttributes(review)) return BadRequest("Place already exists!");
         
         review.UserId = userId;
         if (await _reviewService.AddAsync(review) != 0) return Ok();
@@ -58,6 +58,7 @@ public class ReviewController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateReview(ReviewDto review)
     {
+        if(await _reviewService.IsUsedUniqueAttributes(review)) return BadRequest("Place already exists!");
         int userId = int.Parse(User.FindFirst("userId")?.Value);
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
         if (await _reviewService.UpdateAsync(review)) return Ok();

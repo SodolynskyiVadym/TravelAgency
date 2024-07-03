@@ -96,4 +96,12 @@ public class HotelService : IRepository<Hotel, HotelDto>
         await _redis.KeyDeleteAsync("hotel" + id);
         return true;
     }
+
+    public async Task<bool> IsUsedUniqueAttributes(HotelDto entity)
+    {
+        Hotel? hotel = await _context.Hotels.FirstOrDefaultAsync(h => h.Name == entity.Name && h.PlaceId == entity.PlaceId 
+            && h.Address == entity.Address);
+        if(hotel == null) return false;
+        return hotel.Id != entity.Id;
+    }
 }

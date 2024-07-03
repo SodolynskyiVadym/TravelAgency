@@ -107,7 +107,7 @@ public class AuthHelper
     }
 
 
-    public async Task<string> CreateEditorAdmin(UserEmailRoleDto user)
+    public async Task<string> RegisterEditorAdmin(UserEmailRoleDto user)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())

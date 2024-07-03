@@ -2,9 +2,9 @@
     <div class="container-user-input">
         <div class="form">
             <p class="title">Forgot password</p>
-            <input placeholder="Email" class="username input" type="text" v-model="user.email" :readonly="isPasswordSended">
+            <input placeholder="Email" class="username input" type="text" v-model="user.email" :readonly="isPasswordSended" @input="checkEmail">
             <input placeholder="Password" class="password input" type="password" v-if="isPasswordSended && isPasswordCreated" v-model="user.password">
-            <button class="btn" type="submit" v-if="!isPasswordSended && user.email" @click="createReservePassword">Send password</button>
+            <button class="btn" type="submit" v-if="!isPasswordSended && isCorrectEmail" @click="createReservePassword">Send password</button>
             <button v-if="isPasswordSended && !isPasswordCreated" class="btn" type="button">
                 <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span role="status">Loading...</span>
@@ -16,6 +16,8 @@
 
 <script>
 import * as userAPI from '@/services/API/userAPI';
+import * as validEmail from '@/js/validEmail';
+
 
 export default {
     data() {
@@ -24,11 +26,17 @@ export default {
                 email: '',
                 password: ''
             },
+            isCorrectEmail: false,
             isPasswordSended: false,
             isPasswordCreated: false
         }
     },
     methods: {
+        async checkEmail() {
+            this.isCorrectEmail = await validEmail.isValidEmail(this.user.email);
+        },
+
+
         async createReservePassword() {
             this.isPasswordSended = true;
             await userAPI.createReservePassword(this.user.email);
@@ -40,11 +48,11 @@ export default {
             console.log(this.user);
             const data = await userAPI.loginViaReservePassword(this.user);
             console.log(data);
-            // if (data) {
-            //     localStorage.setItem('token', data.token);
-            //     this.$router.push('/');
-            //     setTimeout(() => { window.location.reload(); }, 10);
-            // }
+            if (data) {
+                localStorage.setItem('token', data.token);
+                this.$router.push('/');
+                setTimeout(() => { window.location.reload(); }, 10);
+            }
         }
     }
 }
