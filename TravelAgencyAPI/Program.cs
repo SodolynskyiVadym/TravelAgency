@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Stripe;
+using Stripe.Tax;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Repositories;
 using TravelAgencyAPI.Settings;
@@ -20,15 +21,21 @@ if (builder.Environment.IsDevelopment())
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException();
+    builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 }else if (builder.Environment.IsEnvironment("DockerEnv"))
 {
     connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
+    builder.Services.AddSingleton(new AddressSetting{
+        Server = Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? throw new InvalidOperationException(),
+        Client = Environment.GetEnvironmentVariable("CLIENT_ADDRESS") ?? throw new InvalidOperationException()
+    });
 }
 else
 {
     connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
+    builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 }
 
 
@@ -37,7 +44,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
-builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 

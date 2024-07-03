@@ -1,25 +1,25 @@
-﻿using TravelAgencyAPI.DTO;
+﻿using Microsoft.Extensions.Options;
+using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
+using TravelAgencyAPI.Settings;
 
 namespace TravelAgencyAPI.Helpers;
 using Stripe.Checkout;
 
 public class StripeHelper
 {
-    private readonly IConfiguration _config;
-    public StripeHelper(IConfiguration config)
+    private readonly AddressSetting _addressSetting;
+    public StripeHelper(IOptions<AddressSetting> addressSetting)
     {
-        _config = config;
+        _addressSetting = addressSetting.Value;
     }
     
     public async Task<string> CreateStripeSession(PaymentDataDto paymentData, PaymentDto payment, Tour tour, int paymentId)
     {
-        string? serverUrl = _config.GetSection("Urls:Server").Value;
-        
         var options = new SessionCreateOptions
         {
-            SuccessUrl = $"{serverUrl}/pay/success/{{CHECKOUT_SESSION_ID}}",
-            CancelUrl = $"{serverUrl}/pay/failure/{{CHECKOUT_SESSION_ID}}",
+            SuccessUrl = $"{_addressSetting.Server}/pay/success/{{CHECKOUT_SESSION_ID}}",
+            CancelUrl = $"{_addressSetting.Server}/pay/failure/{{CHECKOUT_SESSION_ID}}",
             PaymentMethodTypes = ["card"],
             Metadata = new Dictionary<string, string>
                 {

@@ -22,18 +22,18 @@ public class PayController : ControllerBase
     private readonly StripeHelper _stripeHelper;
     private readonly MailHelper _mailHelper;
     private readonly IMapper _mapper;
-    private readonly IConfiguration _config;
+    private readonly AddressSetting _addressSetting;
 
-    public PayController(TravelDbContext context, IMapper mapper, IConfiguration config,
+    public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting, IConfiguration config,
         IOptions<MailSetting> mailSetting, IConnectionMultiplexer redis)
     {
         _userService = new UserService(context, mapper);
         _tourService = new TourService(context, mapper, redis);
         _paymentService = new PaymentService(context, mapper);
         _mailHelper = new MailHelper(mailSetting);
-        _stripeHelper = new StripeHelper(config);
+        _stripeHelper = new StripeHelper(addressSetting);
         _mapper = mapper;
-        _config = config;
+        _addressSetting = addressSetting.Value;
     }
     
     [HttpGet("getTourFreeSeats/{id}")]
@@ -117,7 +117,7 @@ public class PayController : ControllerBase
         
         _mailHelper.SendTourMessage(user.Email, tour);
 
-        return Redirect(_config.GetSection("Urls:Client").Value);
+        return Redirect(_addressSetting.Client);
     }
 
 
@@ -134,7 +134,7 @@ public class PayController : ControllerBase
         if (payment == null) return StatusCode(400, "Payment not found!");
 
         await _paymentService.DeleteAsync(payment.Id);
-        return Redirect(_config.GetSection("Urls:Client").Value + "/error");
+        return Redirect(_addressSetting.Client + "/error");
     }
     
     public async Task DeleteUnpaidPaymentsAsync()

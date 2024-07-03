@@ -10,6 +10,8 @@ services:
       - DATABASE_CONNECTION_STRING=Server=172.26.0.4;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=172.26.0.5:6379
       - ASPNETCORE_ENVIRONMENT=DockerEnv
+      - SERVER_ADDRESS=http://localhost:5113
+      - CLIENT_ADDRESS"http://172.26.0.2:8080"
     ports:
       - "5113:5113"
     depends_on:
@@ -30,7 +32,8 @@ services:
       - SERVER_ADDRESS=172.26.0.6
       - SERVER_PORT=5113
     networks:
-      - travel_network
+      travel_network:
+        ipv4_address: 172.26.0.2
 
   database:
     image: mssqlserver
@@ -68,9 +71,3 @@ networks:
       driver: default
       config:
         - subnet: 172.26.0.0/16
-
-#volumes:
-#  api_data:
-#  client_data:
-#  db_data:
-#  redis_data:
