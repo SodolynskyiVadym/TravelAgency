@@ -21,19 +21,20 @@ public class PayController : ControllerBase
     private readonly PaymentService _paymentService;
     private readonly StripeHelper _stripeHelper;
     private readonly MailHelper _mailHelper;
-    private readonly IMapper _mapper;
     private readonly AddressSetting _addressSetting;
+    private readonly IMapper _mapper;
 
-    public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting, IConfiguration config,
+    public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting,
         IOptions<MailSetting> mailSetting, IConnectionMultiplexer redis)
     {
         _userService = new UserService(context, mapper);
         _tourService = new TourService(context, mapper, redis);
         _paymentService = new PaymentService(context, mapper);
-        _mailHelper = new MailHelper(mailSetting);
-        _stripeHelper = new StripeHelper(addressSetting);
+        _mailHelper = new MailHelper(mailSetting.Value);
+        _stripeHelper = new StripeHelper(addressSetting.Value);
         _mapper = mapper;
         _addressSetting = addressSetting.Value;
+        Console.WriteLine(addressSetting.Value);
     }
     
     [HttpGet("getTourFreeSeats/{id}")]
@@ -86,7 +87,7 @@ public class PayController : ControllerBase
         };
         int paymentId = await _paymentService.AddAsync(payment);
         if(paymentId == 0) return StatusCode(400, "User already have this tour!");
-        string sessionId = await _stripeHelper.CreateStripeSession(paymentData, payment, tour, paymentId);
+        string sessionId = await _stripeHelper.CreateStripeSession(paymentData, tour, paymentId);
         
         payment.Id = paymentId;
         payment.StripeSession = sessionId;
@@ -117,7 +118,8 @@ public class PayController : ControllerBase
         
         _mailHelper.SendTourMessage(user.Email, tour);
 
-        return Redirect(_addressSetting.Client);
+        return Redirect("http://localhost:8080");
+        // return Redirect(_addressSetting.Client);
     }
 
 
@@ -134,7 +136,8 @@ public class PayController : ControllerBase
         if (payment == null) return StatusCode(400, "Payment not found!");
 
         await _paymentService.DeleteAsync(payment.Id);
-        return Redirect(_addressSetting.Client + "/error");
+        // return Redirect(_addressSetting.Client + "/error");
+        return Redirect("http://localhost:8080" + "/error");
     }
     
     public async Task DeleteUnpaidPaymentsAsync()

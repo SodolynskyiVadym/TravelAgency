@@ -90,6 +90,3 @@ export async function deleteUser(id, token) {
         return false;
     }
 }
-
-
-

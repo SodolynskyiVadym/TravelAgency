@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Stripe;
-using Stripe.Tax;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Repositories;
 using TravelAgencyAPI.Settings;
@@ -21,21 +20,23 @@ if (builder.Environment.IsDevelopment())
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException();
-    builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 }else if (builder.Environment.IsEnvironment("DockerEnv"))
 {
     connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
+    var serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? throw new InvalidOperationException("SERVER_ADDRESS not found");
+    var clientAddress = Environment.GetEnvironmentVariable("CLIENT_ADDRESS") ?? throw new InvalidOperationException("CLIENT_ADDRESS not found");
+    Console.WriteLine($"Reading from environments server address - {serverAddress}");
+    Console.WriteLine($"Reading from environments client address - {clientAddress}");
     builder.Services.AddSingleton(new AddressSetting{
-        Server = Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? throw new InvalidOperationException(),
-        Client = Environment.GetEnvironmentVariable("CLIENT_ADDRESS") ?? throw new InvalidOperationException()
+        Server = serverAddress,
+        Client = clientAddress
     });
 }
 else
 {
     connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
-    builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 }
 
 
@@ -44,6 +45,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
+builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
@@ -74,11 +76,11 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-builder.Services.AddCors((options) =>
+builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevCors", (corsBuilder) =>
+    options.AddPolicy("DevCors", builder =>
     {
-        corsBuilder.AllowAnyOrigin()
+        builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });

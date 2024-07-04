@@ -10,9 +10,9 @@ public class MailHelper
 {
     private readonly MailSetting _mailSettings;
 
-    public MailHelper(IOptions<MailSetting> mailSettings)
+    public MailHelper(MailSetting mailSettings)
     {
-        _mailSettings = mailSettings.Value;
+        _mailSettings = mailSettings;
     }
 
 
@@ -28,7 +28,6 @@ public class MailHelper
             using (MimeMessage emailMessage = new MimeMessage())
             {
                 if (!File.Exists(pathHTMLPasswordPage)) return false;
-
 
                 MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
                 emailMessage.From.Add(emailFrom);
@@ -75,8 +74,7 @@ public class MailHelper
             using (MimeMessage emailMessage = new MimeMessage())
             {
                 if (!File.Exists(pathHTMLReservePasswordPage)) return false;
-
-
+                
                 MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
                 emailMessage.From.Add(emailFrom);
                 MailboxAddress emailTo = new MailboxAddress(null, email);

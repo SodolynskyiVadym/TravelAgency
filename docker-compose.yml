@@ -3,15 +3,16 @@ version: '3'
 services:
   api:
     image: travel_agency_api
+    container_name: server
     build:
       context: ./TravelAgencyAPI
       dockerfile: Dockerfile
     environment:
-      - DATABASE_CONNECTION_STRING=Server=172.26.0.4;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
-      - REDIS_CONNECTION_STRING=172.26.0.5:6379
+      - DATABASE_CONNECTION_STRING=Server=mssql-server;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
+      - REDIS_CONNECTION_STRING=redis:6379
       - ASPNETCORE_ENVIRONMENT=DockerEnv
-      - SERVER_ADDRESS=http://localhost:5113
-      - CLIENT_ADDRESS"http://172.26.0.2:8080"
+      - SERVER_ADDRESS=http://server:5113
+      - CLIENT_ADDRESS=http://client:8080
     ports:
       - "5113:5113"
     depends_on:
@@ -19,24 +20,25 @@ services:
       - redis
     networks:
       travel_network:
-        ipv4_address: 172.26.0.6
+        ipv4_address: 172.26.0.5
 
   client:
     image: travel_agency_client
+    container_name: client
     build:
       context: ./travel_agency_front
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:
-      - SERVER_ADDRESS=172.26.0.6
-      - SERVER_PORT=5113
+      - SERVER_ADDRESS=http://server:5113
     networks:
       travel_network:
         ipv4_address: 172.26.0.2
 
   database:
-    image: mssqlserver
+    image: mcr.microsoft.com/mssql/server
+    container_name: mssql-server
     build:
       context: ./database
       dockerfile: Dockerfile
@@ -47,20 +49,18 @@ services:
       - "1433:1433"
     networks:
       travel_network:
-        ipv4_address: 172.26.0.4
+        ipv4_address: 172.26.0.3
     volumes:
       - ./database/db_data:/var/opt/mssql/data
 
   redis:
     image: redis
-    build:
-      context: ./redis
-      dockerfile: Dockerfile
+    container_name: redis
     ports:
       - "6379:6379"
     networks:
       travel_network:
-        ipv4_address: 172.26.0.5
+        ipv4_address: 172.26.0.4
 
 networks:
   travel_network:

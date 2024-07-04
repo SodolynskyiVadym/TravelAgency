@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
     {
         _userService = new UserService(context, mapper);
         _authHelper = new AuthHelper(authSetting, _userService);
-        _mailHelper = new MailHelper(mailSetting);
+        _mailHelper = new MailHelper(mailSetting.Value);
         _mapper = mapper;
     }
     
