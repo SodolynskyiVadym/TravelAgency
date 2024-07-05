@@ -24,14 +24,6 @@ if (builder.Environment.IsDevelopment())
 {
     connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
-    var serverAddress = Environment.GetEnvironmentVariable("SERVER_ADDRESS") ?? throw new InvalidOperationException("SERVER_ADDRESS not found");
-    var clientAddress = Environment.GetEnvironmentVariable("CLIENT_ADDRESS") ?? throw new InvalidOperationException("CLIENT_ADDRESS not found");
-    Console.WriteLine($"Reading from environments server address - {serverAddress}");
-    Console.WriteLine($"Reading from environments client address - {clientAddress}");
-    builder.Services.AddSingleton(new AddressSetting{
-        Server = serverAddress,
-        Client = clientAddress
-    });
 }
 else
 {
@@ -46,6 +38,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
 builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
+builder.Services.Configure<AddressSetting>(builder.Configuration.GetSection("Address"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
@@ -101,7 +94,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 WebApplication app = builder.Build();
 
-// app.UseMiddleware<ExceptionMiddlewareHandler>();
+app.UseMiddleware<ExceptionMiddlewareHandler>();
 app.UseCors("DevCors");
 
 using (var scope = app.Services.CreateScope())

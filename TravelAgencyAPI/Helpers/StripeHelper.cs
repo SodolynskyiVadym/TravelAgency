@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using TravelAgencyAPI.DTO;
+﻿using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Settings;
 
@@ -16,15 +15,10 @@ public class StripeHelper
     
     public async Task<string> CreateStripeSession(PaymentDataDto paymentData, Tour tour, int paymentId)
     {
-        Console.WriteLine($"Server adders is - {_addressSetting.Server}");
         var options = new SessionCreateOptions
         {
-            // SuccessUrl = $"{_addressSetting.Server}/pay/success/{{CHECKOUT_SESSION_ID}}",
-            // CancelUrl = $"{_addressSetting.Server}/pay/failure/{{CHECKOUT_SESSION_ID}}",
-            // SuccessUrl = $"http://172.26.0.5:5113/pay/success/{{CHECKOUT_SESSION_ID}}",
-            // CancelUrl = $"http://172.26.0.5:5113/pay/failure/{{CHECKOUT_SESSION_ID}}",
-            SuccessUrl = $"http://localhost:5113/pay/success/{{CHECKOUT_SESSION_ID}}",
-            CancelUrl = $"http://localhost:5113/pay/failure/{{CHECKOUT_SESSION_ID}}",
+            SuccessUrl = $"{_addressSetting.Server}/pay/success/{{CHECKOUT_SESSION_ID}}",
+            CancelUrl = $"{_addressSetting.Server}/pay/failure/{{CHECKOUT_SESSION_ID}}",
             PaymentMethodTypes = ["card"],
             Metadata = new Dictionary<string, string>
                 {

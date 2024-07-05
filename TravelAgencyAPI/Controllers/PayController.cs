@@ -117,9 +117,8 @@ public class PayController : ControllerBase
         await _paymentService.UpdateAsync(_mapper.Map<PaymentDto>(payment));
         
         _mailHelper.SendTourMessage(user.Email, tour);
-
-        return Redirect("http://localhost:8080");
-        // return Redirect(_addressSetting.Client);
+        
+        return Redirect($"{_addressSetting.Client}/tour/{payment.TourId}");
     }
 
 
@@ -136,8 +135,7 @@ public class PayController : ControllerBase
         if (payment == null) return StatusCode(400, "Payment not found!");
 
         await _paymentService.DeleteAsync(payment.Id);
-        // return Redirect(_addressSetting.Client + "/error");
-        return Redirect("http://localhost:8080" + "/error");
+        return Redirect($"{_addressSetting.Client}/tour/{payment.TourId}");
     }
     
     public async Task DeleteUnpaidPaymentsAsync()

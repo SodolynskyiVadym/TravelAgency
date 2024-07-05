@@ -19,6 +19,7 @@ import UserPage from '@/components/UserPage.vue';
 import AdminPage from '@/components/AdminPage.vue';
 import CreateUserPage from '@/components/CreatePages/CreateUser.vue';
 import ForgotPasswordPage from '@/components/Auth/ForgotPasswordPage.vue';
+import ErrorPage from '@/components/ErrorPage.vue';
 
 import * as userAPI from '@/services/API/userAPI';
 
@@ -133,6 +134,11 @@ const routes = [
         path: '/registration',
         name: 'RegistrationPage',
         component: RegistrationPage,
+    },
+    {
+        path: '/error',
+        name: 'ErrorPage',
+        component: ErrorPage,
     },
     {
         path: "/admin",

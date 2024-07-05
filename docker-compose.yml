@@ -11,16 +11,11 @@ services:
       - DATABASE_CONNECTION_STRING=Server=mssql-server;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=redis:6379
       - ASPNETCORE_ENVIRONMENT=DockerEnv
-      - SERVER_ADDRESS=http://server:5113
-      - CLIENT_ADDRESS=http://client:8080
     ports:
       - "5113:5113"
     depends_on:
       - database
       - redis
-    networks:
-      travel_network:
-        ipv4_address: 172.26.0.5
 
   client:
     image: travel_agency_client
@@ -32,9 +27,6 @@ services:
       - "8080:8080"
     environment:
       - SERVER_ADDRESS=http://server:5113
-    networks:
-      travel_network:
-        ipv4_address: 172.26.0.2
 
   database:
     image: mcr.microsoft.com/mssql/server
@@ -47,9 +39,6 @@ services:
       - SA_PASSWORD=Test1234
     ports:
       - "1433:1433"
-    networks:
-      travel_network:
-        ipv4_address: 172.26.0.3
     volumes:
       - ./database/db_data:/var/opt/mssql/data
 
@@ -58,14 +47,3 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-    networks:
-      travel_network:
-        ipv4_address: 172.26.0.4
-
-networks:
-  travel_network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.26.0.0/16

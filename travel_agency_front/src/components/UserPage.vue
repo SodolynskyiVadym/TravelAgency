@@ -41,7 +41,7 @@
                 <td>{{ payment.tour.endDate }}</td>
                 <td>{{ payment.amount }}</td>
                 <td>{{ payment.amount * payment.tour.price }}</td>
-                <td>{{ payment.isPaid }}</td>
+                <td>{{ payment.isPaid ? 'Paid' : 'Unpaid' }}</td>
                 <td>
                     <button v-if="!payment.isPaid" class="button-update-delete button-update-delete-hover-green" @click="payExistStripeSession(payment.stripeSession)">Pay</button>
                     <button v-else class="button-update-delete button-update-delete-hover-black" @click="$router.push(`tour/${payment.tourId}`)">View</button>
