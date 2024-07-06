@@ -14,3 +14,25 @@ bookings, manage their favourite tours and save their bucket lists. This website
 - ![REDIS](https://img.shields.io/badge/REDIS-FF0000?style=for-the-badge&logo=link&logoColor=white)
 - ![DOCKER](https://img.shields.io/badge/DOCKER-blue?style=for-the-badge&logo=link&logoColor=white)
 - ![STRIPE](https://img.shields.io/badge/Stripe-2871EA?style=for-the-badge&logo=stripe&logoColor=white)
+
+## Run
+
+- Download the repository to your PC
+```
+git clone https://github.com/SodolynskyiVadym/TravelAgency.git
+```
+
+- Enter your data in file appsettings.json and config.env
+
+File [appsettings.json](TravelAgencyAPI/appsettings.json)
+
+File [config.env](travel_agency_front/config.env)
+
+- Run docker-compose
+```
+docker-compose up -d
+```
+
+## Data
+<p>There is already one tour and three users</p>
+- 
