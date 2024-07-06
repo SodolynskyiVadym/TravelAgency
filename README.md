@@ -39,10 +39,3 @@ File [config.env](travel_agency_front/config.env)
 ```
 docker-compose up -d
 ```
-
-## Data
-<p>There is already one tour and three users</p>
-
-- Email: admin@gmail.com, Password: admin123, Role: ADMIN
-- Email: editor@gmail.com, Password: editor12, Role: EDITOR
-- Email: tester@gmail.com, Password: 11111111, Role: USER
