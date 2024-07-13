@@ -29,7 +29,7 @@ File [appsettings.json](TravelAgencyAPI/appsettings.json)
 > - MailSetting
 > - Stripe(private key)
 > - ConnectionStrings(if you run by docker you haven't to do it)
-> - **Don't change AuthSetting(passwords of existed users will be incorrect)**
+> - AuthSetting
 
 File [config.env](travel_agency_front/config.env)
 > - STRIPE_PUBLIC_KEY
