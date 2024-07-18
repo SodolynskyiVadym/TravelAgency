@@ -2,7 +2,7 @@
 
 ## Description
 
-<p> his project aims to create a convenient and accessible platform for tourists looking for unforgettable travel experiences. The main features include a catalogue of tours with detailed descriptions and photos of holiday 
+<p> This project aims to create a convenient and accessible platform for tourists looking for unforgettable travel experiences. The main features include a catalogue of tours with detailed descriptions and photos of holiday 
 destinations, a convenient search engine to find the perfect option, the ability to book tours online. In addition, users can create personal accounts to easily track their 
 bookings, manage their favourite tours and save their bucket lists. This website is integrated with secure payment systems, which guarantees the reliability of transactions and the convenience of the payment process.</p>
 
