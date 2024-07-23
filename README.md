@@ -2,7 +2,7 @@
 
 ## Description
 
-<p> his project aims to create a convenient and accessible platform for tourists looking for unforgettable travel experiences. The main features include a catalogue of tours with detailed descriptions and photos of holiday 
+<p> This project aims to create a convenient and accessible platform for tourists looking for unforgettable travel experiences. The main features include a catalogue of tours with detailed descriptions and photos of holiday 
 destinations, a convenient search engine to find the perfect option, the ability to book tours online. In addition, users can create personal accounts to easily track their 
 bookings, manage their favourite tours and save their bucket lists. This website is integrated with secure payment systems, which guarantees the reliability of transactions and the convenience of the payment process.</p>
 
@@ -29,7 +29,7 @@ File [appsettings.json](TravelAgencyAPI/appsettings.json)
 > - MailSetting
 > - Stripe(private key)
 > - ConnectionStrings(if you run by docker you haven't to do it)
-> - **Don't change AuthSetting(passwords of existed users will be incorrect)**
+> - AuthSetting
 
 File [config.env](travel_agency_front/config.env)
 > - STRIPE_PUBLIC_KEY
@@ -39,10 +39,3 @@ File [config.env](travel_agency_front/config.env)
 ```
 docker-compose up -d
 ```
-
-## Data
-<p>There is already one tour and three users</p>
-
-- Email: admin@gmail.com, Password: admin123, Role: ADMIN
-- Email: editor@gmail.com, Password: editor12, Role: EDITOR
-- Email: tester@gmail.com, Password: 11111111, Role: USER
