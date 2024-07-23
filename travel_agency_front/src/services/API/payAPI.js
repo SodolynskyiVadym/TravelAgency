@@ -1,8 +1,10 @@
 import { loadStripe } from '@stripe/stripe-js';
 import axios from "axios";
 import router from "@/services/router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/pay";
+
+const mainUrl = `${serverUrl}/pay`;
 let stripePromise;
 
 const initializeStripe = async () => {

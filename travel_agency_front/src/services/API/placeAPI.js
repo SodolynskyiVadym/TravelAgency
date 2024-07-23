@@ -1,8 +1,9 @@
 import axios from "axios";
 import router from "./../router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/place";
 
+const mainUrl = `${serverUrl}/place`;
 
 export async function getPlaceById(id) {
   try {

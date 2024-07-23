@@ -24,7 +24,7 @@
       "commandLineArgs": "watch run",
       "workingDirectory": "$(ProjectDir)",
       "launchBrowser": false,
-      "applicationUrl": "http://localhost:5224",
+      "applicationUrl": "http://localhost:5113",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

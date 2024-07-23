@@ -1,7 +1,9 @@
 import axios from "axios";
 import router from "./../router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/transport";
+
+const mainUrl = `${serverUrl}/transport`;
 
 
 export async function getTransportById(id) {

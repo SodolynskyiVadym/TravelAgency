@@ -1,8 +1,9 @@
 import axios from "axios";
 import router from "./../router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/tour";
 
+const mainUrl = `${serverUrl}/tour`;
 
 export async function getTourById(id) {
     try {
@@ -16,6 +17,7 @@ export async function getTourById(id) {
 
 export async function getAllTours() {
     try {
+        console.log("mainUrl", mainUrl);
         return await axios.get(`${mainUrl}/getAllTours`).then((res) => res.data);
     } catch (error) {
         return [];
@@ -25,8 +27,12 @@ export async function getAllTours() {
 
 export async function getAvailableTours(){
     try {
-        return await axios.get(`${mainUrl}/getAvailableTours`).then((res) => res.data);
+        console.log("mainUrl", mainUrl);
+        const data = await axios.get(`${mainUrl}/getAvailableTours`).then((res) => res.data);
+        console.log("res.data", data);
+        return data;
     } catch (error) {
+        console.log("error", error);
         return [];
     }
 }

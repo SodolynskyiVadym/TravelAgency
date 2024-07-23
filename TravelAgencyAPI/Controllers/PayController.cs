@@ -34,7 +34,6 @@ public class PayController : ControllerBase
         _stripeHelper = new StripeHelper(addressSetting.Value);
         _mapper = mapper;
         _addressSetting = addressSetting.Value;
-        Console.WriteLine(addressSetting.Value);
     }
     
     [HttpGet("getTourFreeSeats/{id}")]

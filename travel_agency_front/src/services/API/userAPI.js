@@ -12,6 +12,7 @@ export async function getUserByToken(token) {
         if(user) return user;
         else router.push("/login");
     } catch {
+        localStorage.removeItem("token");
         router.push("/error");
     }
 }

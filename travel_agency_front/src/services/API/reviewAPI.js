@@ -1,7 +1,9 @@
 import axios from "axios";
 import router from "../router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/review";
+
+const mainUrl = `${serverUrl}/review`;
 
 export async function getUserReview(tourId, token) {
     const config = { headers: { Authorization: `Bearer ${token}` } }
