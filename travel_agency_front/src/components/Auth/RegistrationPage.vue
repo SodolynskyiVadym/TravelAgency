@@ -6,7 +6,7 @@
             <input placeholder="Password" class="password input" type="password" v-model="user.password">
             <input placeholder="Confirm Password" class="password input" type="password" v-model="confirmPassword">
 
-            <div v-if="message">{{ message }}</div>
+            <div v-if="message" style="color: darkred">{{ message }}</div>
             <button class="btn" v-if="isCorrectEmail && user.password.length >= 8 && user.password === confirmPassword"
                 type="submit" @click="signUp">Sign Up</button>
         </div>
