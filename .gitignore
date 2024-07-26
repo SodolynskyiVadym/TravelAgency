@@ -22,7 +22,10 @@ node_modules
 *.sln
 *.sw?
 
+
+# User-specific files
 */secret.json
+database/db_data/*
 
 
 
@@ -262,3 +265,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+/database/db_data/
