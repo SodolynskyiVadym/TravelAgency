@@ -6,8 +6,9 @@ using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.ServicesInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class TourService : IRepository<Tour, TourDto>, ITourService
 {
@@ -127,9 +128,14 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         return tour.Id != entity.Id;
     }
 
-    public async Task<List<Tour>> GetAvailableTours()
+    public async Task<List<TourBasicInfoDto>> GetAvailableTours()
     {
-        return await _context.Tours.Where(t => t.IsAvailable).ToListAsync();
+        return await _context.Tours.Include(t => t.Destinations)
+            .ThenInclude(d => d.Hotel)
+            .ThenInclude(h => h.Place)
+            .Where(t => t.IsAvailable)
+            .Select(t => _mapper.Map<TourBasicInfoDto>(t))
+            .ToListAsync();
     }
 
     public async Task<List<Tour>> GetUnavailableTours()

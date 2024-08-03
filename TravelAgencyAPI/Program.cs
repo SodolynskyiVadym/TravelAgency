@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using Stripe;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Repositories;
+using TravelAgencyAPI.Services;
 using TravelAgencyAPI.Settings;
 
 

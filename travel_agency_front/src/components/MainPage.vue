@@ -19,7 +19,7 @@
 
   <div style="text-align: center; margin-bottom: 30px;">
     <div class="form-control">
-      <input class="input input-alt" placeholder="Type name of tour" type="text" v-model="inputTour"
+      <input class="input input-alt" placeholder="Type name of tour or location" type="text" v-model="inputText"
         @input="searchTour">
       <span class="input-border input-border-alt"></span>
     </div>
@@ -54,7 +54,7 @@ export default {
     return {
       tours: [],
       searchedTours: [],
-      inputTour: "",
+      inputText: "",
       user: { role: "" }
     }
   },
@@ -65,12 +65,12 @@ export default {
     },
 
     async searchTour() {
-      this.searchedTours = this.tours.filter(tour => tour.name.toLowerCase().includes(this.inputTour.toLowerCase()));
+      this.searchedTours = this.tours.filter(tour => tour.name.toLowerCase().includes(this.inputText.toLowerCase()) || 
+        tour.destinationsNames.map(d => d.toLowerCase()).includes(this.inputText.toLowerCase()));
     }
   },
 
   async mounted() {
-    console.log("MainPage mounted");
     this.tours = await tourAPI.getAvailableTours();
     console.log(this.tours);
     if (!this.tours) {

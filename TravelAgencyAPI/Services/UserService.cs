@@ -4,8 +4,9 @@ using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.ServicesInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class UserService : IRepository<User, UserDto>, IUserService
 {

@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.ServicesInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
 {

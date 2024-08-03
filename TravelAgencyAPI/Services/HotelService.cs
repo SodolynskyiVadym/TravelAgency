@@ -7,7 +7,7 @@ using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class HotelService : IRepository<Hotel, HotelDto>
 {

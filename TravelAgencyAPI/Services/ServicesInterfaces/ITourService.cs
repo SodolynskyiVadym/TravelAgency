@@ -1,11 +1,11 @@
 ﻿using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
 
-namespace TravelAgencyAPI.Repositories.RepositoryInterfaces;
+namespace TravelAgencyAPI.Services.ServicesInterfaces;
 
 public interface ITourService
 {
-    public Task<List<Tour>> GetAvailableTours();
+    public Task<List<TourBasicInfoDto>> GetAvailableTours();
     public Task<List<Tour>> GetUnavailableTours();
     public Task CheckTourAvailability();
 }

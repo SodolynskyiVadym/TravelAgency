@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.ServicesInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class PaymentService : IRepository<Payment, PaymentDto>, IPaymentService
 {

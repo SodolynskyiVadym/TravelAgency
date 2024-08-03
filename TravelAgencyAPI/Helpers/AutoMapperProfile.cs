@@ -15,6 +15,9 @@ public class AutoMapperProfile : Profile
         CreateMap<TransportDto, Transport>();
         CreateMap<TourDto, Tour>();
         CreateMap<Tour, TourForeignKeyDto>();
+        CreateMap<Tour, TourBasicInfoDto>()
+            .ForMember(dest => dest.DestinationsNames, opt => 
+                    opt.MapFrom(src => src.Destinations.Select(d => d.Hotel.Place.Name).ToList()));
         CreateMap<UserDto, User>();
         CreateMap<User, UserEmailRoleDto>();
         CreateMap<PaymentDto, Payment>();

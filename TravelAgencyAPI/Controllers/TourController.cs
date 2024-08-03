@@ -6,6 +6,7 @@ using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories;
+using TravelAgencyAPI.Services;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -39,7 +40,7 @@ public class TourController : ControllerBase
     
     
     [HttpGet("getAvailableTours")]
-    public async Task<List<Tour>> GetAvailableTours()
+    public async Task<List<TourBasicInfoDto>> GetAvailableTours()
     {
         return await _tourService.GetAvailableTours();
     }

@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using Newtonsoft.Json;
-using StackExchange.Redis;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.ServicesInterfaces;
 
-namespace TravelAgencyAPI.Repositories;
+namespace TravelAgencyAPI.Services;
 
 public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
 {
