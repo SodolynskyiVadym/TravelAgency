@@ -28,18 +28,13 @@ if (builder.Environment.IsDevelopment())
 else if(builder.Environment.IsEnvironment("AzureEnv"))
 {
     connectionString = builder.Configuration.GetConnectionString("AzureConnection") ?? throw new InvalidOperationException();
-    Console.WriteLine($"Redis azure connection string - {builder.Configuration.GetConnectionString("AzureRedisConnection")}");
-    redisConnectionString =
-        "web-travel-site.redis.cache.windows.net:6380,password=yMV2fdTE2I6a4R9NPKUVwN447XKgQAomhAzCaLINPGs=,ssl=True,abortConnect=False";
+    redisConnectionString = builder.Configuration.GetConnectionString("AzureRedisConnection") ?? throw new InvalidOperationException();
 }
 else
 {
     connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
 }
-
-Console.WriteLine(builder.Environment.EnvironmentName);
-Console.WriteLine(connectionString);
 
 
 builder.Services.AddControllers();
