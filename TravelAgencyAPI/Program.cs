@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Stripe;
 using TravelAgencyAPI.Helpers;
-using TravelAgencyAPI.Repositories;
 using TravelAgencyAPI.Services;
 using TravelAgencyAPI.Settings;
 
@@ -15,7 +14,7 @@ using TravelAgencyAPI.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString;
-string redisConnectionString;;
+string redisConnectionString;
 
 if (builder.Environment.IsDevelopment())
 {
@@ -26,11 +25,21 @@ if (builder.Environment.IsDevelopment())
     connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
 }
+else if(builder.Environment.IsEnvironment("AzureEnv"))
+{
+    connectionString = builder.Configuration.GetConnectionString("AzureConnection") ?? throw new InvalidOperationException();
+    Console.WriteLine($"Redis azure connection string - {builder.Configuration.GetConnectionString("AzureRedisConnection")}");
+    redisConnectionString =
+        "web-travel-site.redis.cache.windows.net:6380,password=yMV2fdTE2I6a4R9NPKUVwN447XKgQAomhAzCaLINPGs=,ssl=True,abortConnect=False";
+}
 else
 {
     connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
 }
+
+Console.WriteLine(builder.Environment.EnvironmentName);
+Console.WriteLine(connectionString);
 
 
 builder.Services.AddControllers();

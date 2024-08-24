@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -21,12 +21,23 @@
     "watch": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "watch run",
+      "commandLineArgs": "watch run --environment AzureEnv",
       "workingDirectory": "$(ProjectDir)",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5113",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "azure": {
+      "commandName": "Executable",
+      "executablePath": "dotnet",
+      "commandLineArgs": "watch run",
+      "workingDirectory": "$(ProjectDir)",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5113",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "AzureEnv"
       }
     },
     "https": {
