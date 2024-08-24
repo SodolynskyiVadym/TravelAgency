@@ -1,73 +1,60 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy ASP.Net Core app to Azure Web App - TravelAgencyAPI
+# This workflow will build and push a .NET Core application to an Azure Web App on every push to the master branch.
+#
+# To configure this workflow:
+#
+# 1. Set up a secret in your repository named AZURE_WEBAPP_PUBLISH_PROFILE with the value of your Azure publish profile.
+#    Get the publish profile from the portal: https://docs.microsoft.com/visualstudio/deployment/tutorial-import-publish-settings-azure?view=vs-2019#create-the-publish-settings-file-in-azure-app-service
+#
+# 2. Change the values for the AZURE_WEBAPP_NAME, AZURE_WEBAPP_PACKAGE_PATH and NETCORE_VERSION environment variables  (below).
+#
+# For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
+# For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
+name: "Build and Deploy"
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
 
 env:
-  AZURE_WEBAPP_NAME: current-time-service
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
+  AZURE_WEBAPP_NAME: TravelAgencyAPI  # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: './TravelAgencyAPI'      # set this to the path to your web app project, defaults to the repository root
+  NETCORE_VERSION: '8.x'                    # set this to the .NET Core version to use
 
 jobs:
   build:
+    name: Build and Deploy
     runs-on: windows-latest
-
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.NETCORE_VERSION }}
+    
+    - name: Restore packages
+      run: dotnet restore
 
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
+    - name: Build app
+      run: dotnet build --configuration Release --no-restore
 
-      - name: Restore
-        run: dotnet restore ./TravelAgencyAPI/TravelAgencyAPI.sln
+    - name: Publish app for deploy
+      run: dotnet publish --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-        
-      - name: Build with dotnet
-        run: dotnet build ./TravelAgencyAPI/TravelAgencyAPI.sln --configuration --no-restore Release
+    - name: 'Deploy to Azure WebApp'
+      uses: azure/webapps-deploy@v1
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      - name: dotnet publish
-        run: dotnet publish ./TravelAgencyAPI/TravelAgencyAPI.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-  # deploy:
-  #   runs-on: windows-latest
-  #   needs: build
-  #   environment:
-  #     name: 'production'
-  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-  #   permissions:
-  #     id-token: write #This is required for requesting the JWT
-
-    # steps:
-    #   - name: Download artifact from build job
-    #     uses: actions/download-artifact@v4
-    #     with:
-    #       name: .net-app
-      
-    #   - name: Login to Azure
-    #     uses: azure/login@v2
-    #     with:
-    #       client-id: ${{ secrets.__clientidsecretname__ }}
-    #       tenant-id: ${{ secrets.__tenantidsecretname__ }}
-    #       subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: TravelAgencyAPI
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
