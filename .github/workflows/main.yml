@@ -13,6 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENAND_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
@@ -30,12 +37,7 @@ jobs:
           name: .net-app
           path: "${{env.DOTNET_ROOT}}/myapp"
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.__clientidsecretname__ }}
-          tenant-id: ${{ secrets.__tenantidsecretname__ }}
-          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
+
 
       - name: Deployment
         uses: azure/webapps-deploy@v3
