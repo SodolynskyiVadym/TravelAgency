@@ -53,7 +53,7 @@ builder.Services.AddDbContext<TravelDbContext>(options =>
 });
 
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(redisConnectionString));
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddHangfire(config => config
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -76,9 +76,9 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("DevCors", builder =>
+    options.AddPolicy("DevCors", policyBuilder =>
     {
-        builder.AllowAnyOrigin()
+        policyBuilder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
