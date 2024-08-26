@@ -12,7 +12,6 @@ using TravelAgencyAPI.Settings;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 string connectionString;
 string redisConnectionString;
 
@@ -27,8 +26,8 @@ if (builder.Environment.IsDevelopment())
 }
 else if(builder.Environment.IsEnvironment("AzureEnv"))
 {
-    connectionString = builder.Configuration.GetConnectionString("AzureConnection") ?? throw new InvalidOperationException();
-    redisConnectionString = builder.Configuration.GetConnectionString("AzureRedisConnection") ?? throw new InvalidOperationException();
+    connectionString = Environment.GetEnvironmentVariable("AzureConnection") ?? throw new InvalidOperationException();
+    redisConnectionString = Environment.GetEnvironmentVariable("AzureRedisConnection") ?? throw new InvalidOperationException();
 }
 else
 {
