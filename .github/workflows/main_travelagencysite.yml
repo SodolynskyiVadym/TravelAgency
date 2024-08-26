@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          sudo ulimit -Sn 65536
           npm install ./travel_agency_front
           npm run build ./travel_agency_front --if-present
           npm run test ./travel_agency_front --if-present
@@ -34,7 +35,7 @@ jobs:
           path: .
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
