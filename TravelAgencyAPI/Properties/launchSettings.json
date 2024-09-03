@@ -21,7 +21,7 @@
     "watch": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "watch run --environment AzureEnv",
+      "commandLineArgs": "watch run",
       "workingDirectory": "$(ProjectDir)",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5113",
@@ -32,12 +32,14 @@
     "azure": {
       "commandName": "Executable",
       "executablePath": "dotnet",
-      "commandLineArgs": "watch run",
+      "commandLineArgs": "watch run --environment AzureEnv",
       "workingDirectory": "$(ProjectDir)",
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5113",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "AzureEnv"
+        "ASPNETCORE_ENVIRONMENT": "AzureEnv",
+        "AzureConnection" : "",
+        "AzureRedisConnection" : ""
       }
     },
     "https": {

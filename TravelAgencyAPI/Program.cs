@@ -17,7 +17,6 @@ string redisConnectionString;
 
 if (builder.Environment.IsDevelopment())
 {
-    Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException();
 }else if (builder.Environment.IsEnvironment("DockerEnv"))
