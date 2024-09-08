@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>19f161f0-9e98-4ca2-8909-9bf4566a1ba4</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MailKit" Version="4.7.1.1" />
+      <PackageReference Include="MimeKit" Version="4.7.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="..\TravelAgencyAPI\Models\Destination.cs">
+        <Link>References\Destination.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Hotel.cs">
+        <Link>References\Hotel.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\IModel.cs">
+        <Link>References\IModel.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Payment.cs">
+        <Link>References\Payment.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Place.cs">
+        <Link>References\Place.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\PlaceImageUrl.cs">
+        <Link>References\PlaceImageUrl.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Review.cs">
+        <Link>References\Review.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Tour.cs">
+        <Link>References\Tour.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\Transport.cs">
+        <Link>References\Transport.cs</Link>
+      </Compile>
+      <Compile Include="..\TravelAgencyAPI\Models\User.cs">
+        <Link>References\User.cs</Link>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="AdditionalFiles\" />
+    </ItemGroup>
+
+</Project>

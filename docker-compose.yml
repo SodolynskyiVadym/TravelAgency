@@ -11,11 +11,25 @@ services:
       - DATABASE_CONNECTION_STRING=Server=mssql-server;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=redis:6379
       - ASPNETCORE_ENVIRONMENT=DockerEnv
+      - SERVER_SERVICE_ADDRESS=http://server_service:5102
     ports:
       - "5113:5113"
     depends_on:
       - database
       - redis
+  
+
+  server_service:
+    image: travel_agency_server_service
+    container_name: server_service
+    build:
+      context: ./TravelAgencyService
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ADDRESS=http://server:5113
+      - ENVIRONMENT=DockerEnv
+    ports:
+      - "5102:5102"
 
   client:
     image: travel_agency_client

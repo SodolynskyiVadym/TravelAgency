@@ -6,7 +6,6 @@ using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories;
 using TravelAgencyAPI.Settings;
 using Stripe.Checkout;
 using TravelAgencyAPI.Services;

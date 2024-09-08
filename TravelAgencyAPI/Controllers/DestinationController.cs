@@ -1,9 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories;
-using TravelAgencyAPI.Services;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -11,22 +9,16 @@ namespace TravelAgencyAPI.Controllers;
 [Route("[controller]")]
 public class DestinationController : ControllerBase
 {
-    private readonly DestinationService _destinationService;
+    private readonly TravelDbContext _context;
     
-    public DestinationController(TravelDbContext context, IMapper mapper)
+    public DestinationController(TravelDbContext context)
     {
-        _destinationService = new DestinationService(context, mapper);
-    }
-    
-    [HttpGet("{id}")]
-    public async Task<Destination?> GetDestination(int id)
-    {
-        return await _destinationService.GetByIdAsync(id);
+        _context = context;
     }
     
     [HttpGet("getAllDestinations")]
     public async Task<List<Destination>> GetAllDestinations()
     {
-        return await _destinationService.GetAllAsync();
+        return await _context.Destinations.ToListAsync();
     }
 }

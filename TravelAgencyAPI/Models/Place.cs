@@ -7,7 +7,6 @@ namespace TravelAgencyAPI.Models;
 public class Place : IModel
 {
     [Key]
-    [Index]
     public int Id { get; set; }
     
     [Required]

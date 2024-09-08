@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Repositories.RepositoryInterfaces;
+using TravelAgencyAPI.Services.RepositorieInterfaces;
 using TravelAgencyAPI.Services.ServicesInterfaces;
 
 namespace TravelAgencyAPI.Services;
