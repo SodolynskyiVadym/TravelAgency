@@ -13,39 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="..\TravelAgencyAPI\Models\Destination.cs">
-        <Link>References\Destination.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Hotel.cs">
-        <Link>References\Hotel.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\IModel.cs">
-        <Link>References\IModel.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Payment.cs">
-        <Link>References\Payment.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Place.cs">
-        <Link>References\Place.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\PlaceImageUrl.cs">
-        <Link>References\PlaceImageUrl.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Review.cs">
-        <Link>References\Review.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Tour.cs">
-        <Link>References\Tour.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\Transport.cs">
-        <Link>References\Transport.cs</Link>
-      </Compile>
-      <Compile Include="..\TravelAgencyAPI\Models\User.cs">
-        <Link>References\User.cs</Link>
-      </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="AdditionalFiles\" />
     </ItemGroup>
 

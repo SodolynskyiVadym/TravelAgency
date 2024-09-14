@@ -41,7 +41,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
-builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 builder.Services.Configure<AddressSetting>(builder.Configuration.GetSection("Address"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];

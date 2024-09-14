@@ -11,7 +11,7 @@ services:
       - DATABASE_CONNECTION_STRING=Server=mssql-server;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=redis:6379
       - ASPNETCORE_ENVIRONMENT=DockerEnv
-      - SERVER_SERVICE_ADDRESS=http://server_service:5102
+      - auxiliary_server_ADDRESS=http://auxiliary_server:5102
     ports:
       - "5113:5113"
     depends_on:
@@ -19,9 +19,9 @@ services:
       - redis
   
 
-  server_service:
-    image: travel_agency_server_service
-    container_name: server_service
+  auxiliary_server:
+    image: travel_agency_auxiliary_server
+    container_name: auxiliary_server
     build:
       context: ./TravelAgencyService
       dockerfile: Dockerfile
@@ -56,6 +56,19 @@ services:
       - "1433:1433"
     volumes:
       - ./database/db_data:/var/opt/mssql/data
+  
+  
+  rabbitmq:
+    image: rabbitmq:3.13.7-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
 
   redis:
     image: redis

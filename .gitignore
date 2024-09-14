@@ -266,4 +266,7 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Docker data folders
 /database/db_data/
+/rabbitmq/data/

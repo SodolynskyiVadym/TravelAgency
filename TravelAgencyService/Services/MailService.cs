@@ -8,24 +8,20 @@ namespace TravelAgencyService.Services;
 public class MailService
 {
     private readonly MailSetting _mailSettings;
-
+    private string passwordPage = File.ReadAllText("AdditionalFiles/sendPassword.html");
+    private string reservePasswordPage = File.ReadAllText("AdditionalFiles/sendReservePassword.html");
+    private string tourMessagePage = File.ReadAllText("AdditionalFiles/sendTourMessage.html");
+    
     public MailService(MailSetting mailSettings)
     {
         _mailSettings = mailSettings;
     }
-
-
-    private string pathHTMLPasswordPage = @"AdditionalFiles/sendPassword.html";
-    private string pathHTMLReservePasswordPage = @"AdditionalFiles/sendReservePassword.html";
-    private string pathHTMLTourMessage = @"AdditionalFiles/sendTourMessage.html";
-
-
+    
     public bool SendPassword(string toEmail, string password, string role)
     {
         try
         {
             using MimeMessage emailMessage = new MimeMessage();
-            if (!File.Exists(pathHTMLPasswordPage)) return false;
 
             MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
             emailMessage.From.Add(emailFrom);
@@ -34,9 +30,8 @@ public class MailService
 
 
             emailMessage.Subject = "Your temporary password";
-
-            string htmlTemplate = File.ReadAllText(pathHTMLPasswordPage);
-            string textHtmlPasswordPage = htmlTemplate.Replace("{0}", role);
+            
+            string textHtmlPasswordPage = passwordPage.Replace("{0}", role);
             textHtmlPasswordPage = textHtmlPasswordPage.Replace("{1}", password);
 
 
@@ -67,7 +62,6 @@ public class MailService
         try
         {
             using MimeMessage emailMessage = new MimeMessage();
-            if (!File.Exists(pathHTMLReservePasswordPage)) return false;
 
             MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
             emailMessage.From.Add(emailFrom);
@@ -76,9 +70,8 @@ public class MailService
 
 
             emailMessage.Subject = "Your temporary password";
-
-            string htmlTemplate = File.ReadAllText(pathHTMLReservePasswordPage);
-            string textHtmlReservePasswordPage = htmlTemplate.Replace("{0}", password);
+            
+            string textHtmlReservePasswordPage = reservePasswordPage.Replace("{0}", password);
 
 
             BodyBuilder emailBodyBuilder = new BodyBuilder();
@@ -107,25 +100,22 @@ public class MailService
         try
         {
             using MimeMessage emailMessage = new MimeMessage();
-            if (!File.Exists(pathHTMLTourMessage)) return false;
-
 
             MailboxAddress emailFrom = new MailboxAddress(_mailSettings.SenderName, _mailSettings.SenderEmail);
             emailMessage.From.Add(emailFrom);
             MailboxAddress emailTo = new MailboxAddress(null, email);
             emailMessage.To.Add(emailTo);
-
+            
 
             emailMessage.Subject = $"Welcome to {tour.Name}!";
-
-            string htmlTemplate = File.ReadAllText(pathHTMLTourMessage);
-            string textHtmlReservePasswordPage = htmlTemplate.Replace("{0}", tour.Name);
-            textHtmlReservePasswordPage = textHtmlReservePasswordPage.Replace("{1}", tour.ImageUrl);
-            textHtmlReservePasswordPage = textHtmlReservePasswordPage.Replace("{2}", tour.Description);
+            
+            string textHtmlTourMessagePage = tourMessagePage.Replace("{0}", tour.Name);
+            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{1}", tour.ImageUrl);
+            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{2}", tour.Description);
 
 
             BodyBuilder emailBodyBuilder = new BodyBuilder();
-            emailBodyBuilder.HtmlBody = textHtmlReservePasswordPage;
+            emailBodyBuilder.HtmlBody = textHtmlTourMessagePage;
 
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
 
