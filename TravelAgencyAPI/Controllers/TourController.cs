@@ -6,6 +6,7 @@ using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Services;
+using TravelAgencyAPI.Services.Interfaces;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -16,9 +17,9 @@ public class TourController : ControllerBase
 {
     private readonly TourService _tourService;
     private readonly IMapper _mapper;
-    private readonly RabbitMqPublisher _rabbitMqPublisher;
+    private readonly IRabbitMqPublisher _rabbitMqPublisher;
     
-    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, RabbitMqPublisher rabbitMqPublisher)
+    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, IRabbitMqPublisher rabbitMqPublisher)
     {
         _rabbitMqPublisher = rabbitMqPublisher;
         _tourService = new TourService(context, mapper, redis);
