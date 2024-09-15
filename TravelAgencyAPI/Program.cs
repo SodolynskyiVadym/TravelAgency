@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using Stripe;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Services;
+using TravelAgencyAPI.Services.Interfaces;
 using TravelAgencyAPI.Settings;
 
 
@@ -51,7 +52,7 @@ builder.Services.AddDbContext<TravelDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddSingleton(typeof(RabbitMqPublisher));
+builder.Services.AddSingleton(typeof(IRabbitMqPublisher), typeof(RabbitMqPublisher));
 
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));

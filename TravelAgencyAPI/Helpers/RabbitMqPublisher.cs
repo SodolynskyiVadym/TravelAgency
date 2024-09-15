@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using TravelAgencyAPI.Services.Interfaces;
 using TravelAgencyAPI.Settings;
 
 namespace TravelAgencyAPI.Helpers;
 
-public class RabbitMqPublisher
+public class RabbitMqPublisher : IRabbitMqPublisher
 {
     private readonly RabbitMqSetting _rabbitMqSetting;
 
@@ -33,5 +34,10 @@ public class RabbitMqPublisher
         var body = Encoding.UTF8.GetBytes(messageJson);
 
         await Task.Run(() => channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body));
+    }
+
+    public void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey) where T : class
+    {
+        throw new NotImplementedException();
     }
 }
