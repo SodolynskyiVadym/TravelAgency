@@ -5,7 +5,7 @@ using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Services.RepositorieInterfaces;
+using TravelAgencyAPI.Services.Interfaces;
 
 namespace TravelAgencyAPI.Services;
 

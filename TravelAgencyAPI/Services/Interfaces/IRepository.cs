@@ -1,7 +1,7 @@
 ﻿using TravelAgencyAPI.DTO;
 using IModel = TravelAgencyAPI.Models.IModel;
 
-namespace TravelAgencyAPI.Services.RepositorieInterfaces;
+namespace TravelAgencyAPI.Services.Interfaces;
 
 public interface IRepository<T, in TDto> where T : class, IModel where TDto : class, IDto
 {

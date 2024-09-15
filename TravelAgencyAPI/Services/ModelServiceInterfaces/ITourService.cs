@@ -1,7 +1,7 @@
 ﻿using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
 
-namespace TravelAgencyAPI.Services.ServicesInterfaces;
+namespace TravelAgencyAPI.Services.ModelServiceInterfaces;
 
 public interface ITourService
 {
