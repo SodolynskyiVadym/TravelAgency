@@ -68,13 +68,6 @@ public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
         return true;
     }
 
-    public async Task<bool> IsUsedUniqueAttributes(ReviewDto entity)
-    {
-        Review? review = await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == entity.UserId && r.TourId == entity.TourId);
-        if(review == null) return false;
-        return review.Id != entity.Id;
-    }
-
     public async Task<Review?> GetUserReview(int userId, int tourId)
     {
         Review? review = await _context.Reviews.FirstOrDefaultAsync(review => review.UserId == userId && review.TourId == tourId);

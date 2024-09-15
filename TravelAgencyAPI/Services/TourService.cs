@@ -121,13 +121,6 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         return true;
     }
 
-    public async Task<bool> IsUsedUniqueAttributes(TourDto entity)
-    {
-        Tour? tour = await _context.Tours.FirstOrDefaultAsync(t => t.Name == entity.Name);
-        if(tour == null) return false;
-        return tour.Id != entity.Id;
-    }
-
     public async Task<List<TourBasicInfoDto>> GetAvailableTours()
     {
         return await _context.Tours.Include(t => t.Destinations)

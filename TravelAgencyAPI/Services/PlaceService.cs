@@ -117,11 +117,4 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
         await _redis.KeyDeleteAsync("place" + id);
         return true;
     }
-
-    public async Task<bool> IsUsedUniqueAttributes(PlaceDto entity)
-    {
-        Place? place = await _context.Places.FirstOrDefaultAsync(p => p.Name == entity.Name && p.Country == entity.Country);
-        if (place == null) return false;
-        return place.Id != entity.Id;
-    }
 }

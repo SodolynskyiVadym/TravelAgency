@@ -39,7 +39,6 @@ public class TransportController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> AddTransport(TransportDto transport)
     {
-        if(await _transportService.IsUsedUniqueAttributes(transport)) return BadRequest("This transport already exists!");
         await _transportService.AddAsync(transport);
         return Ok(transport);
     }
@@ -49,7 +48,6 @@ public class TransportController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateTransport(TransportDto transport)
     {
-        if(await _transportService.IsUsedUniqueAttributes(transport)) return BadRequest("This transport already exists!");
         if (await _transportService.UpdateAsync(transport)) return Ok();
         return NoContent();
     }

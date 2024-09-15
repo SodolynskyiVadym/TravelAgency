@@ -83,11 +83,4 @@ public class TransportService : IRepository<Transport, TransportDto>
         await _redis.KeyDeleteAsync("transport" + id);
         return true;
     }
-
-    public async Task<bool> IsUsedUniqueAttributes(TransportDto entity)
-    {
-        Transport? transport = await _context.Transports.FirstOrDefaultAsync(t => t.Name == entity.Name);
-        if(transport == null) return false;
-        return transport.Id != entity.Id;
-    }
 }

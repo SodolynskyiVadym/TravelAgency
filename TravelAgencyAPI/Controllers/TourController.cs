@@ -63,7 +63,6 @@ public class TourController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> AddTour(TourDto tour)
     {
-        if(await _tourService.IsUsedUniqueAttributes(tour)) return BadRequest("This tour already exists!");
         await _tourService.AddAsync(tour);
         return Ok(tour);
     }
@@ -73,7 +72,6 @@ public class TourController : ControllerBase
     [HttpPatch("update")]
     public async Task<IActionResult> UpdateTour(TourDto tour)
     {
-        if(await _tourService.IsUsedUniqueAttributes(tour)) return BadRequest("This tour already exists!");
         if (await _tourService.UpdateAsync(tour)) return Ok();
         return NoContent();
     }
