@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Services.RepositorieInterfaces;
-using TravelAgencyAPI.Services.ServicesInterfaces;
+using TravelAgencyAPI.Services.Interfaces;
+using TravelAgencyAPI.Services.ModelServiceInterfaces;
 
 namespace TravelAgencyAPI.Services;
 
@@ -45,8 +45,6 @@ public class UserService : IRepository<User, UserDto>, IUserService
 
     public async Task<bool> UpdateAsync(UserDto userDto)
     {
-        if (await IsUsedUniqueAttributes(userDto)) return false;
-
         User? user = await _context.Users.FindAsync(userDto.Id);
         if (user == null) return false;
         
@@ -65,13 +63,6 @@ public class UserService : IRepository<User, UserDto>, IUserService
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<bool> IsUsedUniqueAttributes(UserDto entity)
-    {
-        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == entity.Email);
-        if (user == null) return false;
-        return user.Id != entity.Id;
     }
 
     public async Task<User?> GetUserByEmail(string email)

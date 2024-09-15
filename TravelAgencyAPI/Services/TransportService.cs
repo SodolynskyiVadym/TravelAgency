@@ -5,7 +5,7 @@ using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Services.RepositorieInterfaces;
+using TravelAgencyAPI.Services.Interfaces;
 
 namespace TravelAgencyAPI.Services;
 
@@ -82,12 +82,5 @@ public class TransportService : IRepository<Transport, TransportDto>
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("transport" + id);
         return true;
-    }
-
-    public async Task<bool> IsUsedUniqueAttributes(TransportDto entity)
-    {
-        Transport? transport = await _context.Transports.FirstOrDefaultAsync(t => t.Name == entity.Name);
-        if(transport == null) return false;
-        return transport.Id != entity.Id;
     }
 }

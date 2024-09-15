@@ -21,6 +21,34 @@ public class TravelDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Hotel>()
+            .HasIndex(h => new { h.Name, h.PlaceId, h.Address })
+            .IsUnique();
+
+        modelBuilder.Entity<Payment>()
+            .HasIndex(p => new { p.UserId, p.TourId })
+            .IsUnique();
+
+        modelBuilder.Entity<Review>()
+            .HasIndex(r => new { r.UserId, r.TourId })
+            .IsUnique();
+            
+        modelBuilder.Entity<Place>()
+            .HasIndex(p => new {p.Name, p.Country})
+            .IsUnique();
+        
+        modelBuilder.Entity<Transport>()
+            .HasIndex(t => new {t.Name, t.Type})
+            .IsUnique();
+        
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+        
+        modelBuilder.Entity<Tour>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+        
         modelBuilder.Entity<Tour>()
             .HasMany(t => t.Destinations)
             .WithOne()

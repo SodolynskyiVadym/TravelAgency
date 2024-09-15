@@ -5,8 +5,8 @@ using StackExchange.Redis;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Services.RepositorieInterfaces;
-using TravelAgencyAPI.Services.ServicesInterfaces;
+using TravelAgencyAPI.Services.Interfaces;
+using TravelAgencyAPI.Services.ModelServiceInterfaces;
 
 namespace TravelAgencyAPI.Services;
 
@@ -119,13 +119,6 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("tour" + id);
         return true;
-    }
-
-    public async Task<bool> IsUsedUniqueAttributes(TourDto entity)
-    {
-        Tour? tour = await _context.Tours.FirstOrDefaultAsync(t => t.Name == entity.Name);
-        if(tour == null) return false;
-        return tour.Id != entity.Id;
     }
 
     public async Task<List<TourBasicInfoDto>> GetAvailableTours()

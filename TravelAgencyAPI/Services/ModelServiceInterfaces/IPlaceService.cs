@@ -1,6 +1,6 @@
 ﻿using TravelAgencyAPI.DTO;
 
-namespace TravelAgencyAPI.Services.ServicesInterfaces;
+namespace TravelAgencyAPI.Services.ModelServiceInterfaces;
 
 public interface IPlaceService
 {

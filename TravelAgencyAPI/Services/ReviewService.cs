@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
-using TravelAgencyAPI.Services.RepositorieInterfaces;
-using TravelAgencyAPI.Services.ServicesInterfaces;
+using TravelAgencyAPI.Services.Interfaces;
+using TravelAgencyAPI.Services.ModelServiceInterfaces;
 
 namespace TravelAgencyAPI.Services;
 
@@ -66,13 +66,6 @@ public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
         _context.Reviews.Remove(review);
         await _context.SaveChangesAsync();
         return true;
-    }
-
-    public async Task<bool> IsUsedUniqueAttributes(ReviewDto entity)
-    {
-        Review? review = await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == entity.UserId && r.TourId == entity.TourId);
-        if(review == null) return false;
-        return review.Id != entity.Id;
     }
 
     public async Task<Review?> GetUserReview(int userId, int tourId)
