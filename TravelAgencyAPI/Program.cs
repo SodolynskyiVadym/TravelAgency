@@ -42,6 +42,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
 builder.Services.Configure<AddressSetting>(builder.Configuration.GetSection("Address"));
+builder.Services.Configure<RabbitMqSetting>(builder.Configuration.GetSection("RabbitMqSetting"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
@@ -49,6 +50,8 @@ builder.Services.AddDbContext<TravelDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
+builder.Services.AddSingleton(typeof(RabbitMqPublisher));
 
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
@@ -69,6 +72,7 @@ builder.Services.AddHangfire(config => config
     }));
 
 builder.Services.AddHangfireServer();
+
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

@@ -16,11 +16,20 @@ public class TourController : ControllerBase
 {
     private readonly TourService _tourService;
     private readonly IMapper _mapper;
+    private readonly RabbitMqPublisher _rabbitMqPublisher;
     
-    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
+    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, RabbitMqPublisher rabbitMqPublisher)
     {
+        _rabbitMqPublisher = rabbitMqPublisher;
         _tourService = new TourService(context, mapper, redis);
         _mapper = mapper;
+    }
+    
+    [HttpGet("test")]
+    public async Task<string> Test()
+    {
+        await _rabbitMqPublisher.PublishMessageAsync("Hello rabbit", "test");
+        return "Tour Controller works!";
     }
     
     
