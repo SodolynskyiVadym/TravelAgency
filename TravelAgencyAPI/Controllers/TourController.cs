@@ -26,10 +26,17 @@ public class TourController : ControllerBase
         _mapper = mapper;
     }
     
-    [HttpGet("test")]
-    public async Task<string> Test()
+    [HttpPost("test")]
+    public async Task<string> Test(TourDto tour)
     {
-        await _rabbitMqPublisher.PublishMessageAsync("Hello rabbit", "test");
+        await _rabbitMqPublisher.PublishMessageAsync(tour, "test");
+        return "Tour Controller works!";
+    }
+    
+    [HttpPost("test2")]
+    public string Test2(TourDto tour)
+    {
+        _rabbitMqPublisher.Publish<TourDto>(tour, "test2", "direct", "test2");
         return "Tour Controller works!";
     }
     

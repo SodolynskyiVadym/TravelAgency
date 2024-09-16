@@ -1,4 +1,6 @@
-﻿namespace TravelAgencyAPI.Settings;
+﻿using Microsoft.Extensions.Primitives;
+
+namespace TravelAgencyAPI.Settings;
 
 public class RabbitMqSetting
 {

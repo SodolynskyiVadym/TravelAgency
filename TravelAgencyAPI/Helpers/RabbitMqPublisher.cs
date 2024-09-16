@@ -38,6 +38,29 @@ public class RabbitMqPublisher : IRabbitMqPublisher
 
     public void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey) where T : class
     {
-        throw new NotImplementedException();
+        var factory = new ConnectionFactory
+        {
+            HostName = _rabbitMqSetting.Host,
+            UserName = _rabbitMqSetting.UserName,
+            Password = _rabbitMqSetting.Password
+        };
+
+        using var connection = factory.CreateConnection();
+        using var channel = connection.CreateModel();
+    
+        // Declare the exchange
+        channel.ExchangeDeclare(exchange: exchangeName, type: exchangeType);
+
+        // Serialize the message
+        var messageJson = JsonConvert.SerializeObject(message);
+        var body = Encoding.UTF8.GetBytes(messageJson);
+
+        // Publish the message
+        channel.BasicPublish(
+            exchange: exchangeName,
+            routingKey: routeKey,
+            basicProperties: null,
+            body: body
+        );
     }
 }

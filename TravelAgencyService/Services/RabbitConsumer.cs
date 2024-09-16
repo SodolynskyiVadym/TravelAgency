@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using TravelAgencyService.Models;
 using TravelAgencyService.Settings;
 
 namespace TravelAgencyService.Services;
@@ -41,7 +43,8 @@ public class RabbitConsumer : BackgroundService
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            Console.WriteLine(message);
+            Tour tour = JsonConvert.DeserializeObject<Tour>(message);
+            Console.WriteLine(tour);
         };
 
         _channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);

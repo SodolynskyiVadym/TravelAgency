@@ -8,10 +8,9 @@ services:
       context: ./TravelAgencyAPI
       dockerfile: Dockerfile
     environment:
+      - ASPNETCORE_ENVIRONMENT=DockerEnv
       - DATABASE_CONNECTION_STRING=Server=mssql-server;Database=travel_agency;User Id=SA;Password=Test1234;TrustServerCertificate=True;
       - REDIS_CONNECTION_STRING=redis:6379
-      - ASPNETCORE_ENVIRONMENT=DockerEnv
-      - auxiliary_server_ADDRESS=http://auxiliary_server:5102
     ports:
       - "5113:5113"
     depends_on:
@@ -26,7 +25,6 @@ services:
       context: ./TravelAgencyService
       dockerfile: Dockerfile
     environment:
-      - SERVER_ADDRESS=http://server:5113
       - ENVIRONMENT=DockerEnv
     ports:
       - "5102:5102"
@@ -40,8 +38,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SERVER_ADDRESS=http://server:5113
       - ENVIRONMENT=DockerEnv
+      - SERVER_ADDRESS=http://server:5113
+
 
   database:
     image: mcr.microsoft.com/mssql/server
