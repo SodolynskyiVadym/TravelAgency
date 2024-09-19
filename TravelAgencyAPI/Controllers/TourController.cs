@@ -29,14 +29,14 @@ public class TourController : ControllerBase
     [HttpPost("test")]
     public async Task<string> Test(TourDto tour)
     {
-        await _rabbitMqPublisher.PublishMessageAsync(tour, "test");
+        await _rabbitMqPublisher.PublishAsync<TourDto>(tour, "test");
         return "Tour Controller works!";
     }
     
     [HttpPost("test2")]
     public string Test2(TourDto tour)
     {
-        _rabbitMqPublisher.Publish<TourDto>(tour, "test2", "direct", "test2");
+        _rabbitMqPublisher.PublishAsync<TourDto>(tour, "test2");
         return "Tour Controller works!";
     }
     

@@ -10,12 +10,26 @@ namespace TravelAgencyAPI.Helpers;
 public class RabbitMqPublisher : IRabbitMqPublisher
 {
     private readonly RabbitMqSetting _rabbitMqSetting;
+    private readonly IConnection _connection;
+    private readonly IModel _channel;
 
     public RabbitMqPublisher(IOptions<RabbitMqSetting> rabbitMqSetting)
     {
         _rabbitMqSetting = rabbitMqSetting.Value;
+        var factory = new ConnectionFactory
+        {
+            HostName = _rabbitMqSetting.Host,
+            UserName = _rabbitMqSetting.UserName,
+            Password = _rabbitMqSetting.Password
+        };
+        _connection = factory.CreateConnection();
+        _channel = _connection.CreateModel();
+        foreach (var queue in _rabbitMqSetting.Queues)
+        {
+            _channel.QueueDeclare(queue: queue.Name, durable: queue.Durable, exclusive: queue.Exclusive, autoDelete: queue.AutoDelete, arguments: null);
+        }
     }
-
+    
     public async Task PublishMessageAsync(object message, string queueName)
     {
 
@@ -36,31 +50,19 @@ public class RabbitMqPublisher : IRabbitMqPublisher
         await Task.Run(() => channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body));
     }
 
-    public void Publish<T>(T message, string exchangeName, string exchangeType, string routeKey) where T : class
-    {
-        var factory = new ConnectionFactory
-        {
-            HostName = _rabbitMqSetting.Host,
-            UserName = _rabbitMqSetting.UserName,
-            Password = _rabbitMqSetting.Password
-        };
-
-        using var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
     
-        // Declare the exchange
-        channel.ExchangeDeclare(exchange: exchangeName, type: exchangeType);
-
-        // Serialize the message
+    public async Task PublishAsync<T>(T message, string routeKey) where T : class
+    {
         var messageJson = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(messageJson);
-
-        // Publish the message
-        channel.BasicPublish(
-            exchange: exchangeName,
-            routingKey: routeKey,
-            basicProperties: null,
-            body: body
-        );
+        
+        await Task.Run(() =>
+        {
+            _channel.BasicPublish(
+                exchange: "", 
+                routingKey: routeKey, 
+                basicProperties: null, 
+                body: body);
+        });
     }
 }
