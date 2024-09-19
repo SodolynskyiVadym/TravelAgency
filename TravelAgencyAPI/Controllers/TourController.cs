@@ -29,7 +29,7 @@ public class TourController : ControllerBase
     [HttpPost("test")]
     public async Task<string> Test(TourDto tour)
     {
-        await _rabbitMqPublisher.PublishAsync<TourDto>(tour, "test");
+        await _rabbitMqPublisher.PublishAsync<TourDto>(tour, "email-queue");
         return "Tour Controller works!";
     }
     

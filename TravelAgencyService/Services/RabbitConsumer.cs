@@ -11,12 +11,14 @@ namespace TravelAgencyService.Services;
 public class RabbitConsumer : BackgroundService
 {
     private readonly RabbitMqSetting _rabbitMqSetting;
+    private readonly MailService _mailService;
     private IConnection _connection;
     private IModel _channel;
 
-    public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSetting)
+    public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSetting, IOptions<MailSetting> mailSetting)
     {
         _rabbitMqSetting = rabbitMqSetting.Value;
+        _mailService = new MailService(mailSetting.Value);
 
         var factory = new ConnectionFactory
         {
@@ -30,7 +32,7 @@ public class RabbitConsumer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        StartConsuming("test", stoppingToken);
+        StartConsuming(_rabbitMqSetting.QueueName, stoppingToken);
         await Task.CompletedTask;
     }
 
@@ -44,9 +46,9 @@ public class RabbitConsumer : BackgroundService
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             Tour tour = JsonConvert.DeserializeObject<Tour>(message);
-            Console.WriteLine(tour);
+            Console.WriteLine($"Received message: {tour}");
+            Console.WriteLine(_mailService.SendTourMessage("test@gmail.com", tour));
         };
-
         _channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
     }
 

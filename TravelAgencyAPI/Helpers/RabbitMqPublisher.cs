@@ -64,5 +64,6 @@ public class RabbitMqPublisher : IRabbitMqPublisher
                 basicProperties: null, 
                 body: body);
         });
+        Console.WriteLine("Message sent");
     }
 }
