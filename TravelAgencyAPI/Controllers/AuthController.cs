@@ -7,6 +7,7 @@ using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Helpers;
 using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Services;
+using TravelAgencyAPI.Services.Interfaces;
 using TravelAgencyAPI.Settings;
 
 namespace TravelAgencyAPI.Controllers;
@@ -18,15 +19,15 @@ public class AuthController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly AuthHelper _authHelper;
-    private readonly MailHelper _mailHelper;
     private readonly IMapper _mapper;
+    private readonly IRabbitMqPublisher _rabbitMqPublisher;
     
-    public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IOptions<MailSetting> mailSetting)
+    public AuthController(TravelDbContext context, IMapper mapper, IOptions<AuthSetting> authSetting, IRabbitMqPublisher rabbitMqPublisher)
     {
         _userService = new UserService(context, mapper);
         _authHelper = new AuthHelper(authSetting, _userService);
-        _mailHelper = new MailHelper(mailSetting.Value);
         _mapper = mapper;
+        _rabbitMqPublisher = rabbitMqPublisher;
     }
     
     [Authorize(Roles = "ADMIN")]
@@ -56,7 +57,7 @@ public class AuthController : ControllerBase
     
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login(UserLoginRegistrationDto userLogin)
+    public async Task<IActionResult> Login(UserEmailPasswordDto userLogin)
     {
         User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
@@ -68,7 +69,7 @@ public class AuthController : ControllerBase
     
     
     [HttpPost("loginViaReservePassword")]
-    public async Task<IActionResult> LoginViaReservePassword(UserLoginRegistrationDto userLogin)
+    public async Task<IActionResult> LoginViaReservePassword(UserEmailPasswordDto userLogin)
     {
         User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
@@ -88,17 +89,16 @@ public class AuthController : ControllerBase
 
         string password = await _authHelper.CreateReservePassword(email);
         if (password.IsNullOrEmpty()) return BadRequest("User not found!");
-        
-        if(_mailHelper.SendReservePassword(email, password)) return Ok();
-        return StatusCode(500, "Error sending email");
+        UserEmailPasswordDto user = new UserEmailPasswordDto(email, password);
+        await _rabbitMqPublisher.PublishAsync(user, "reserve-password-queue");
+        return Ok();
     }
     
     
     
     [HttpPost("registerUser")]
-    public async Task<IActionResult> Register(UserLoginRegistrationDto userRegistration)
+    public async Task<IActionResult> Register(UserEmailPasswordDto userRegistration)
     {
-        userRegistration.Role = "USER";
         if (userRegistration.Email.IsNullOrEmpty() || userRegistration.Password.Length < 8)
         {
             return StatusCode(400, "Email is empty or password is less than 8");
@@ -121,14 +121,14 @@ public class AuthController : ControllerBase
     [HttpPost("registerEditorAdmin")]
     public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
-        if (user.Role.IsNullOrEmpty() || (user.Role != "EDITOR" && user.Role != "ADMIN"))
+        if (user.Role != "EDITOR" && user.Role != "ADMIN")
             return BadRequest("Incorrect data");
 
         string password = await _authHelper.RegisterEditorAdmin(user);
+        UserEmailRolePasswordDto? userPassword = _mapper.Map<UserEmailRolePasswordDto>((user, password));
         if(password.IsNullOrEmpty()) return BadRequest("User already exists");
-        
-        if(_mailHelper.SendPassword(user.Email, password, user.Role)) return Ok();
-        return StatusCode(500, "Error sending email");
+        await _rabbitMqPublisher.PublishAsync(userPassword, "create-user-queue");
+        return Ok();
     }
 
     

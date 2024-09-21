@@ -17,27 +17,11 @@ public class TourController : ControllerBase
 {
     private readonly TourService _tourService;
     private readonly IMapper _mapper;
-    private readonly IRabbitMqPublisher _rabbitMqPublisher;
     
-    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, IRabbitMqPublisher rabbitMqPublisher)
+    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
-        _rabbitMqPublisher = rabbitMqPublisher;
         _tourService = new TourService(context, mapper, redis);
         _mapper = mapper;
-    }
-    
-    [HttpPost("test")]
-    public async Task<string> Test(TourDto tour)
-    {
-        await _rabbitMqPublisher.PublishAsync<TourDto>(tour, "email-queue");
-        return "Tour Controller works!";
-    }
-    
-    [HttpPost("test2")]
-    public string Test2(TourDto tour)
-    {
-        _rabbitMqPublisher.PublishAsync<TourDto>(tour, "test2");
-        return "Tour Controller works!";
     }
     
     

@@ -9,6 +9,7 @@ using TravelAgencyAPI.Models;
 using TravelAgencyAPI.Settings;
 using Stripe.Checkout;
 using TravelAgencyAPI.Services;
+using TravelAgencyAPI.Services.Interfaces;
 
 namespace TravelAgencyAPI.Controllers;
 
@@ -20,19 +21,19 @@ public class PayController : ControllerBase
     private readonly TourService _tourService;
     private readonly PaymentService _paymentService;
     private readonly StripeHelper _stripeHelper;
-    private readonly MailHelper _mailHelper;
     private readonly AddressSetting _addressSetting;
     private readonly IMapper _mapper;
+    private readonly IRabbitMqPublisher _rabbitMqPublisher;
 
-    public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting,
-        IOptions<MailSetting> mailSetting, IConnectionMultiplexer redis)
+    public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting, 
+        IConnectionMultiplexer redis, IRabbitMqPublisher rabbitMqPublisher)
     {
         _userService = new UserService(context, mapper);
         _tourService = new TourService(context, mapper, redis);
         _paymentService = new PaymentService(context, mapper);
-        _mailHelper = new MailHelper(mailSetting.Value);
         _stripeHelper = new StripeHelper(addressSetting.Value);
         _mapper = mapper;
+        _rabbitMqPublisher = rabbitMqPublisher;
         _addressSetting = addressSetting.Value;
     }
     
@@ -63,7 +64,7 @@ public class PayController : ControllerBase
         int userId = int.TryParse(User.FindFirst("userId")?.Value, out userId) ? userId : 0;
         Payment? payment = await _paymentService.GetByUserIdTourId(userId, tourId);
         if (payment == null) return false;
-        else return true;
+        return true;
     }
     
 
@@ -91,6 +92,10 @@ public class PayController : ControllerBase
         payment.Id = paymentId;
         payment.StripeSession = sessionId;
         await _paymentService.UpdateAsync(payment);
+        
+        TourEmailDto tourEmail = _mapper.Map<TourEmailDto>((tour, user.Email, paymentData.Quantity));
+        await _rabbitMqPublisher.PublishAsync(tourEmail, "payment-queue");
+        
         return Ok(sessionId);
     }
 
@@ -114,8 +119,6 @@ public class PayController : ControllerBase
 
         payment.IsPaid = true;
         await _paymentService.UpdateAsync(_mapper.Map<PaymentDto>(payment));
-        
-        _mailHelper.SendTourMessage(user.Email, tour);
         
         return Redirect($"{_addressSetting.Client}/tour/{payment.TourId}");
     }

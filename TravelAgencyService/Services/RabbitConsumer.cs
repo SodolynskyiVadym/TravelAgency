@@ -14,6 +14,7 @@ public class RabbitConsumer : BackgroundService
     private readonly MailService _mailService;
     private IConnection _connection;
     private IModel _channel;
+    private QueueSetting _queueSetting = new QueueSetting() {AutoAck = true};
 
     public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSetting, IOptions<MailSetting> mailSetting)
     {
@@ -32,24 +33,34 @@ public class RabbitConsumer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        StartConsuming(_rabbitMqSetting.QueueName, stoppingToken);
+        StartEmailMessageConsuming<Tour>("payment-queue", _queueSetting, stoppingToken, tour =>
+        {
+            _mailService.SendTourMessage(tour.Email, tour);
+        });
+        StartEmailMessageConsuming<User>("create-user-queue", _queueSetting, stoppingToken, user =>
+        {
+            _mailService.SendPassword(user.Email, user);
+        });
+        StartEmailMessageConsuming<User>("reserve-password-queue", _queueSetting, stoppingToken, user =>
+        {
+            _mailService.SendReservePassword(user.Email, user.Password);
+        });
         await Task.CompletedTask;
     }
 
-    private void StartConsuming(string queueName, CancellationToken cancellationToken)
+    private void StartEmailMessageConsuming<T>(string queueName, QueueSetting queueSetting, CancellationToken stoppingToken, Action<T> action)
     {
-        _channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+        _channel.QueueDeclare(queue: queueName, durable: queueSetting.Durable, exclusive: queueSetting.Exclusive, autoDelete: queueSetting.AutoDelete);
 
         var consumer = new EventingBasicConsumer(_channel);
         consumer.Received += async (model, ea) =>
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            Tour tour = JsonConvert.DeserializeObject<Tour>(message);
-            Console.WriteLine($"Received message: {tour}");
-            Console.WriteLine(_mailService.SendTourMessage("test@gmail.com", tour));
+            var obj = JsonConvert.DeserializeObject<T>(message);
+            if (obj != null) action(obj);
         };
-        _channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
+        _channel.BasicConsume(queue: queueName, autoAck: queueSetting.AutoAck, consumer: consumer);
     }
 
     public override void Dispose()

@@ -17,7 +17,7 @@ public class MailService
         _mailSettings = mailSettings;
     }
     
-    public bool SendPassword(string toEmail, string password, string role)
+    public bool SendPassword(string toEmail, User user)
     {
         try
         {
@@ -31,8 +31,8 @@ public class MailService
 
             emailMessage.Subject = "Your temporary password";
             
-            string textHtmlPasswordPage = passwordPage.Replace("{0}", role);
-            textHtmlPasswordPage = textHtmlPasswordPage.Replace("{1}", password);
+            string textHtmlPasswordPage = passwordPage.Replace("{0}", user.Role);
+            textHtmlPasswordPage = textHtmlPasswordPage.Replace("{1}", user.Password);
 
 
             BodyBuilder emailBodyBuilder = new BodyBuilder();

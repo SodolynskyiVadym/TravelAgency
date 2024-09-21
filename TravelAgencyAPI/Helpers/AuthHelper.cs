@@ -86,7 +86,7 @@ public class AuthHelper
     }
 
 
-    public async Task<int> RegisterUser(UserLoginRegistrationDto userRegistration)
+    public async Task<int> RegisterUser(UserEmailPasswordDto userRegistration)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())

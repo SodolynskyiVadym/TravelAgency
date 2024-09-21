@@ -1,6 +1,6 @@
-﻿namespace TravelAgencyService.Models;
+﻿namespace TravelAgencyAPI.DTO;
 
-public class Tour
+public class TourEmailDto
 {
     public string Name { get; set; }
     public string Description { get; set; }
@@ -10,9 +10,4 @@ public class Tour
     public int PurchasedSeats { get; set; }
     public string ImageUrl { get; set; }
     public string Email { get; set; }
-
-    public override string ToString()
-    {
-        return $"Name: {Name}, Description: {Description}, StartDate: {StartDate}, EndDate: {EndDate}, Price: {Price}, PurchasedSeats: {PurchasedSeats}";
-    }
 }
