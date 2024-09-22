@@ -9,11 +9,13 @@ bookings, manage their favourite tours and save their bucket lists. This website
 ## Technologies
 
 - ![.NET](https://img.shields.io/badge/dotnet-8F2D97?style=for-the-badge&logo=dotnet&logoColor=white)
-- ![VUE.JS](https://img.shields.io/badge/VUE.JS-1AC82F?style=for-the-badge&logo=vuedotjs&logoColor=white)
-- ![MSSQL](https://img.shields.io/badge/MSSQL-red?style=for-the-badge&logo=link&logoColor=white)
-- ![REDIS](https://img.shields.io/badge/REDIS-FF0000?style=for-the-badge&logo=link&logoColor=white)
+- ![VUE.JS](https://img.shields.io/badge/vue.js-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
+- ![MicrosoftSQLServer](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white)
+- ![REDIS](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 - ![DOCKER](https://img.shields.io/badge/DOCKER-blue?style=for-the-badge&logo=docker&logoColor=white)
 - ![STRIPE](https://img.shields.io/badge/Stripe-2871EA?style=for-the-badge&logo=stripe&logoColor=white)
+- ![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
+- ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 
 ## Run
 
@@ -23,15 +25,19 @@ git clone https://github.com/SodolynskyiVadym/TravelAgency.git
 ```
 <br>
 
-- Enter your data in file appsettings.json and config.env
+- Enter your data in files appsettings.json and config.env
 
-File [appsettings.json](TravelAgencyAPI/appsettings.json)
-> - MailSetting
+File [appsettings.json](TravelAgencyAPI/appsettings.json) (TravelAgencyAPI)
 > - Stripe(private key)
 > - ConnectionStrings(if you run by docker you haven't to do it)
 > - AuthSetting
+> - RabbitMqSetting
 
-File [config.env](travel_agency_front/config.env)
+File [appsettings.json](TravelAgencyService/appsettings.json) (TravelAgencyService)
+> - MailSetting
+> - RabbitMqSetting
+
+File [config.env](travel_agency_front/config.env) (travel_agency_front)
 > - STRIPE_PUBLIC_KEY
 <br>
 
