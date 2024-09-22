@@ -95,7 +95,7 @@ public class MailService
         }
     }
 
-    public bool SendTourMessage(string email, Tour tour)
+    public bool SendTourMessage(string email, TourEmailDto tourEmailDto)
     {
         try
         {
@@ -107,11 +107,11 @@ public class MailService
             emailMessage.To.Add(emailTo);
             
 
-            emailMessage.Subject = $"Welcome to {tour.Name}!";
+            emailMessage.Subject = $"Welcome to {tourEmailDto.Name}!";
             
-            string textHtmlTourMessagePage = tourMessagePage.Replace("{0}", tour.Name);
-            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{1}", tour.ImageUrl);
-            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{2}", tour.Description);
+            string textHtmlTourMessagePage = tourMessagePage.Replace("{0}", tourEmailDto.Name);
+            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{1}", tourEmailDto.ImageUrl);
+            textHtmlTourMessagePage = textHtmlTourMessagePage.Replace("{2}", tourEmailDto.Description);
 
 
             BodyBuilder emailBodyBuilder = new BodyBuilder();

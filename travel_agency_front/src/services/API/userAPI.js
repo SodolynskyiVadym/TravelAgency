@@ -38,6 +38,7 @@ export async function registerUser(user) {
 export async function createUser(user, token) {
     const config = { headers: { Authorization: `Bearer ${token}` } }
     try {
+        console.log(`${mainUrl}/registerEditorAdmin`);
         return await axios.post(`${mainUrl}/registerEditorAdmin`, user, config).then((res) => res.data);
     } catch (error) {
         return false;

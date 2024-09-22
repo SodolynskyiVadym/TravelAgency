@@ -10,22 +10,21 @@ namespace TravelAgencyService.Services;
 
 public class RabbitConsumer : BackgroundService
 {
-    private readonly RabbitMqSetting _rabbitMqSetting;
     private readonly MailService _mailService;
-    private IConnection _connection;
-    private IModel _channel;
-    private QueueSetting _queueSetting = new QueueSetting() {AutoAck = true};
+    private readonly IConnection _connection;
+    private readonly IModel _channel;
+    private readonly QueueSetting _queueSetting = new QueueSetting() {AutoAck = true};
 
-    public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSetting, IOptions<MailSetting> mailSetting)
+    public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSettingOptions, IOptions<MailSetting> mailSetting)
     {
-        _rabbitMqSetting = rabbitMqSetting.Value;
+        var rabbitMqSetting = rabbitMqSettingOptions.Value;
         _mailService = new MailService(mailSetting.Value);
 
         var factory = new ConnectionFactory
         {
-            HostName = _rabbitMqSetting.Host,
-            UserName = _rabbitMqSetting.UserName,
-            Password = _rabbitMqSetting.Password
+            HostName = rabbitMqSetting.Host,
+            UserName = rabbitMqSetting.UserName,
+            Password = rabbitMqSetting.Password
         };
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
@@ -33,7 +32,7 @@ public class RabbitConsumer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        StartEmailMessageConsuming<Tour>("payment-queue", _queueSetting, stoppingToken, tour =>
+        StartEmailMessageConsuming<TourEmailDto>("payment-queue", _queueSetting, stoppingToken, tour =>
         {
             _mailService.SendTourMessage(tour.Email, tour);
         });

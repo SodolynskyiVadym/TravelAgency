@@ -40,10 +40,9 @@ public class AuthController : ControllerBase
     
     [Authorize]
     [HttpGet("getUserByToken")]
-    public async Task<UserEmailRoleDto?> GetUserByToken(int id)
+    public async Task<UserEmailRoleDto?> GetUserByToken()
     {
-        int userId = 0;
-        int.TryParse(User.FindFirst("userId")?.Value, out userId);
+        int.TryParse(User.FindFirst("userId")?.Value, out var userId);
         return _mapper.Map<UserEmailRoleDto>(await _userService.GetByIdAsync(userId));
     }
     
@@ -64,6 +63,7 @@ public class AuthController : ControllerBase
         
         if(!_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
             return StatusCode(400, "Incorrect password!");
+        
         return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}}); 
     }
     
@@ -121,12 +121,11 @@ public class AuthController : ControllerBase
     [HttpPost("registerEditorAdmin")]
     public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
-        if (user.Role != "EDITOR" && user.Role != "ADMIN")
-            return BadRequest("Incorrect data");
+        if (user.Role != "EDITOR" && user.Role != "ADMIN") return BadRequest("Incorrect data");
 
         string password = await _authHelper.RegisterEditorAdmin(user);
-        UserEmailRolePasswordDto? userPassword = _mapper.Map<UserEmailRolePasswordDto>((user, password));
         if(password.IsNullOrEmpty()) return BadRequest("User already exists");
+        UserEmailRolePasswordDto? userPassword = _mapper.Map<UserEmailRolePasswordDto>((user, password));
         await _rabbitMqPublisher.PublishAsync(userPassword, "create-user-queue");
         return Ok();
     }

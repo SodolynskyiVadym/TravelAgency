@@ -47,7 +47,6 @@ export default {
     },
     methods: {
         async enterUserCreatePage() {
-            console.log('createUser');
             this.$router.push('/createUser');
         },
 

@@ -59,13 +59,13 @@ export default {
                 const result = await userAPI.createUser(this.user, token);
                 if (result === false) {
                     this.message = "User wasn't created"
+                    this.isSendRequest = false;
                 } else {
                     await this.clearFields();
 
                     this.isCorrectInputs = false;
                     this.isSendRequest = false;
                 }
-
             }
         }
     },

@@ -1,6 +1,6 @@
 ﻿namespace TravelAgencyService.Models;
 
-public class Tour
+public class TourEmailDto
 {
     public string Name { get; set; }
     public string Description { get; set; }

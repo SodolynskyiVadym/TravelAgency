@@ -28,6 +28,8 @@ services:
       - ENVIRONMENT=DockerEnv
     ports:
       - "5102:5102"
+    depends_on:
+      - rabbitmq
 
   client:
     image: travel_agency_client
