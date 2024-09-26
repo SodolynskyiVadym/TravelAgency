@@ -38,7 +38,6 @@
 
 <script>
 import * as transportAPI from '@/services/API/transportAPI';
-import * as destinationAPI from '@/services/API/destinationAPI';
 import * as tourAPI from '@/services/API/tourAPI';
 
 export default {
@@ -75,11 +74,7 @@ export default {
     async mounted() {
         this.transports = await transportAPI.getAllTransports();
         this.searchedTransports = this.transports;
-        this.destinations = await destinationAPI.getAllDestinations();
-        this.usedTransportIds = this.destinations.map(destination => destination.transportId);
-
-        const toursForeignKeys = await tourAPI.getAllToursForeignKeys();
-        this.usedTransportToEndIds = toursForeignKeys.map(tourForeignKey => tourForeignKey.transportToEndId);
+        this.usedTransportIds = await tourAPI.getTourTransportsId();
     }
 }
 </script>

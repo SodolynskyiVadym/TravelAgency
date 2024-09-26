@@ -71,7 +71,7 @@ export default {
     },
 
     async mounted() {
-        // this.usersEmails = await userAPI.getUsersEmals();
+        // this.usersEmails = await userAPI.getUsersEmeils();
     }
 }
 

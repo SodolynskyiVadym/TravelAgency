@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
     [HttpPost("registerUser")]
     public async Task<IActionResult> Register(UserEmailPasswordDto userRegistration)
     {
-        if (userRegistration.Email.IsNullOrEmpty() || userRegistration.Password.Length < 8)
+        if (!AuthHelper.IsEmail(userRegistration.Email) || userRegistration.Password.Length < 8)
         {
             return StatusCode(400, "Email is empty or password is less than 8");
         }
@@ -113,7 +113,7 @@ public class AuthController : ControllerBase
             return Ok(new Dictionary<string, string> { { "token", _authHelper.CreateToken(user)}});
         }
 
-        return StatusCode(400, "IUser was not registered!");
+        return StatusCode(400, "User was not registered!");
     }
     
     
@@ -121,7 +121,7 @@ public class AuthController : ControllerBase
     [HttpPost("registerEditorAdmin")]
     public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
-        if (user.Role != "EDITOR" && user.Role != "ADMIN") return BadRequest("Incorrect data");
+        if ((user.Role != "EDITOR" && user.Role != "ADMIN") || !AuthHelper.IsEmail(user.Email)) return BadRequest("Incorrect data");
 
         string password = await _authHelper.RegisterEditorAdmin(user);
         if(password.IsNullOrEmpty()) return BadRequest("User already exists");

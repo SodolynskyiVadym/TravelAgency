@@ -27,7 +27,7 @@
                 <td>
                     <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
                         @click="enterUpdatePlacePage(place.id)">EDIT</button>
-                    <button v-if="!(usedPlaceIds.includes(place.id) || usedPlaceStartIds.includes(place.id) || usedPlaceEndIds.includes(place.id))"
+                    <button v-if="!(usedPlaceIds.includes(place.id))"
                         class="button-update-delete button-update-delete-hover-black"
                         @click="deletePlace(place.id)">DELETE</button>
                 </td>
@@ -39,7 +39,6 @@
 
 <script>
 import * as placeAPI from '@/services/API/placeAPI';
-import * as destinationAPI from '@/services/API/destinationAPI';
 import * as tourAPI from '@/services/API/tourAPI';
 
 export default {
@@ -75,12 +74,7 @@ export default {
 
     async mounted() {
         this.places = (await placeAPI.getAllPlaces()).sort((a, b) => a.country.localeCompare(b.country));
-        const destinations = await destinationAPI.getAllDestinations();
-        this.usedPlaceIds = destinations.map(destination => destination.hotel.placeId);
-
-        const toursForeignKeys = await tourAPI.getAllToursForeignKeys();
-        this.usedPlaceStartIds = toursForeignKeys.map(tour => tour.placeStartId);
-        this.usedPlaceEndIds = toursForeignKeys.map(tour => tour.placeEndId);
+        this.usedPlaceIds = await tourAPI.getTourPlacesId();
 
         this.searchedPlaces = this.places;
     }

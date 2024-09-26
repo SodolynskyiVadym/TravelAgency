@@ -41,7 +41,7 @@
 
 <script>
 import * as hotelAPI from '@/services/API/hotelAPI';
-import * as destinationAPI from '@/services/API/destinationAPI';
+import * as tourAPI from '@/services/API/tourAPI';
 
 export default {
     data() {
@@ -76,8 +76,7 @@ export default {
     async mounted() {
         this.hotels = (await hotelAPI.getAllHotels()).sort((a, b) => a.place.name.localeCompare(b.place.name));
         this.searchedHotels = this.hotels;
-        this.destinations = await destinationAPI.getAllDestinations();
-        this.usedHotelIds = this.destinations.map(destination => destination.hotelId);
+        this.usedHotelIds = await tourAPI.getTourHotelsId();
     }
 }
 </script>

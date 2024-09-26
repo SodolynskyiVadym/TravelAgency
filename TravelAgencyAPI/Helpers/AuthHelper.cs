@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using TravelAgencyAPI.DTO;
 using TravelAgencyAPI.Models;
@@ -170,5 +171,13 @@ public class AuthHelper
         byte[] passwordHashToCheck = GetPasswordHash(password, passwordSalt);
         for (var index = 0; index < passwordHashToCheck.Length; index++) if (passwordHashToCheck[index] != passwordHash[index]) return false;
         return true;
+    }
+
+    public static bool IsEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return false;
+
+        string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, pattern);
     }
 }

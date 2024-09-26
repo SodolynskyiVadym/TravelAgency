@@ -48,9 +48,25 @@ export async function getUnavailableTours(token){
 
 }
 
-export async function getAllToursForeignKeys() {
+export async function getTourPlacesId() {
     try {
-        return await axios.get(`${mainUrl}/getToursForeignKeys`).then((res) => res.data);
+        return await axios.get(`${mainUrl}/getTourPlacesId`).then((res) => res.data);
+    } catch (error) {
+        await router.push("/error");
+    }
+}
+
+export async function getTourTransportsId() {
+    try {
+        return await axios.get(`${mainUrl}/getTourTransportsId`).then((res) => res.data);
+    } catch (error) {
+        await router.push("/error");
+    }
+}
+
+export async function getTourHotelsId(){
+    try {
+        return await axios.get(`${mainUrl}/getTourHotelsId`).then((res) => res.data);
     } catch (error) {
         await router.push("/error");
     }
