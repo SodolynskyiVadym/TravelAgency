@@ -13,8 +13,9 @@ bookings, manage their favourite tours and save their bucket lists. This website
 - ![MicrosoftSQLServer](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white)
 - ![REDIS](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 - ![DOCKER](https://img.shields.io/badge/DOCKER-blue?style=for-the-badge&logo=docker&logoColor=white)
-- ![STRIPE](https://img.shields.io/badge/Stripe-2871EA?style=for-the-badge&logo=stripe&logoColor=white)
+- ![RabbitMQ](https://img.shields.io/badge/Rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
 - ![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
+- ![STRIPE](https://img.shields.io/badge/Stripe-2871EA?style=for-the-badge&logo=stripe&logoColor=white)
 - ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 
 ## Run
