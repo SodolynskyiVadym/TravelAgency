@@ -24,6 +24,12 @@ public class AuthHelper
         _userService = userService;
         _authSetting = authSetting.Value;
     }
+    
+    public AuthHelper(AuthSetting authSetting, UserService userService)
+    {
+        _userService = userService;
+        _authSetting = authSetting;
+    }
 
     public byte[] GetPasswordHash(string password, byte[] passwordSalt)
     {
