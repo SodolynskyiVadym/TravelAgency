@@ -15,23 +15,15 @@ namespace TravelAgencyAPIServer.Helpers;
 
 public class AuthHelper
 {
-    private readonly UserService _userService;
     private readonly AuthSetting _authSetting;
     private readonly string possibleValuePassword = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-
-    public AuthHelper(IOptions<AuthSetting> authSetting, UserService userService)
-    {
-        _userService = userService;
-        _authSetting = authSetting.Value;
-    }
     
-    public AuthHelper(AuthSetting authSetting, UserService userService)
+    public AuthHelper(AuthSetting authSetting)
     {
-        _userService = userService;
         _authSetting = authSetting;
     }
 
-    public byte[] GetPasswordHash(string password, byte[] passwordSalt)
+    private byte[] GetPasswordHash(string password, byte[] passwordSalt)
     {
         string passwordSaltPlusString = _authSetting.PasswordKey + Convert.ToBase64String(passwordSalt);
 
@@ -44,7 +36,7 @@ public class AuthHelper
         );
     }
     
-    private string GenerateRandomPassword()
+    public string GenerateRandomPassword()
     {
         int length = 12;
         var randomBytes = new byte[length];
@@ -67,18 +59,18 @@ public class AuthHelper
 
     public string CreateToken(User user)
     {
-        Claim[] claims = new Claim[]
-        {
-            new Claim("userId", user.Id.ToString()),
-            new Claim("email", user.Email),
-            new Claim("role", user.Role)
-        };
+        Claim[] claims =
+        [
+            new("userId", user.Id.ToString()),
+            new("email", user.Email),
+            new("role", user.Role)
+        ];
 
         SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSetting.TokenKey));
 
         SigningCredentials credentials = new SigningCredentials(tokenKey, SecurityAlgorithms.HmacSha512Signature);
 
-        SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor()
+        SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
             SigningCredentials = credentials,
@@ -93,7 +85,7 @@ public class AuthHelper
     }
 
 
-    public async Task<int> RegisterUser(UserEmailPasswordDto userRegistration)
+    public UserDto EncryptUserPassword(UserEmailPasswordDto userRegistration, string role)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -106,40 +98,15 @@ public class AuthHelper
         UserDto user = new UserDto()
         {
             Email = userRegistration.Email,
-            Role = "USER",
+            Role = role,
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        return await _userService.AddAsync(user);
+        return user;
     }
 
 
-    public async Task<string> RegisterEditorAdmin(UserEmailRoleDto user)
-    {
-        byte[] passwordSalt = new byte[128 / 8];
-        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-        {
-            rng.GetNonZeroBytes(passwordSalt);
-        }
-        
-        string password = this.GenerateRandomPassword();
-
-        byte[] passwordHash = GetPasswordHash(password, passwordSalt);
-        
-        UserDto userDto = new UserDto()
-        {
-            Email = user.Email,
-            Role = user.Role,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
-        };
-        
-        if((await _userService.AddAsync(userDto)) > 0) return password;
-        return string.Empty;
-    }
-
-
-    public async Task<bool> UpdatePassword(User userUpdate, string password)
+    public byte[][] UpdatePassword(User userUpdate, string password)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -148,16 +115,14 @@ public class AuthHelper
         }
 
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
-
-        await _userService.UpdatePasswordAsync(userUpdate.Email, passwordHash, passwordSalt);
-
-        return true;
+        userUpdate.PasswordHash = passwordHash;
+        userUpdate.PasswordSalt = passwordSalt;
+        return [passwordHash, passwordSalt];
     }
     
 
-    public async Task<string> CreateReservePassword(string email)
+    public byte[][] CreateReservePassword(string password)
     {
-        string password = this.GenerateRandomPassword();
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
         {
@@ -166,9 +131,7 @@ public class AuthHelper
         
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
 
-        await _userService.CreateReservePasswordAsync(email, passwordHash, passwordSalt);
-
-        return password;
+        return [passwordHash, passwordSalt];
     }
     
     

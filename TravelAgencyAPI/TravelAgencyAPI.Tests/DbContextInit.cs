@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using TravelAgencyAPIServer.DTO;
 using TravelAgencyAPIServer.Helpers;
 using TravelAgencyAPIServer.Models;
 
@@ -6,7 +8,16 @@ namespace TravelAgencyAPI.Tests;
 
 public class DbContextInit
 {
-    private static readonly IEnumerable<Place> Places = new List<Place>
+    private readonly AuthHelper _authHelper;
+    private readonly IMapper _mapper;
+
+    public DbContextInit(AuthHelper authHelper, IMapper mapper)
+    {
+        _authHelper = authHelper;
+        _mapper = mapper;
+    }
+
+    private readonly IEnumerable<Place> _places = new List<Place>
     {
         new()
         {
@@ -58,7 +69,7 @@ public class DbContextInit
         }
     };
 
-    private static readonly IEnumerable<Hotel> Hotels = new List<Hotel>
+    private readonly IEnumerable<Hotel> _hotels = new List<Hotel>
     {
         new()
         {
@@ -102,7 +113,7 @@ public class DbContextInit
         }
     };
 
-    private static readonly IEnumerable<Transport> Transports = new List<Transport>
+    private readonly IEnumerable<Transport> _transports = new List<Transport>
     {
         new()
         {
@@ -124,7 +135,7 @@ public class DbContextInit
         }
     };
 
-    private static readonly IEnumerable<Tour> Tours = new List<Tour>
+    private readonly IEnumerable<Tour> _tours = new List<Tour>
     {
         new()
         {
@@ -143,7 +154,7 @@ public class DbContextInit
         }
     };
 
-    private static readonly IEnumerable<Destination> Destinations = new List<Destination>
+    private readonly IEnumerable<Destination> _destinations = new List<Destination>
     {
         new()
         {
@@ -155,9 +166,25 @@ public class DbContextInit
             TransportId = 1
         }
     };
+    
+    private readonly IEnumerable<UserEmailRolePasswordDto> _users = new List<UserEmailRolePasswordDto>
+    {
+        new()
+        {
+            Email = "user1@example.com",
+            Password = "12345678",
+            Role = "USER"
+        },
+        new()
+        {
+            Email = "admin@example.com",
+            Password = "12345678",
+            Role = "ADMIN"
+        }
+    };
 
 
-    public static async Task<TravelDbContext> GetDatabaseContext()
+    public async Task<TravelDbContext> GetDatabaseContext()
     {
         var options = new DbContextOptionsBuilder<TravelDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -165,20 +192,26 @@ public class DbContextInit
         var databaseContext = new TravelDbContext(options);
         await databaseContext.Database.EnsureCreatedAsync();
 
-        foreach (var place in Places) databaseContext.Places.Add(place);
+        foreach (var place in _places) databaseContext.Places.Add(place);
         await databaseContext.SaveChangesAsync();
 
-        foreach (var transport in Transports) databaseContext.Transports.Add(transport);
+        foreach (var transport in _transports) databaseContext.Transports.Add(transport);
         await databaseContext.SaveChangesAsync();
 
-        foreach (var hotel in Hotels) databaseContext.Hotels.Add(hotel);
+        foreach (var hotel in _hotels) databaseContext.Hotels.Add(hotel);
         await databaseContext.SaveChangesAsync();
 
-        foreach (var tour in Tours) databaseContext.Tours.Add(tour);
+        foreach (var tour in _tours) databaseContext.Tours.Add(tour);
         await databaseContext.SaveChangesAsync();
 
-        foreach (var destination in Destinations) databaseContext.Destinations.Add(destination);
+        foreach (var destination in _destinations) databaseContext.Destinations.Add(destination);
         await databaseContext.SaveChangesAsync();
+
+        foreach (var user in _users)
+        {
+            UserDto userDto = _authHelper.EncryptUserPassword(new UserEmailPasswordDto(user.Email, user.Password), user.Role);
+            await databaseContext.Users.AddAsync(_mapper.Map<User>(userDto));
+        }
 
         return databaseContext;
     }
