@@ -85,7 +85,7 @@ public class AuthController : ControllerBase
     {
         User? user = await _userService.GetUserByEmail(userLogin.Email);
         if (user == null) return StatusCode(400, "User not found!");
-
+        
         if (!_authHelper.CheckPassword(userLogin.Password, user.PasswordHash, user.PasswordSalt))
             return StatusCode(400, "Incorrect password!");
 
@@ -121,7 +121,7 @@ public class AuthController : ControllerBase
         if (email.IsNullOrEmpty()) return StatusCode(401, "Email is empty");
 
         string password = _authHelper.GenerateRandomPassword();
-        byte[][] passwordDetails = _authHelper.CreateReservePassword(password);
+        byte[][] passwordDetails = _authHelper.EncryptUserPassword(password);
         bool result = await _userService.CreateReservePasswordAsync(email, passwordDetails[0], passwordDetails[1]);
 
         if (!result) return BadRequest("User not found!");
@@ -146,7 +146,14 @@ public class AuthController : ControllerBase
 
         if (await _userService.IsUsedEmail(userRegistration.Email)) return BadRequest("Email is already used!");
 
-        UserDto userDto = _authHelper.EncryptUserPassword(userRegistration, "USER");
+        byte[][] passwordDetails = _authHelper.EncryptUserPassword(userRegistration.Password);
+        UserDto userDto = new UserDto()
+        {
+            Email = userRegistration.Email,
+            PasswordHash = passwordDetails[0],
+            PasswordSalt = passwordDetails[1],
+            Role = "USER"
+        };
         await _userService.AddAsync(userDto);
         
         User user = await _userService.GetUserByEmail(userRegistration.Email) ?? throw new InvalidOperationException();
@@ -166,7 +173,15 @@ public class AuthController : ControllerBase
             return BadRequest("Incorrect data");
         
         string password = _authHelper.GenerateRandomPassword();
-        UserDto userDto = _authHelper.EncryptUserPassword(new UserEmailPasswordDto(user.Email, password), user.Role);
+        byte[][] passwordDetails = _authHelper.EncryptUserPassword(password);
+        UserDto userDto = new UserDto()
+        {
+            Email = user.Email,
+            PasswordHash = passwordDetails[1],
+            PasswordSalt = passwordDetails[2],
+            Role = user.Role
+        };
+        
         await _userService.AddAsync(userDto);
         
         UserEmailRolePasswordDto? userPassword = _mapper.Map<UserEmailRolePasswordDto>((user, password));

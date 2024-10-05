@@ -207,11 +207,22 @@ public class DbContextInit
         foreach (var destination in _destinations) databaseContext.Destinations.Add(destination);
         await databaseContext.SaveChangesAsync();
 
-        foreach (var user in _users)
+        foreach (var userDto in _users)
         {
-            UserDto userDto = _authHelper.EncryptUserPassword(new UserEmailPasswordDto(user.Email, user.Password), user.Role);
-            await databaseContext.Users.AddAsync(_mapper.Map<User>(userDto));
+            byte[][] mainPasswordDetails = _authHelper.EncryptUserPassword(userDto.Password);
+            byte[][] reservePasswordDetails = _authHelper.EncryptUserPassword(userDto.Password);
+            User user = new()
+            {
+                Email = userDto.Email,
+                PasswordHash = mainPasswordDetails[0],
+                PasswordSalt = mainPasswordDetails[1],
+                Role = userDto.Role,
+                ReservePasswordHash = reservePasswordDetails[0],
+                ReservePasswordSalt = reservePasswordDetails[1]
+            };
+            await databaseContext.Users.AddAsync(user);
         }
+        await databaseContext.SaveChangesAsync();
 
         return databaseContext;
     }

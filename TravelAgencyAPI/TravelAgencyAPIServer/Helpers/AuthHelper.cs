@@ -85,7 +85,7 @@ public class AuthHelper
     }
 
 
-    public UserDto EncryptUserPassword(UserEmailPasswordDto userRegistration, string role)
+    public byte[][] EncryptUserPassword(string password)
     {
         byte[] passwordSalt = new byte[128 / 8];
         using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -93,16 +93,9 @@ public class AuthHelper
             rng.GetNonZeroBytes(passwordSalt);
         }
 
-        byte[] passwordHash = GetPasswordHash(userRegistration.Password, passwordSalt);
+        byte[] passwordHash = GetPasswordHash(password, passwordSalt);
         
-        UserDto user = new UserDto()
-        {
-            Email = userRegistration.Email,
-            Role = role,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
-        };
-        return user;
+        return [passwordHash, passwordSalt];
     }
 
 
@@ -117,20 +110,6 @@ public class AuthHelper
         byte[] passwordHash = GetPasswordHash(password, passwordSalt);
         userUpdate.PasswordHash = passwordHash;
         userUpdate.PasswordSalt = passwordSalt;
-        return [passwordHash, passwordSalt];
-    }
-    
-
-    public byte[][] CreateReservePassword(string password)
-    {
-        byte[] passwordSalt = new byte[128 / 8];
-        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-        {
-            rng.GetNonZeroBytes(passwordSalt);
-        }
-        
-        byte[] passwordHash = GetPasswordHash(password, passwordSalt);
-
         return [passwordHash, passwordSalt];
     }
     
