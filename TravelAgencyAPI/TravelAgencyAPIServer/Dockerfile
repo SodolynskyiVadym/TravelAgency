@@ -20,10 +20,10 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the project file
-COPY ["TravelAgencyAPI.csproj", "./"]
+COPY ["TravelAgencyAPIServer.csproj", "./"]
 
 # Restore the project
-RUN dotnet restore "TravelAgencyAPI.csproj"
+RUN dotnet restore "TravelAgencyAPIServer.csproj"
 
 # Copy the rest of the files
 COPY . .
@@ -35,7 +35,7 @@ COPY ./AdditionalFiles /app/AdditionalFiles
 WORKDIR "/src/"
 
 # Build the project
-RUN dotnet build "TravelAgencyAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "TravelAgencyAPIServer.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Use the build image to publish the project
 FROM build AS publish
@@ -44,7 +44,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 
 # Publish the project
-RUN dotnet publish "TravelAgencyAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TravelAgencyAPIServer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Use the base image for the final image
 FROM base AS final
@@ -59,4 +59,4 @@ COPY --from=publish /app/publish .
 COPY --from=build /app/AdditionalFiles ./AdditionalFiles
 
 # Set the entrypoint with delay
-ENTRYPOINT ["sh", "-c", "sleep 30 && dotnet TravelAgencyAPI.dll"]
+ENTRYPOINT ["sh", "-c", "sleep 30 && dotnet TravelAgencyAPIServer.dll"]
