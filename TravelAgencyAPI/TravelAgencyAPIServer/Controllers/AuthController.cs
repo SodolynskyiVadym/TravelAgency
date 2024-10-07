@@ -116,7 +116,7 @@ public class AuthController : ControllerBase
     /// <param name="email">The user's email address.</param>
     /// <returns>An action result indicating the outcome.</returns>
     [HttpPost("createReservePassword")]
-    public async Task<IActionResult> CreateReservePassword(string email)
+    public async Task<IActionResult> CreateReservePassword([FromBody] string email)
     {
         if (email.IsNullOrEmpty()) return StatusCode(401, "Email is empty");
 
@@ -193,13 +193,13 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Updates the password for the authenticated user.
     /// </summary>
-    /// <param name="userPassword">The new password details.</param>
+    /// <param name="password">The new password.</param>
     /// <returns>An action result indicating the outcome.</returns>
     [Authorize]
     [HttpPost("updatePassword")]
-    public async Task<IActionResult> UpdatePassword(UserUpdatePasswordDto userPassword)
+    public async Task<IActionResult> UpdatePassword([FromBody] string password)
     {
-        if(userPassword.Password.Length < 8) return StatusCode(401, "Password is less than 8");
+        if(password.Length < 8) return StatusCode(401, "Password is less than 8");
         
         string? id = User.FindFirst("userId")?.Value;
         if (id == null) return StatusCode(402, "Incorrect token!");
@@ -207,7 +207,7 @@ public class AuthController : ControllerBase
         User? user = await _userService.GetByIdAsync(int.Parse(id));
         if (user == null) return StatusCode(402, "User not found!");
 
-        byte[][] passwordDetails = _authHelper.UpdatePassword(user, userPassword.Password);
+        byte[][] passwordDetails = _authHelper.UpdatePassword(user, password);
         bool result = await _userService.UpdatePasswordAsync(user.Email, passwordDetails[0], passwordDetails[1]);
         if (result) return Ok();
         return BadRequest("Password was not updated!");

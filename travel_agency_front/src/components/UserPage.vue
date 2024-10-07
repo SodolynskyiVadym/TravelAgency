@@ -9,14 +9,14 @@
             <input id="role" placeholder="Role" class="username input" type="text" v-model="user.role" readonly>
 
             <label for="password">Password:</label>
-            <input id="password" placeholder="Password" class="password input" type="password" v-model="password">
+            <input id="password" placeholder="Password" class="password input" type="password" v-model="password" @input="checkPassword">
 
             <label for="confirmPassword">Confirm new password:</label>
             <input id="confirmPassword" placeholder="Confirm password" class="password input" type="password"
-                v-model="confirmPassword">
+                v-model="confirmPassword" @input="checkPassword">
 
             <p style="color: red; margin-top: 40px;" v-if="message">{{ message }}</p>
-            <p v-if="password != confirmPassword || password.length < 8" style="color: wheat; margin-top: 40px;">New password must be more than 8</p>
+            <p v-if="!isCorrectPassword">New password must be more than 8</p>
             <button style="margin-top: 10px;" class="btn" type="submit" @click="updatePassword" v-else>Update password</button>
         </div>
     </div>
@@ -64,7 +64,8 @@ export default {
             password: "",
             confirmPassword: "",
             message: "",
-            isLoaded: false
+            isLoaded: false,
+            isCorrectPassword: false
         }
     },
     methods: {
@@ -84,6 +85,23 @@ export default {
 
         async payExistStripeSession(sessionStripeId){
             await payAPI.payExistingPayment(sessionStripeId);
+        },
+
+        async checkPassword(){
+            const alphanumericRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]*$/;
+            if(this.password.length < 8){
+                this.isCorrectPassword = false;
+                this.message = "Password must be more than 8 characters.";
+            }else if(this.password !== this.confirmPassword){
+                this.isCorrectPassword = false;
+                this.message = "Passwords don't match.";
+            }else if (!alphanumericRegex.test(this.password)) {
+                this.isCorrectPassword = false;
+                this.message = "Password must contain only letters and numbers and at least one letter.";
+            }else{
+                this.isCorrectPassword = true;
+                this.message = "";
+            }
         }
     },
 

@@ -13,18 +13,15 @@ public class RabbitConsumer : BackgroundService
     private readonly MailService _mailService;
     private readonly IConnection _connection;
     private readonly IModel _channel;
-    private readonly QueueSetting _queueSetting = new QueueSetting() {AutoAck = true};
+    private readonly QueueSetting _queueSetting = new() {AutoAck = true};
 
-    public RabbitConsumer(IOptions<RabbitMqSetting> rabbitMqSettingOptions, IOptions<MailSetting> mailSetting)
+    public RabbitConsumer(IOptions<MailSetting> mailSetting, string rabbitConnectionString)
     {
-        var rabbitMqSetting = rabbitMqSettingOptions.Value;
         _mailService = new MailService(mailSetting.Value);
 
         var factory = new ConnectionFactory
         {
-            HostName = rabbitMqSetting.Host,
-            UserName = rabbitMqSetting.UserName,
-            Password = rabbitMqSetting.Password
+            Uri = new Uri(rabbitConnectionString)
         };
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();

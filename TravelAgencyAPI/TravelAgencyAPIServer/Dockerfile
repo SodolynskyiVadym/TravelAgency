@@ -28,9 +28,6 @@ RUN dotnet restore "TravelAgencyAPIServer.csproj"
 # Copy the rest of the files
 COPY . .
 
-# Copy the HTML files
-COPY ./AdditionalFiles /app/AdditionalFiles
-
 # Set the working directory
 WORKDIR "/src/"
 
@@ -54,9 +51,6 @@ WORKDIR /app
 
 # Copy the published files
 COPY --from=publish /app/publish .
-
-# Copy the HTML files
-COPY --from=build /app/AdditionalFiles ./AdditionalFiles
 
 # Set the entrypoint with delay
 ENTRYPOINT ["sh", "-c", "sleep 30 && dotnet TravelAgencyAPIServer.dll"]

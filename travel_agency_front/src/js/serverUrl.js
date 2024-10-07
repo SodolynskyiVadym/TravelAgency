@@ -4,7 +4,7 @@ if (process.env.ENVIROMENT === "DockerEnv") {
 }else if (process.env.ENVIROMENT === "Production") {
     serverUrl = process.env.SERVER_ADDRESS;
 }else {
-    serverUrl = process.env.SERVER_DEFAULT_ADDRESS || "http://localhost:5113";
+    serverUrl = process.env.SERVER_DEFAULT_ADDRESS || "http://localhost:5160";
 }
 
 export default serverUrl;

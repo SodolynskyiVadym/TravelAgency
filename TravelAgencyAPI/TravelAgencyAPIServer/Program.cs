@@ -3,6 +3,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using Stripe;
@@ -15,28 +16,34 @@ using TravelAgencyAPIServer.Settings;
 var builder = WebApplication.CreateBuilder(args);
 string connectionString;
 string redisConnectionString;
+string rabbitConnectionString;
 
 if (builder.Environment.IsDevelopment())
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("RedisConnection") ?? throw new InvalidOperationException();
+    rabbitConnectionString = builder.Configuration.GetConnectionString("RabbitMqConnection") ?? throw new InvalidOperationException();
 }
 else if (builder.Environment.IsEnvironment("DockerEnv"))
 {
     connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING") ?? throw new InvalidOperationException();
+    rabbitConnectionString = Environment.GetEnvironmentVariable("RABBITMQ_CONNECTION_STRING") ?? throw new InvalidOperationException();
 }
 else if(builder.Environment.IsEnvironment("AzureEnv"))
 {
     connectionString = Environment.GetEnvironmentVariable("AzureConnection") ?? throw new InvalidOperationException();
     redisConnectionString = Environment.GetEnvironmentVariable("AzureRedisConnection") ?? throw new InvalidOperationException();
+    rabbitConnectionString = Environment.GetEnvironmentVariable("AzureRabbitMqConnection") ?? throw new InvalidOperationException();
 }
 else
 {
     connectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionConnection") ?? throw new InvalidOperationException();
     redisConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRedisConnection") ?? throw new InvalidOperationException();
+    rabbitConnectionString = builder.Configuration.GetConnectionString("ConnectionStrings:ProductionRabbitMqConnection") ?? throw new InvalidOperationException();
 }
 
+string tokenKeyString = builder.Configuration.GetSection("AuthSetting:TokenKey").Value ?? throw new InvalidOperationException();
 
 builder.Services.AddControllers();
 
@@ -44,8 +51,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<AuthSetting>(builder.Configuration.GetSection("AuthSetting"));
 builder.Services.Configure<AddressSetting>(builder.Configuration.GetSection("Address"));
-builder.Services.Configure<RabbitMqSetting>(builder.Configuration.GetSection("RabbitMqSetting"));
-
+builder.Services.Configure<List<RabbitMqQueueSetting>>(builder.Configuration.GetSection("Queues"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
@@ -54,7 +60,12 @@ builder.Services.AddDbContext<TravelDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddSingleton(typeof(IRabbitMqPublisher), typeof(RabbitMqPublisher));
+
+builder.Services.AddSingleton<IRabbitMqPublisher>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<List<RabbitMqQueueSetting>>>();
+    return new RabbitMqPublisher(options, rabbitConnectionString);
+});
 
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
@@ -89,7 +100,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-string tokenKeyString = builder.Configuration.GetSection("AuthSetting:TokenKey").Value ?? throw new InvalidOperationException();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {

@@ -4,31 +4,31 @@ using TravelAgencyService.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string rabbitConnectionString;
+
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.Configure<RabbitMqSetting>(builder.Configuration.GetSection("RabbitMqSetting"));
-}
-else if(builder.Environment.IsEnvironment("DockerEnv"))
+    rabbitConnectionString = builder.Configuration.GetConnectionString("RabbitMqConnection") ?? throw new InvalidOperationException();
+} else if (builder.Environment.IsEnvironment("DockerEnv"))
 {
-    var rabbitMqSetting = new RabbitMqSetting
-    {
-        Host = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? throw new InvalidOperationException(),
-        Port = int.Parse(Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? throw new InvalidOperationException()),
-        UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? throw new InvalidOperationException(),
-        Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? throw new InvalidOperationException()
-    };
-    builder.Services.AddSingleton(Options.Create(rabbitMqSetting));
-}
-else{
-    builder.Services.Configure<RabbitMqSetting>(builder.Configuration.GetSection("RabbitMqSetting"));
+    rabbitConnectionString = Environment.GetEnvironmentVariable("RABBITMQ_CONNECTION_STRING") ?? throw new InvalidOperationException();
+} else if (builder.Environment.IsEnvironment("AzureEnv"))
+{
+    rabbitConnectionString = Environment.GetEnvironmentVariable("AzureRabbitMqConnection") ?? throw new InvalidOperationException();
+} else 
+{
+    rabbitConnectionString = builder.Configuration.GetConnectionString("RabbitMqConnection") ?? throw new InvalidOperationException();
 }
 
 builder.Services.Configure<MailSetting>(builder.Configuration.GetSection("MailSetting"));
 
-builder.Services.AddHostedService<RabbitConsumer>();
+builder.Services.AddHostedService(sp =>
+{
+    var mailSetting = sp.GetRequiredService<IOptions<MailSetting>>();
+    return new RabbitConsumer(mailSetting, rabbitConnectionString);
+});
 
 
 var app = builder.Build();
-
 
 app.Run();

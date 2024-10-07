@@ -1,7 +1,8 @@
 import axios from "axios";
 import router from "./../router";
+import serverUrl from "@/js/serverUrl";
 
-const mainUrl = "http://localhost:5113/auth";
+const mainUrl = `${serverUrl}/auth`;
 
 
 
@@ -57,8 +58,9 @@ export async function login(user) {
 
 export async function createReservePassword(email) {
     try {
-        return await axios.post(`${mainUrl}/createReservePassword?email=${email}`).then((res) => res.data);
+        return await axios.post(`${mainUrl}/createReservePassword`, email, {headers : { "Content-Type" : "application/json"}}).then((res) => res.data);
     } catch (error) {
+        console.log(error);
         router.push("/login");
     }
 }
@@ -74,10 +76,9 @@ export async function loginViaReservePassword(user) {
 
 
 export async function updatePassword(password, token) {
-    const config = { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+    const config = { headers: { "Content-Type" : "application/json", Authorization: `Bearer ${token}`} }
     try {
-        const data = { password: password}
-        return await axios.post(`${mainUrl}/updatePassword`, data, config).then((res) => res.data);
+        return await axios.post(`${mainUrl}/updatePassword`, password, config).then((res) => res.data);
     } catch (error) {
         return false
     }

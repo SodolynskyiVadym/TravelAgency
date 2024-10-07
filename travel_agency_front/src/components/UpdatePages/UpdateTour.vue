@@ -230,7 +230,7 @@ export default {
             const tourTransports = this.allTransports.filter(transport => this.destinationsTransportsNames.includes(transport.name));
             if (tourTransports.length === 0) this.maxSeats = 0;
             else if (tourTransports.length === 1) this.maxSeats = tourTransports[0].quantitySeats;
-            else this.maxSeats = tourTransports.min(transport => transport.quantitySeats);
+            else this.maxSeats = Math.min(...tourTransports.map(transport => transport.quantitySeats));
 
             await this.checkCorrectInputs();
         },

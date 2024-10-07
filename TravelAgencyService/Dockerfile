@@ -59,4 +59,4 @@ COPY --from=publish /app/publish .
 COPY --from=build /app/AdditionalFiles ./AdditionalFiles
 
 # Set the entrypoint with delay
-ENTRYPOINT ["sh", "-c", "dotnet TravelAgencyService.dll"]
+ENTRYPOINT ["sh", "-c", "sleep 60 && dotnet TravelAgencyService.dll"]
