@@ -1,0 +1,55 @@
+<div class="container-user-input">
+    <div class="form" style="height: 700px;">
+        <p class="title">Your data</p>
+        <label for="email">Email:</label>
+        <input id="email" placeholder="Email" class="username input" type="text" readonly>
+
+        <label for="role">Role:</label>
+        <input id="role" placeholder="Role" class="username input" type="text" readonly>
+
+        <label for="password">Password:</label>
+        <input id="password" placeholder="Password" class="password input" type="password">
+
+        <label for="confirmPassword">Confirm new password:</label>
+        <input id="confirmPassword" placeholder="Confirm password" class="password input" type="password">
+
+        <p style="color: red; margin-top: 40px;">Error message here</p>
+        <p>Password must be more than 8</p>
+        <button style="margin-top: 10px;" class="btn" type="submit">Update password</button>
+    </div>
+</div>
+
+<div style="margin-top: 40px;">
+    <h2 style="text-align: center;">Your payments</h2>
+    <table class="list-table">
+        <tr>
+            <th>Image</th>
+            <th>Tour</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Purchased seats</th>
+            <th>Total price</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td><img src="image_url_here"></td>
+            <td>Tour name here</td>
+            <td>Start date here</td>
+            <td>End date here</td>
+            <td>Amount here</td>
+            <td>Total price here</td>
+            <td>Status here</td>
+            <td>
+                <button class="button-update-delete button-update-delete-hover-green">Pay</button>
+                <button class="button-update-delete button-update-delete-hover-black">View</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<style>
+@import "./../assets/css/styleLoginSignup.css";
+@import "./../assets/css/styleTable.css";
+@import "./../assets/css/styleButtonCreate.css";
+</style>
