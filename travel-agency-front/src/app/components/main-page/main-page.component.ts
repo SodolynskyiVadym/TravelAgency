@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css',
-    '../../styles/style-input-search.css'
+    '../../../styles/style-input-search.css'
   ],
 })
 export class MainPageComponent {
