@@ -9,11 +9,11 @@ import { Hotel } from '../../models/hotel.model';
 export class HotelApiService {
 
   private server = 'http://localhost:5160';
-  private apiUrl = `${this.server}/hotels`;
+  private apiUrl = `${this.server}/hotel`;
 
   constructor(private http: HttpClient) { }
 
   getHotels() : Observable<Hotel[]> {
-    return this.http.get<Hotel[]>(`${this.apiUrl}/getHotels`);
+    return this.http.get<Hotel[]>(`${this.apiUrl}/getAllHotels`);
   }
 }

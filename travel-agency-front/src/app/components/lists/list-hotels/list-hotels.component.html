@@ -1,6 +1,6 @@
 <div style="text-align: center;">
     <h1>Hotels</h1>
-    <!-- <button class="button-create-action" @click="enterHotelCreatePage">Add hotel</button> -->
+    <button class="button-create-action" routerLink='/create-hotel'>Add hotel</button>
 
     <div class="form-control">
         <!-- <input class="input input-alt" placeholder="Type name of hotels" type="text" v-model="inputHotel"
@@ -21,7 +21,7 @@
             <th style="width: 400px;">Action</th>
         </tr>
         <tr *ngFor="let hotel of hotels">
-            <td><img :src="hotel.imageUrl"></td>
+            <td><img [src]="hotel.imageUrl"></td>
             <td>{{ hotel.name }}</td>
             <td>{{ hotel.place.name }}</td>
             <td>{{ hotel.place.country }}</td>
