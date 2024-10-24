@@ -7,7 +7,6 @@ import { Hotel } from '../../models/hotel.model';
   providedIn: 'root'
 })
 export class HotelApiService {
-
   private server = 'http://localhost:5160';
   private apiUrl = `${this.server}/hotel`;
 
