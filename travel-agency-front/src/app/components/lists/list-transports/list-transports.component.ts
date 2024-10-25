@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TransportApiService } from '../../../../services/transport/transport-api.service';
+import { TransportApiService } from '../../../../services/api/transport/transport-api.service';
 import { Transport } from '../../../../models/transport.model';
 
 @Component({
@@ -11,9 +11,9 @@ import { Transport } from '../../../../models/transport.model';
   imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './list-transports.component.html',
   styleUrls: [
-    '../../../../styles/style-table.css',
-    '../../../../styles/style-input-search.css',
-    '../../../../styles/style-button-create.css',
+    '../../../../../public/styles/style-table.css',
+    '../../../../../public/styles/style-input-search.css',
+    '../../../../../public/styles/style-button-create.css',
     './list-transports.component.css'
   ]
 })

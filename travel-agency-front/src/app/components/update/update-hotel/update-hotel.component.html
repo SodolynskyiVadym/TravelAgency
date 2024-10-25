@@ -1,0 +1,54 @@
+<div class="create-form">
+    <label for="country">Country:</label>
+    <input id="country" type="search" list="countries" class="form-control" (input)="checkPlace()" autocomplete="false"
+        autocorrect="on" [(ngModel)]="country" placeholder="Type to choose country">
+    <datalist id="countries">
+        <option *ngFor="let country of countries" [value]="country">
+            {{ country }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(country)">Country is required</div>
+
+    <label for="placeName">Place Name:</label>
+    <input id="placeName" type="search" list="data" [(ngModel)]="placeName" (input)="checkPlace()"
+        placeholder="Type to choose place">
+    <datalist id="data">
+        <option *ngFor="let place of filteredPlaces" [value]="place.name">
+            {{ place.name }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="hotel.placeId == 0">Place is required</div>
+
+    <label for="name">Hotel Name:</label>
+    <input id="name" type="text" (input)="checkCorrectInputs()" [(ngModel)]="hotel.name" placeholder="Enter hotel name">
+    <div class="error" *ngIf="!hotel.name">Name is required</div>
+
+    <label for="address">Address:</label>
+    <input id="address" type="text" (input)="checkCorrectInputs()" [(ngModel)]="hotel.address"
+        placeholder="Enter place address">
+    <div class="error" *ngIf="!hotel.address">Address is required</div>
+
+    <label for="imageUrl">Image URL:</label>
+    <input id="imageUrl" type="text" [(ngModel)]="hotel.imageUrl" placeholder="Enter image URL" (input)="checkImage()"
+        required />
+    <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
+    <img *ngIf="isCorrectImage" class="image-preview" [src]="hotel.imageUrl" />
+    <img *ngIf="!isCorrectImage" style="width: 300px;" class="image-preview" src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=' />
+
+    <label for="pricePerNight">Price Per Night:</label>
+    <input id="pricePerNight" type="number" [(ngModel)]="hotel.pricePerNight" min="0" (input)="checkCorrectInputs()"
+        placeholder="Enter price per night">
+    <div class="error" *ngIf="hotel.pricePerNight <= 0">Price must be more than o</div>
+
+    <label for="description">Description:</label>
+    <textarea id="description" [(ngModel)]="hotel.description" placeholder="Enter place description"
+        (input)="checkCorrectInputs()"></textarea>
+    <div class="error" *ngIf="!hotel.description">Description is required</div>
+
+    <button *ngIf="!isSending" style="margin: 20px;" (click)="updateHotel()" [disabled]="!isCorrectInputs">Update
+        Hotel</button>
+    <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Loading...</span>
+    </button>
+</div>

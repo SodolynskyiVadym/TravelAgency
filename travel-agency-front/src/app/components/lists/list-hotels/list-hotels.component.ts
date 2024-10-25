@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HotelApiService } from '../../../../services/hotel/hotel-api.service';
+import { HotelApiService } from '../../../../services/api/hotel/hotel-api.service';
 import { Hotel } from '../../../../models/hotel.model';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './list-hotels.component.html',
   styleUrls: [
     './list-hotels.component.css',
-    '../../../../styles/style-table.css',
-    '../../../../styles/style-input-search.css',
-    '../../../../styles/style-button-create.css'
+    '../../../../../public/styles/style-table.css',
+    '../../../../../public/styles/style-input-search.css',
+    '../../../../../public/styles/style-button-create.css'
   ],
 })
 

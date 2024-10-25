@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Tour } from '../../../models/tour.model';
-import { TourApiService } from '../../../services/tour/tour-api.service';
+import { TourApiService } from '../../../services/api/tour/tour-api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.css',
-    '../../../styles/style-input-search.css'
+    '../../../../public//styles/style-input-search.css'
   ],
 })
 

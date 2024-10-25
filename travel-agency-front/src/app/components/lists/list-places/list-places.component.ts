@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Place } from '../../../../models/place.model';
-import { PlaceApiService } from '../../../../services/place/place-api.service';
+import { PlaceApiService } from '../../../../services/api/place/place-api.service';
 
 @Component({
   selector: 'app-list-places',
@@ -12,9 +12,9 @@ import { PlaceApiService } from '../../../../services/place/place-api.service';
   templateUrl: './list-places.component.html',
   styleUrls: [
     './list-places.component.css',
-    '../../../../styles/style-table.css',
-    '../../../../styles/style-input-search.css',
-    '../../../../styles/style-button-create.css'
+    '../../../../../public/styles/style-table.css',
+    '../../../../../public/styles/style-input-search.css',
+    '../../../../../public/styles/style-button-create.css'
   ]
 })
 

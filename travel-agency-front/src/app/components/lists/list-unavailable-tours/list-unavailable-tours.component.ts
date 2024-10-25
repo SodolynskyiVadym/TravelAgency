@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Tour } from '../../../../models/tour.model';
-import { TourApiService } from '../../../../services/tour/tour-api.service';
+import { TourApiService } from '../../../../services/api/tour/tour-api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -12,9 +12,9 @@ import { RouterModule } from '@angular/router';
   templateUrl: './list-unavailable-tours.component.html',
   styleUrls: [
     './list-unavailable-tours.component.css',
-    '../../../../styles/style-table.css',
-    '../../../../styles/style-input-search.css',
-    '../../../../styles/style-button-create.css'
+    '../../../../../public/styles/style-table.css',
+    '../../../../../public/styles/style-input-search.css',
+    '../../../../../public/styles/style-button-create.css'
   ]
 })
 export class ListUnavailableToursComponent implements OnInit {
