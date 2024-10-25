@@ -11,9 +11,9 @@ import { Transport } from '../../../../models/transport.model';
   imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './list-transports.component.html',
   styleUrls: [
-    '../../../../../public/styles/style-table.css',
-    '../../../../../public/styles/style-input-search.css',
-    '../../../../../public/styles/style-button-create.css',
+    '../../../../assets/styles/style-table.css',
+    '../../../../assets/styles/style-input-search.css',
+    '../../../../assets/styles/style-button-create.css',
     './list-transports.component.css'
   ]
 })

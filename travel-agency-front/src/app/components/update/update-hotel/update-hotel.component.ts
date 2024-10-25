@@ -15,7 +15,7 @@ import { countries } from '../../../../services/constants/countries';
   imports: [CommonModule, FormsModule],
   styleUrls: [
     './update-hotel.component.css',
-    '../../../../../public/styles/style-form-create.css'
+    '../../../../assets/styles/style-form-create.css'
   ]
 })
 export class UpdateHotelComponent implements OnInit {
@@ -40,47 +40,47 @@ export class UpdateHotelComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-      if (id) {
-        this.hotelApi.getHotelById(id).subscribe((response: Hotel | null) => {
-          if (!response) {
-            console.error('Hotel not found');
-            this.router.navigate(['/page-not-found']);
-            return;
-          } else {
-            this.hotel = response;
-          }
-        });
+      if (!id) {
+        this.router.navigate(['/page-not-found']);
+        return
       }
+
+      this.hotelApi.getHotelById(id).subscribe(async (response: Hotel | null) => {
+        if (!response) {
+          console.error('Hotel not found');
+          this.router.navigate(['/page-not-found']);
+          return;
+        }
+
+        this.hotel = response;
+        this.placeAPI.getPlacesInfo().subscribe(async (response: any[]) => {
+          this.places = response;
+          this.placeName = await (this.places.find(place => place.id === this.hotel.placeId)?.name || '');
+          this.country = await this.places.find(place => place.id === this.hotel.placeId)?.country || '';
+          await this.checkImage();
+          await this.checkCorrectInputs();
+        });
+      });
     });
-
-    this.placeAPI.getPlacesInfo().subscribe((response: any[]) => {
-      this.places = response;
-    });
-
-    this.placeName = this.places.find(place => place.id === this.hotel.placeId)?.name || '';
-    this.country = this.places.find(place => place.id === this.hotel.placeId)?.country || '';
-
-    await this.checkImage();
-    await this.checkCorrectInputs();
   }
 
   async checkImage() {
     this.isCorrectImage = await this.validator.checkImageExists(this.hotel.imageUrl);
-    await this.checkCorrectInputs();
+    this.checkCorrectInputs();
   }
 
   async checkPlace() {
     this.filteredPlaces = this.places.filter(place => place.name.toLowerCase().includes(this.placeName.toLowerCase()));
     this.hotel.placeId = this.places.find(place => place.name === name && place.country === this.country).id | 0;
-    await this.checkCorrectInputs();
+    this.checkCorrectInputs();
   }
 
   async checkCorrectInputs() {
     this.isCorrectInputs = this.hotel.placeId != 0 && !!this.hotel.address && !!this.hotel.description && this.hotel.pricePerNight > 0
-      && this.isCorrectImage && this.countries.includes(this.country);  
+      && this.isCorrectImage && this.countries.includes(this.country);
   }
 
-  async updateHotel() {
+  updateHotel() {
     this.isSending = true;
     this.hotelApi.updateHotel(this.hotel).subscribe((response) => {
       console.log(response);

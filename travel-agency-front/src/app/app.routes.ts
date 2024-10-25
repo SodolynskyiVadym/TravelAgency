@@ -8,6 +8,7 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { ListPlacesComponent } from './components/lists/list-places/list-places.component';
 import { ListUnavailableToursComponent } from './components/lists/list-unavailable-tours/list-unavailable-tours.component';
 import { UpdateHotelComponent } from './components/update/update-hotel/update-hotel.component';
+import { TourComponent } from './components/tour/tour.component';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},
@@ -16,6 +17,7 @@ export const routes: Routes = [
     {path: 'transports', component: ListTransportsComponent},
     {path: 'places', component: ListPlacesComponent},
     {path: 'unavailable-tours', component: ListUnavailableToursComponent},
+    {path: 'tour/:id', component: TourComponent},
     {path: 'update-hotel/:id', component: UpdateHotelComponent},
     {path: 'create-hotel', component: CreateHotelComponent},
     {path: '**', component: PageNotFoundComponent}

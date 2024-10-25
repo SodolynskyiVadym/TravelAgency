@@ -7,7 +7,9 @@ export interface Tour {
     name: string;
     description: string;
     startDate: Date;
+    formattedStartDate: string;
     endDate: Date;
+    formattedEndDate: string;
     price: number;
     quantitySeats: number;
     imageUrl: string;

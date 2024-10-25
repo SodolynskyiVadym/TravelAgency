@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './list-hotels.component.html',
   styleUrls: [
     './list-hotels.component.css',
-    '../../../../../public/styles/style-table.css',
-    '../../../../../public/styles/style-input-search.css',
-    '../../../../../public/styles/style-button-create.css'
+    '../../../../assets/styles/style-table.css',
+    '../../../../assets/styles/style-input-search.css',
+    '../../../../assets/styles/style-button-create.css'
   ],
 })
 

@@ -12,6 +12,10 @@ export class TourApiService {
 
   constructor(private http : HttpClient) { }
 
+  getTourById(id : string) : Observable<Tour> {
+    return this.http.get<Tour>(`${this.apiUrl}/${id}`);
+  }
+
   getTours() : Observable<Tour[]> {
     return this.http.get<Tour[]>(`${this.apiUrl}/getAllTours`);
   }

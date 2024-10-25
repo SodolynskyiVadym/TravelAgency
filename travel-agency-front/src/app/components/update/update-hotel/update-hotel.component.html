@@ -33,6 +33,7 @@
         required />
     <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
     <img *ngIf="isCorrectImage" class="image-preview" [src]="hotel.imageUrl" />
+    <div *ngIf="isCorrectImage">Hello</div>
     <img *ngIf="!isCorrectImage" style="width: 300px;" class="image-preview" src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=' />
 
     <label for="pricePerNight">Price Per Night:</label>

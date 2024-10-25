@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
   templateUrl: './user-page.component.html',
   styleUrls: [
     './user-page.component.css',
-    '../../../../public/styles/style-table.css',
-    '../../../../public/styles/style-login-signup.css',
-    '../../../../public/styles/style-button-create.css'
+    '../../../assets/styles/style-table.css',
+    '../../../assets/styles/style-login-signup.css',
+    '../../../assets/styles/style-button-create.css'
   ],
 })
 export class UserPageComponent {

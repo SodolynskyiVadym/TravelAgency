@@ -12,9 +12,9 @@ import { PlaceApiService } from '../../../../services/api/place/place-api.servic
   templateUrl: './list-places.component.html',
   styleUrls: [
     './list-places.component.css',
-    '../../../../../public/styles/style-table.css',
-    '../../../../../public/styles/style-input-search.css',
-    '../../../../../public/styles/style-button-create.css'
+    '../../../../assets/styles/style-table.css',
+    '../../../../assets/styles/style-input-search.css',
+    '../../../../assets/styles/style-button-create.css'
   ]
 })
 
