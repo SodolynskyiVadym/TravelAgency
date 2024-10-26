@@ -14,7 +14,6 @@ import { ValidatorService } from '../../../../services/validator/validator.servi
   styleUrls: [
     './create-hotel.component.css',
     '../../../../assets/styles/style-form-create.css'
-    
   ]
 })
 export class CreateHotelComponent implements OnInit {
