@@ -1,1 +1,152 @@
-<p>create-hotel works!</p>
+<div class="create-form">
+    <label for="country">Country:</label>
+    <input id="country" type="search" list="countries" class="form-control" (input)="checkCountry()"
+        autocomplete="false" autocorrect="on" [(ngModel)]="country" placeholder="Type to choose country">
+    <datalist id="countries">
+        <option *ngFor="let country of countries" [value]="country">
+            {{ country }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(country)">Country is required</div>
+
+    <label for="placeName">Place Name:</label>
+    <input id="placeName" type="search" list="data" [(ngModel)]="placeName" (input)="checkPlace()"
+        placeholder="Type to choose place">
+    <datalist id="data">
+        <option *ngFor="let place of filteredPlaces" [value]="place.name">
+            {{ place.name }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="hotel.placeId === 0">Place is required</div>
+
+    <label for="name">Hotel Name:</label>
+    <input id="name" type="text" (input)="checkInputs()" [(ngModel)]="hotel.name" placeholder="Enter hotel name">
+    <div class="error" *ngIf="!hotel.name">Name is required</div>
+
+    <label for="address">Address:</label>
+    <input id="address" type="text" (input)="checkInputs()" [(ngModel)]="hotel.address"
+        placeholder="Enter place address">
+    <div class="error" *ngIf="!hotel.address">Address is required</div>
+
+    <label for="imageUrl">Image URL:</label>
+    <input id="imageUrl" type="text" [(ngModel)]="hotel.imageUrl" placeholder="Enter image URL" (input)="checkImage()"
+        required />
+    <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
+    <img *ngIf="isCorrectImage" class="image-preview" [src]="hotel.imageUrl" />
+    <img *ngIf="!isCorrectImage" style="width: 300px;" class="image-preview" src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=' />
+
+    <label for="pricePerNight">Price Per Night:</label>
+    <input id="pricePerNight" type="number" [(ngModel)]="hotel.pricePerNight" min="0" (change)="checkInputs()"
+        placeholder="Enter price per night">
+    <div class="error" *ngIf="hotel.pricePerNight <= 0">Price must be more than 0</div>
+
+    <label for="description">Description:</label>
+    <textarea id="description" [(ngModel)]="hotel.description" placeholder="Enter place description"
+        (input)="checkInputs()"></textarea>
+    <div class="error" *ngIf="!hotel.description">Description is required</div>
+
+    <button *ngIf="!isSending" style="margin: 20px;" (click)="createHotel()" :disabled="!isCorrectInputs">Add
+        Hotel</button>
+    <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Loading...</span>
+    </button>
+</div>
+
+
+<!-- <script>
+import { countries } from '@/js/countries';
+import * as placeAPI from '@/services/API/placeAPI';
+import * as hotelAPI from '@/services/API/hotelAPI';
+
+export default {
+    data() {
+        return {
+            tour: {
+                name: '',
+                placeId: 0,
+                address: '',
+                description: '',
+                pricePerNight: 0,
+                imageUrl: '',
+            },
+            places: [],
+            country: '',
+            countries: countries,
+            placeName: '',
+            isCorrectImageUrl: false,
+            isSendRequest: false,
+            isCorrectInputs: false
+        }
+    },
+
+    methods: {
+        async checkInputs() {
+            this.isCorrectInputs = this.hotel.placeId != 0 && this.hotel.address && this.hotel.description && this.hotel.pricePerNight > 0
+                && this.isCorrectImageUrl && this.countries.includes(this.country);
+        },
+
+        async checkPrice() {
+            if (this.hotel.pricePerNight <= 0) {
+                this.hotel.pricePerNight = 0;
+            }
+            await this.checkInputs();
+        },
+
+        async checkImageExists(imageUrl) {
+            return new Promise((resolve) => {
+                let img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = imageUrl;
+            });
+        },
+
+        async checkImage() {
+            this.isCorrectImageUrl = await this.checkImageExists(this.hotel.imageUrl);
+            await this.checkInputs();
+        },
+
+        async getPlaceIdByPlaceNameAndCountry(name, country) {
+            if (this.places.find(place => place.name === name && place.country === country)) {
+                return this.places.find(place => place.name === name && place.country === country).id;
+            } else return 0;
+        },
+
+        async checkPlace() {
+            this.hotel.placeId = await this.getPlaceIdByPlaceNameAndCountry(this.placeName, this.country);
+            await this.checkInputs();
+        },
+
+        async clearFields() {
+            this.hotel.name = '';
+            this.placeName = '';
+            this.country = '';
+            this.hotel.placeId = 0;
+            this.hotel.address = '';
+            this.hotel.description = '';
+            this.hotel.pricePerNight = 0;
+            this.hotel.imageUrl = '';
+        },
+
+        async createHotel() {
+            if (this.isCorrectInputs) {
+                this.isSendRequest = true;
+                const token = localStorage.getItem('token');
+                if (!token) this.$router.push('/login');
+                await hotelAPI.createHotel(this.tour, token);
+                await this.clearFields();
+                this.isCorrectInputs = false;
+                this.isCorrectPlace = false;
+                this.isCorrectImageUrl = false;
+                this.isSendRequest = false;
+            }
+        }
+    },
+
+    async mounted() {
+        this.places = await placeAPI.getPlacesInfo();
+    }
+}
+
+</script> -->
