@@ -1,1 +1,162 @@
-<p>create-tour works!</p>
+<h1 style="text-align: center;">Create Tour</h1>
+<div class="create-form">
+    <label for="name">Name:</label>
+    <input id="name" type="text" [(ngModel)]="tour.name" (input)="checkInputs()">
+    <div class="error" *ngIf="!tour.name">Name is required</div>
+
+    <label for="imageUrl">Image URL:</label>
+    <input id="imageUrl" type="text" [(ngModel)]="tour.imageUrl" placeholder="Enter image URL" (input)="checkImage()"
+        required />
+    <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
+    <img *ngIf="isCorrectImage" class="image-preview" :src="tour.imageUrl" />
+    <img *ngIf="!isCorrectImage" style="width: 300px;" class="image-preview" src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=' />
+
+
+    <label for="startDate">Start date</label>
+    <input id="startDate" type="date" [(ngModel)]="tour.startDate">
+    <div class="error" *ngIf="compareToday(tour.startDate)">Start date can't be before today</div>
+    <div class="error" *ngIf="tour.destinations.length === 0 || tour.startDate >= tour.destinations[0].startDate">Start date can't be after the start of destinations</div> 
+
+
+    <label for="startPlaceCountry">Start location country</label>
+    <input id="startPlaceCountry" list="countries" type="search" [(ngModel)]="startPlaceCountry"
+        placeholder="Enter start location country">
+    <datalist id="countries">
+        <option *ngFor="let country of countries" [value]="country">
+            {{ country }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(startPlaceCountry)">Country is required</div>
+
+    <label for="startPlace">Start location</label>
+    <input id="startPlace" list="places" type="search" [(ngModel)]="startPlaceName" placeholder="Enter start location"
+        (input)="tour.placeStartId = getPlaceIdByNameAndCountry(startPlaceName, startPlaceCountry)">
+    <datalist id="places">
+        <option *ngFor="let place of filterPlacesByCountry(startPlaceCountry)" [value] ="place.name">
+            {{ place.name }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(startPlaceCountry)">Country is required for choice of place
+    </div>
+    <div class="error" *ngIf="tour.placeStartId === 0">Place is required</div>
+
+    <div style="margin-top: 40px; margin-bottom: 40px">
+        <div *ngFor="let destination of tour.destinations; let index = index" class="create-form">
+            <h2>Destination {{ index + 1 }}</h2>
+            <label :for="'country' + index">Country:</label>
+            <input :id="'country' + index" type="search" :list="'countries' + index"
+                (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index])" [(ngModel)]="destinationsCountries[index]"
+                placeholder="Type to choose country">
+            <datalist :id="'countries' + index">
+                <option *ngFor="let country of countries" [value]="country">
+                    {{ country }}
+                </option>
+            </datalist>
+            <div class="error" *ngIf="!countries.includes(destinationsCountries[index])">Country is required</div>
+
+            <label :for="'place' + index">Place:</label>
+            <input :id="'place' + index" type="search" :list="'places' + index" [(ngModel)]="destinationsPlacesNames[index]"
+                placeholder="Type to choose place" (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index])">
+            <datalist :id="'places' + index">
+                <option *ngFor="let place of filterPlacesByCountry(destinationsCountries[index])" [value]="place">
+                    {{ place }}
+                </option>
+            </datalist>
+            <div class="error" *ngIf="!countries.includes(destinationsCountries[index])">Country is required for
+                choice of place</div>
+            <div class="error" *ngIf="filterPlacesByCountry(destinationsCountries[index]).length === 0">This location doesn't exist or is already used</div>
+
+            <label :for="'hotel' + index">Hotel:</label>
+            <input :id="'hotel' + index" type="search" :list="'hotels' + index" [(ngModel)]="destinationsHotelsNames[index]"
+                placeholder="Type to choose hotel" (input)="tour.destinations[index].hotelId = getHotelIdByHotelNameAndPlaceId(destinationsHotelsNames[index], tour.destinations[index].placeId)">
+            <datalist :id="'hotels' + index">
+                <option *ngFor="let hotel of filterHotelsByPlaceId(tour.destinations[index].placeId)"
+                    :key="hotel.name" :value="hotel.name">
+                    {{ hotel.name }}
+                </option>
+            </datalist>
+            <div class="error" *ngIf="filterPlacesByCountry(destinationsCountries[index]).length === 0">Place is required for choice of hotel</div>
+            <div class="error" *ngIf="tour.destinations[index].hotelId === 0">Hotel is required</div>
+
+            <label :for="'transport' + index">Transport:</label>
+            <input :id="'transport' + index" type="search" list="transports"
+                [(ngModel)]="destinationsTransportsNames[index]" placeholder="Type to choose transport"
+                (input)="tour.destinations[index].transportId = getTransportIdByTransportName(destinationsTransportsNames[index])">
+            <datalist id="transports">
+                <option *ngFor="let transport of transports" [value]="transport.name">
+                    {{ transport.name }}
+                </option>
+            </datalist>
+            <div class="error" *ngIf="tour.destinations[index].transportId === 0">Transport is required</div>
+
+            <label :for="'startDate' + index">Start Date:</label>
+            <input :id="'startDate' + index" type="date" [(ngModel)]="destination.startDate" (input)="checkInputs()">
+            <div class="error" *ngIf="tour.destinations[index].startDate >= tour.destinations[index].endDate">Incorrect start date</div>
+
+            <label :for="'endDate' + index">End Date:</label>
+            <input :id="'endDate' + index" type="date" [(ngModel)]="destination.endDate" (input)="checkInputs()">
+            <div class="error" *ngIf="tour.destinations[index].startDate >= tour.destinations[index].endDate">Incorrect end date</div>
+
+            <button (click)="removeDestination(index)">Remove destination</button>
+        </div>
+
+        <button (click)="addDestination()">Add destination</button>
+    </div>
+
+
+    <label for="endDate">End date</label>
+    <input id="endDate" type="date" [(ngModel)]="tour.endDate" (input)="checkInputs()">
+    <div class="error" *ngIf="tour.destinations.length === 0 || tour.endDate <= tour.destinations[tour.destinations.length - 1].endDate">Tour can't be ended before destinations dates</div>
+
+
+    <label for="endPlaceCountry">End location country</label>
+    <input id="endPlaceCountry" list="endCountries" type="search" [(ngModel)]="endPlaceCountry"
+        placeholder="Enter end location country">
+    <datalist id="endCountries">
+        <option *ngFor="let country of countries" [value]="country">
+            {{ country }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(endPlaceCountry)">Country is required</div>
+
+    <label for="endPlace">End location</label>
+    <input id="endPlace" list="endPlaces" type="search" [(ngModel)]="endPlaceName" placeholder="Enter end location"
+        (input)="tour.placeEndId = getPlaceIdByNameAndCountry(endPlaceName, endPlaceCountry)">
+    <datalist id="endPlaces">
+        <option *ngFor="let place of filterPlacesByCountry(endPlaceCountry)" [value]="place.name">
+            {{ place.name }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="!countries.includes(endPlaceCountry)">Country is required for choice of place</div>
+    <div class="error" *ngIf="tour.placeEndId=== 0">Place is required</div>
+
+    <label for="endPlaceTransport">End location transport</label>
+    <input id="endPlaceTransport" type="search" list="transports" [(ngModel)]="endTransportName"
+        placeholder="Type to choose transport" (input)="tour.transportToEndId = getTransportIdByTransportName(endTransportName)">
+    <datalist id="transports">
+        <option *ngFor="let transport of transports" [value]="transport.name">
+            {{ transport.name }}
+        </option>
+    </datalist>
+    <div class="error" *ngIf="tour.transportToEndId === 0">Transport is required</div>
+
+    <label for="quantitySeats">Quantity of Seats:</label>
+    <input id="quantitySeats" type="number" [(ngModel)]="tour.quantitySeats" (input)="checkInputs()">
+    <div class="error" *ngIf="tour.quantitySeats <= 0">Quantity of seats is required</div>
+
+    <label for="description">Description:</label>
+    <textarea id="description" [(ngModel)]="tour.description" (input)="checkInputs()"></textarea>
+    <div class="error" *ngIf="!tour.description">Description is required</div>
+
+    <label for="price">Price:</label>
+    <input id="price" type="number" [(ngModel)]="tour.price" (input)="checkInputs()">
+    <div class="error" *ngIf="tour.price <= 0">Price is required</div>
+
+
+    <button *ngIf="!isSending" style="margin: 20px;" (click)="createTour()" :disabled="!isCorrectInputs">Add
+        Tour</button>
+    <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Loading...</span>
+    </button>
+</div>
