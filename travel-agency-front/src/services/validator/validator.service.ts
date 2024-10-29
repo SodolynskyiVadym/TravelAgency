@@ -15,4 +15,8 @@ export class ValidatorService {
       img.src = imageUrl;
     });
   }
+
+  checkEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 }

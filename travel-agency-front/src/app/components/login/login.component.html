@@ -1,1 +1,9 @@
-<p>login works!</p>
+<div class="container-user-input">
+    <div class="form">
+        <p class="title">Login</p>
+        <input placeholder="Email" class="username input" type="text" [(ngModel)]="email" (input)="checkInputs()">
+        <input placeholder="Password" class="password input" type="password" [(ngModel)]="password" (input)="checkInputs()">
+        <!-- <div style="cursor: pointer;" class="username input" @click="forgotPassword">Forgot password</div> -->
+        <button class="btn" type="submit" (click)="login()" *ngIf="isCorrectInputs">Login</button>
+    </div>
+</div>

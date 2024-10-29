@@ -12,19 +12,22 @@ import { TourComponent } from './components/tour/tour.component';
 import { CreatePlaceComponent } from './components/creation/create-place/create-place.component';
 import { CreateTourComponent } from './components/creation/create-tour/create-tour.component';
 import { TestComponent } from './components/test/test.component';
+import { AuthGuardService } from '../services/guard/auth-guard.service';
+import { LoginComponent } from './components/login/login.component';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},
-    {path: 'user', component: UserPageComponent},
-    {path: 'hotels', component: ListHotelsComponent},
-    {path: 'transports', component: ListTransportsComponent},
-    {path: 'places', component: ListPlacesComponent},
-    {path: 'unavailable-tours', component: ListUnavailableToursComponent},
+    {path: 'user', component: UserPageComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'hotels', component: ListHotelsComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'transports', component: ListTransportsComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'places', component: ListPlacesComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'unavailable-tours', component: ListUnavailableToursComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
     {path: 'tour/:id', component: TourComponent},
-    {path: 'update-hotel/:id', component: UpdateHotelComponent},
-    {path: 'create-hotel', component: CreateHotelComponent},
-    {path: 'create-place', component: CreatePlaceComponent},
-    {path: 'create-tour', component: CreateTourComponent},
+    {path: 'update-hotel/:id', component: UpdateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'create-hotel', component: CreateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'create-place', component: CreatePlaceComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path: 'create-tour', component: CreateTourComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR', 'USER']}},
+    {path : 'login', component: LoginComponent},
     {path: 'test', component: TestComponent},
     {path: '**', component: PageNotFoundComponent}
 ];
