@@ -29,6 +29,7 @@ public class AutoMapperProfile : Profile
                     opt.MapFrom(src => src.Destinations.Select(d => d.Hotel.Place.Name).ToList()));
         CreateMap<UserDto, User>();
         CreateMap<User, UserEmailRoleDto>();
+        CreateMap<User, UserIdEmailRoleDto>();
         CreateMap<(UserEmailRoleDto, string), UserEmailRolePasswordDto>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Item1.Email))
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Item1.Role))

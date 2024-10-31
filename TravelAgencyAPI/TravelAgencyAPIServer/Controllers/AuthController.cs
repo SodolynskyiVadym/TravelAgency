@@ -70,9 +70,9 @@ public class AuthController : ControllerBase
     /// <returns>A list of all users.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("getAllUsers")]
-    public async Task<List<UserEmailRoleDto>> GetAllUsers()
+    public async Task<List<UserIdEmailRoleDto>> GetAllUsers()
     {
-        return (await _userService.GetAllAsync()).Select(u => _mapper.Map<UserEmailRoleDto>(u)).ToList();
+        return (await _userService.GetAllAsync()).Select(u => _mapper.Map<UserIdEmailRoleDto>(u)).ToList();
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="userRegistration">The user registration details.</param>
     /// <returns>The authentication token.</returns>
-    [HttpPost("registerUser")]
+    [HttpPost("signup")]
     public async Task<IActionResult> Register(UserEmailPasswordDto userRegistration)
     {
         if (userRegistration.Password.Length < 8 || !AuthHelper.IsEmail(userRegistration.Email))
@@ -166,7 +166,7 @@ public class AuthController : ControllerBase
     /// <param name="user">The user details.</param>
     /// <returns>An action result indicating the outcome.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("registerEditorAdmin")]
+    [HttpPost("createEditorAdmin")]
     public async Task<IActionResult> CreateUser(UserEmailRoleDto user)
     {
         if ((user.Role != "EDITOR" && user.Role != "ADMIN") || !AuthHelper.IsEmail(user.Email))
