@@ -1,1 +1,12 @@
-<p>signup works!</p>
+<div class="container-user-input">
+    <div class="form">
+        <p class="title">Sign Up</p>
+        <input placeholder="Email" class="username input" type="text" [(ngModel)]="user.email" (input)="checkEmail()">
+        <input placeholder="Password" class="password input" type="password" [(ngModel)]="user.password">
+        <input placeholder="Confirm Password" class="password input" type="password" [(ngModel)]="confirmPassword">
+
+        <div *ngIf="message" style="color: darkred">{{ message }}</div>
+        <button class="btn" *ngIf="checkEmail() && user.password.length >= 8 && user.password === confirmPassword"
+            type="submit" (click)="signup()">Sign Up</button>
+    </div>
+</div>

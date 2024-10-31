@@ -24,7 +24,21 @@ export class TourApiService {
     return this.http.get<Tour[]>(`${this.apiUrl}/getUnavailableTours`);
   }
 
-  createTour(tour : any) : Observable<HttpResponse<Tour>> {
-    return this.http.post<Tour>(`${this.apiUrl}/create`, tour, { observe: 'response' });
+  createTour(tour : any, token : string) : Observable<HttpResponse<Tour>> {
+    return this.http.post<Tour>(`${this.apiUrl}/create`, tour, { 
+      observe: 'response', 
+      headers : {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  updateTour(tour : any, token : string) : Observable<HttpResponse<Tour>> {
+    return this.http.patch<Tour>(`${this.apiUrl}/update`, tour, { 
+      observe: 'response', 
+      headers : {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 }

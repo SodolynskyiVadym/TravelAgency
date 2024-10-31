@@ -18,7 +18,6 @@ export class AuthService {
 
   logout() {
     this.browserStorage.remove('token');
-    console.log('Logged out');
     this.router?.navigate(['/']);
   }
 
@@ -28,15 +27,12 @@ export class AuthService {
   }
 
   getUserRole(): UserEmailRole | null {
-    console.log("Taking token from browser storage in auth.service.getUserRole");
     const token = this.browserStorage.get('token');
-    console.log("Token in auth.service.getUserRole", token);
     if (!token) {
       return null;
     }
     var user = {} as UserEmailRole;
     this.userApi.getUserByToken(token).subscribe(result => {
-      console.log(result)
       user = result;
     });
     return user;

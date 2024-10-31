@@ -25,12 +25,8 @@ export class HeaderComponent implements OnInit {
     let token = this.browserStorage.get("token");
     if(token != null && token != ""){
       this.userApi.getUserByToken(token).subscribe({
-        next: (response) => {
-          this.user.role = response.role;
-          this.user.email = response.email;
-        },
+        next: (response) => this.user = response,
         error: (error) => {
-          console.error("Error in header.component");
           this.browserStorage.remove("token");
         }
       });

@@ -15,4 +15,20 @@ export class TransportApiService {
   getTransports() : Observable<Transport[]> {
     return this.http.get<Transport[]>(`${this.apiUrl}/getAllTransports`);
   }
+
+  createTransport(transport : Transport, token : string) : Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/create`, transport, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  updateTransport(transport : Transport, token : string) : Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/update`, transport, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
 }

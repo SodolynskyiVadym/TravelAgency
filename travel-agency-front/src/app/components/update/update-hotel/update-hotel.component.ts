@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { PlaceApiService } from '../../../../services/api/place-api.service';
 import { ValidatorService } from '../../../../services/validator.service';
 import { countries } from '../../../../services/constants/countries';
+import { BrowserStorageService } from '../../../../services/browser-storage-service.service';
 
 @Component({
   selector: 'app-update-hotel',
@@ -34,7 +35,8 @@ export class UpdateHotelComponent implements OnInit {
     private route: ActivatedRoute,
     private hotelApi: HotelApiService,
     private placeAPI: PlaceApiService,
-    private validator: ValidatorService
+    private validator: ValidatorService,
+    private browserStorage: BrowserStorageService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -82,15 +84,21 @@ export class UpdateHotelComponent implements OnInit {
 
   updateHotel() {
     this.isSending = true;
-    this.hotelApi.updateHotel(this.hotel).subscribe((response) => {
-      console.log(response);
-      if (response.status !== 200) {
-        this.isSending = false;
-        console.error('Error updating hotel');
-        alert('Error updating hotel');
-      } else {
-        this.router.navigate(['/hotels']);
-      }
-    });
+    let token = this.browserStorage.get("token");
+    if (token) {
+      this.hotelApi.updateHotel(this.hotel, token).subscribe((response) => {
+        if (response.status !== 200) {
+          this.isSending = false;
+          console.error('Error updating hotel');
+          alert('Error updating hotel');
+        } else {
+          this.router.navigate(['/hotels']);
+        }
+      });
+    }else{
+      this.isSending = false;
+      this.router.navigate(['/login']);
+    }
+
   }
 }

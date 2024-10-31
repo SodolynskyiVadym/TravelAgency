@@ -23,4 +23,20 @@ export class PlaceApiService {
   getPlacesInfo() : Observable<any[]>{
     return this.http.get<any[]>(`${this.apiUrl}/getPlacesInfo`);
   }
+
+  createPlace(place : Place, token : string) : Observable<any>{
+    return this.http.post<any>(`${this.apiUrl}/create`, place, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  updatePlace(place : Place, token : string) : Observable<any>{
+    return this.http.patch<any>(`${this.apiUrl}/update`, place, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
 }

@@ -30,9 +30,6 @@ export class CreatePlaceComponent{
   
 
   async checkImageUrl(index: number){
-    console.log("Value 1" + this.place.imagesUrls[index]);
-    console.log("Value 2 " + this.place.imagesUrls[index + 1]);
-
     this.isImagesCorrect[index] = await this.validator.checkImageExists(this.place.imagesUrls[index]);
     this.checkInputs();
   }

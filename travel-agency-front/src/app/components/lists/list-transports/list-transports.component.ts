@@ -30,7 +30,6 @@ export class ListTransportsComponent implements OnInit {
       (response: Transport[]) => {
         this.transports = response;
         this.filteredTransports = this.transports;
-        console.log(this.filteredTransports);
       });
   }
 

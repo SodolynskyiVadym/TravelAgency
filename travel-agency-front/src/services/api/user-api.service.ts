@@ -3,6 +3,8 @@ import { environment } from '../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserEmailRole } from '../../models/userEmailRole.model';
+import { UserEmailPassword } from '../../models/userEmailPassword.model';
+import { User } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +14,28 @@ export class UserApiService {
   
   constructor(private http : HttpClient) { }
 
-  login(user: any) : Observable<any> {
+  getUsers(token : string) : Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/getAllUsers`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  login(user: UserEmailPassword) : Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, user);
   }
 
-  registerUser(user: any) : Observable<string> {
-    return this.http.post<string>(`${this.apiUrl}/register`, user);
+  signup(user: UserEmailPassword) : Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, user);
   }
 
-  createUser(user: any) {
-    return this.http.post(`${this.apiUrl}/register`, user);
+  createUser(user : UserEmailRole, token: string) {
+    return this.http.post(`${this.apiUrl}/createEditorAdmin`, user, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 
   getUserByToken(token: string) : Observable<UserEmailRole> {
@@ -31,4 +45,14 @@ export class UserApiService {
       }
     });
   }
+
+  deleteUser(id: number, token: string) {
+    return this.http.delete(`${this.apiUrl}/deleteUser/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+
 }

@@ -1,27 +1,30 @@
-
 <header class="p-3 text-bg-dark">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-          <use xlink:href="#bootstrap" />
-        </svg>
-      </a>
+  <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+        <use xlink:href="#bootstrap" />
+      </svg>
+    </a>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ml-auto">
-        <li><a routerLink="/" class="nav-link px-2 text-white fs-4">Home</a></li>
-        <li><a routerLink="admin" *ngIf="user.role == 'ADMIN'" class="nav-link px-2 text-white fs-4">Admin</a></li>
-        <li><a routerLink="places" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Locations</a></li>
-        <li><a routerLink="hotels" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Hotels</a></li>
-        <li><a routerLink="transports" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Transports</a></li>
-        <li><a routerLink="unavailable-tours" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Unavailable Tours</a></li>
-    </ul>
-
-    <div class="text-end" *ngIf="!user.role">
-        <button type="button" routerLink="login" class="btn btn-outline-light me-2 fs-5">Login</button>
-        <button type="button" routerLink="signup" class="btn btn-primary me-2 fs-5">Sign-up</button>
+    <div>
+      <button class="button3" routerLink="/">Home</button>
+      <button class="button3" routerLink="admin" *ngIf="user.role == 'ADMIN'">Admin</button>
+      <button class="button3" routerLink="places" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'">Locations</button>
+      <button class="button3" routerLink="hotels" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'">Hotels</button>
+      <button class="button3" routerLink="transports"
+        *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'">Transports</button>
+      <button class="button3" routerLink="create-tour" *ngIf="user.role == 'ADMIN' || user.role == 'EDITOR'">Add tour</button>
+      <button class="button3" routerLink="unavailable-tours"
+        *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'">Finished Tours</button>
     </div>
 
-      <button id="btn-message" class="button-message" routerLink="user" *ngIf="user.role">
+    <div class="text-end" *ngIf="!user.role">
+      <button type="button" routerLink="login" class="btn btn-outline-light me-2 fs-5">Login</button>
+      <button type="button" routerLink="signup" class="btn btn-primary me-2 fs-5">Sign-up</button>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto" *ngIf="user.role">
+      <button id="btn-message" class="button-message me-2" routerLink="user">
         <div class="content-avatar">
           <div class="status-user"></div>
           <div class="avatar">
@@ -39,7 +42,7 @@
         </div>
       </button>
 
-      <button class="Btn" *ngIf="user.role" (click)="logout()">
+      <button class="Btn" (click)="logout()">
         <div class="sign"><svg viewBox="0 0 512 512">
             <path
               d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
@@ -48,4 +51,6 @@
         <div class="text">Logout</div>
       </button>
     </div>
-  </header>
+
+  </div>
+</header>

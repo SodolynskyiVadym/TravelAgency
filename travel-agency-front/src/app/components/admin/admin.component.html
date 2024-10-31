@@ -1,0 +1,33 @@
+<div style="text-align: center;">
+    <h1>Users</h1>
+    <button class="button-create-action" routerLink="create-user">Add user</button>
+
+    <div class="form-control">
+        <input class="input input-alt" placeholder="Type email of user" type="text" [(ngModel)]="input"
+            (input)="filterUsers()">
+        <span class="input-border input-border-alt"></span>
+    </div>
+    <div class="error-search" *ngIf="filteredUsers.length === 0">Incorrect user email</div>
+
+
+    <table class="list-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th style="width: 400px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of filteredUsers">
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>
+                    <button (click)="deleteUser(user.id)" class="button-update-delete button-update-delete-hover-black">DELETE</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -12,15 +12,30 @@ export class HotelApiService {
 
   constructor(private http: HttpClient) { }
 
-  getHotelById(id: string) : Observable<Hotel | null> {
+  getHotelById(id: string): Observable<Hotel | null> {
     return this.http.get<Hotel>(`${this.apiUrl}/${id}`);
   }
 
-  getHotels() : Observable<Hotel[]> {
+  getHotels(): Observable<Hotel[]> {
     return this.http.get<Hotel[]>(`${this.apiUrl}/getAllHotels`);
   }
 
-  updateHotel(hotel: Hotel): Observable<HttpResponse<Hotel>> {
-    return this.http.patch<Hotel>(`${this.apiUrl}/update`, hotel, { observe: 'response' });
+  createHotel(hotel: Hotel, token: string): Observable<HttpResponse<Hotel>> {
+    return this.http.post<Hotel>(`${this.apiUrl}/create`, hotel, {
+      observe: 'response',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  updateHotel(hotel: Hotel, token: string): Observable<HttpResponse<Hotel>> {
+
+    return this.http.patch<Hotel>(`${this.apiUrl}/update`, hotel, {
+      observe: 'response',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 }
