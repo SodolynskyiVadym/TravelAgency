@@ -4,6 +4,7 @@ import { UserApiService } from '../../../services/api/user-api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BrowserStorageService } from '../../../services/browser-storage-service.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginComponent {
   isSending: boolean = false;
   isCorrectInputs: boolean = false;
 
-  constructor(private validator : ValidatorService, private userApi : UserApiService, private router : Router) { }
+  constructor(private validator : ValidatorService, private userApi : UserApiService, private router : Router, private browserStorage : BrowserStorageService) { }
 
   checkInputs(){
     this.isCorrectInputs = this.validator.checkEmail(this.email) && this.password.length > 7;
@@ -32,7 +33,7 @@ export class LoginComponent {
     if(this.isCorrectInputs){
       this.userApi.login({email : this.email, password : this.password}).subscribe({
         next: result => {
-          localStorage.setItem('token', result.token);
+          this.browserStorage.set('token', result.token);
           this.router.navigate(['/']);
         },
         error: error => {

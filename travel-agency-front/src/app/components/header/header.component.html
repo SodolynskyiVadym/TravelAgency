@@ -9,11 +9,11 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ml-auto">
         <li><a routerLink="/" class="nav-link px-2 text-white fs-4">Home</a></li>
-        <li><a routerLink="admin" class="nav-link px-2 text-white fs-4">Admin</a></li>
-        <li><a routerLink="places" class="nav-link px-2 text-white fs-4">Locations</a></li>
-        <li><a routerLink="hotels" class="nav-link px-2 text-white fs-4">Hotels</a></li>
-        <li><a routerLink="transports" class="nav-link px-2 text-white fs-4">Transports</a></li>
-        <li><a routerLink="unavailable-tours" class="nav-link px-2 text-white fs-4">Unavailable Tours</a></li>
+        <li><a routerLink="admin" *ngIf="user.role == 'ADMIN'" class="nav-link px-2 text-white fs-4">Admin</a></li>
+        <li><a routerLink="places" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Locations</a></li>
+        <li><a routerLink="hotels" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Hotels</a></li>
+        <li><a routerLink="transports" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Transports</a></li>
+        <li><a routerLink="unavailable-tours" *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'" class="nav-link px-2 text-white fs-4">Unavailable Tours</a></li>
     </ul>
 
     <div class="text-end" *ngIf="!user.role">

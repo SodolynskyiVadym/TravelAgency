@@ -41,8 +41,6 @@ export class TourComponent implements OnInit {
           destination.formattedStartDate = this.dateHelper.formatDate(destination.startDate);
           destination.formattedEndDate = this.dateHelper.formatDate(destination.endDate);
         });
-        console.log("---------------------------------------")
-        console.log(this.tour.placeStart.name);
       });
     });
   }

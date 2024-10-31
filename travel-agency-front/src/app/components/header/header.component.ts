@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserEmailRole } from '../../../models/userEmailRole.model';
 import { AuthService } from '../../../services/auth.service';
+import { BrowserStorageService } from '../../../services/browser-storage-service.service';
 
 @Component({
   selector: 'app-header',
@@ -15,23 +16,22 @@ import { AuthService } from '../../../services/auth.service';
 })
 
 export class HeaderComponent implements OnInit {
-  user = {} as UserEmailRole;
+  user: UserEmailRole = { email: '', role: '' };
   token: string | null = null;
-  isAuthenticated = false;
 
-  constructor(private userApi: UserApiService, private auth : AuthService) { }
+  constructor(private userApi: UserApiService, private auth : AuthService, private browserStorage : BrowserStorageService) { }
 
   ngOnInit(): void {
-    this.token = this.auth.getToken();
-    if(this.token){
-      this.userApi.getUserByToken(this.token).subscribe({
+    let token = this.browserStorage.get("token");
+    if(token != null && token != ""){
+      this.userApi.getUserByToken(token).subscribe({
         next: (response) => {
           this.user.role = response.role;
           this.user.email = response.email;
         },
         error: (error) => {
-          console.log(error);
-          this.auth.logout();
+          console.error("Error in header.component");
+          this.browserStorage.remove("token");
         }
       });
     }
