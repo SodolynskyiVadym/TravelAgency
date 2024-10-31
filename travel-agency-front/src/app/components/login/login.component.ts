@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ValidatorService } from '../../../services/validator/validator.service';
-import { UserApiService } from '../../../services/api/user/user-api.service';
+import { ValidatorService } from '../../../services/validator.service';
+import { UserApiService } from '../../../services/api/user-api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

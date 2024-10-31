@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Hotel } from '../../../../models/hotel.model';
-import { PlaceApiService } from '../../../../services/api/place/place-api.service';
+import { PlaceApiService } from '../../../../services/api/place-api.service';
 import { countries } from '../../../../services/constants/countries';
-import { ValidatorService } from '../../../../services/validator/validator.service';
+import { ValidatorService } from '../../../../services/validator.service';
 
 @Component({
   selector: 'app-create-hotel',

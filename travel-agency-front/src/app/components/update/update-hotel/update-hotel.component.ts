@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HotelApiService } from '../../../../services/api/hotel/hotel-api.service';
+import { HotelApiService } from '../../../../services/api/hotel-api.service';
 import { Hotel } from '../../../../models/hotel.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PlaceApiService } from '../../../../services/api/place/place-api.service';
-import { ValidatorService } from '../../../../services/validator/validator.service';
+import { PlaceApiService } from '../../../../services/api/place-api.service';
+import { ValidatorService } from '../../../../services/validator.service';
 import { countries } from '../../../../services/constants/countries';
 
 @Component({

@@ -12,8 +12,8 @@ import { TourComponent } from './components/tour/tour.component';
 import { CreatePlaceComponent } from './components/creation/create-place/create-place.component';
 import { CreateTourComponent } from './components/creation/create-tour/create-tour.component';
 import { TestComponent } from './components/test/test.component';
-import { AuthGuardService } from '../services/guard/auth-guard.service';
 import { LoginComponent } from './components/login/login.component';
+import { AuthGuardService } from '../services/auth-guard.service';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},

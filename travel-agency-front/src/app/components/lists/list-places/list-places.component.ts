@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Place } from '../../../../models/place.model';
-import { PlaceApiService } from '../../../../services/api/place/place-api.service';
+import { PlaceApiService } from '../../../../services/api/place-api.service';
 
 @Component({
   selector: 'app-list-places',

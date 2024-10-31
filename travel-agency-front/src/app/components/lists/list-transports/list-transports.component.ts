@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { TransportApiService } from '../../../../services/api/transport/transport-api.service';
+import { TransportApiService } from '../../../../services/api/transport-api.service';
 import { Transport } from '../../../../models/transport.model';
 
 @Component({

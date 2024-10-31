@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { countries } from '../../../../services/constants/countries';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ValidatorService } from '../../../../services/validator/validator.service';
+import { ValidatorService } from '../../../../services/validator.service';
 
 @Component({
   selector: 'app-create-place',

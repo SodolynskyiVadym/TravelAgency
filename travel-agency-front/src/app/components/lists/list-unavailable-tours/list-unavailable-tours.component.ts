@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Tour } from '../../../../models/tour.model';
-import { TourApiService } from '../../../../services/api/tour/tour-api.service';
+import { TourApiService } from '../../../../services/api/tour-api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';

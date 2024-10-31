@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Tour } from '../../../models/tour.model';
-import { TourApiService } from '../../../services/api/tour/tour-api.service';
+import { TourApiService } from '../../../services/api/tour-api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DateHelperService } from '../../../services/date/date-helper.service';
+import { DateHelperService } from '../../../services/date-helper.service';
 
 @Component({
   selector: 'app-main-page',

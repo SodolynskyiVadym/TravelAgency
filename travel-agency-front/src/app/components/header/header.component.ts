@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { UserApiService } from '../../../services/api/user/user-api.service';
+import { UserApiService } from '../../../services/api/user-api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserEmailRole } from '../../../models/userEmailRole.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -15,35 +16,28 @@ import { UserEmailRole } from '../../../models/userEmailRole.model';
 
 export class HeaderComponent implements OnInit {
   user = {} as UserEmailRole;
+  token: string | null = null;
+  isAuthenticated = false;
 
-  constructor(private userApi: UserApiService) { }
+  constructor(private userApi: UserApiService, private auth : AuthService) { }
 
   ngOnInit(): void {
-    if (typeof localStorage !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token !== null) {
-        this.userApi.getUserByToken(token).subscribe({
-          next: (response) => {
-            this.user.role = response.role;
-            this.user.email = response.email;
-          },
-          error: (error) => {
-            console.log(error);
-            console.log("Removing token");
-            localStorage.removeItem('token');
-          }
-        });
-      } else{
-        this.user.role = '';
-        this.user.email = '';
-      }
+    this.token = this.auth.getToken();
+    if(this.token){
+      this.userApi.getUserByToken(this.token).subscribe({
+        next: (response) => {
+          this.user.role = response.role;
+          this.user.email = response.email;
+        },
+        error: (error) => {
+          console.log(error);
+          this.auth.logout();
+        }
+      });
     }
   }
 
   logout() {
-    console.log("Removing token");
-    localStorage.removeItem('token');
-    this.user.role = '';
-    this.user.email = '';
+    this.auth.logout();
   }
 }

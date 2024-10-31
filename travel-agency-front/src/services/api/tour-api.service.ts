@@ -1,8 +1,8 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Tour } from '../../../models/tour.model';
-import { environment } from '../../../environment/environment';
+import { Tour } from '../../models/tour.model';
+import { environment } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root'

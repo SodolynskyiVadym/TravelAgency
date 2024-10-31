@@ -3,10 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { countries } from '../../../../services/constants/countries';
 import { Transport } from '../../../../models/transport.model';
-import { HotelApiService } from '../../../../services/api/hotel/hotel-api.service';
-import { TransportApiService } from '../../../../services/api/transport/transport-api.service';
-import { PlaceApiService } from '../../../../services/api/place/place-api.service';
-import { TourApiService } from '../../../../services/api/tour/tour-api.service';
+import { HotelApiService } from '../../../../services/api/hotel-api.service';
+import { TransportApiService } from '../../../../services/api/transport-api.service';
+import { PlaceApiService } from '../../../../services/api/place-api.service';
+import { TourApiService } from '../../../../services/api/tour-api.service';
 
 
 
