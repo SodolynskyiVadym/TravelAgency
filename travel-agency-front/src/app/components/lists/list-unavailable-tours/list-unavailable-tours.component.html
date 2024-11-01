@@ -27,57 +27,9 @@
             <td>{{ tour.price }}</td>
             <td>
                 <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
-                    [routerLink]="['update-tour', tour.id]">EDIT</button>
+                    [routerLink]="['../update-tour', tour.id]">EDIT</button>
                 <!-- <button class="button-update-delete button-update-delete-hover-black" @click="deleteTour(tour.id)">DELETE</button> -->
             </td>
         </tr>
     </table>
 </div>
-
-<!-- <script>
-import * as tourAPI from '@/services/API/tourAPI';
-import * as dateHelper from '@/js/dateHelper';
-
-export default {
-    data() {
-        return {
-            tours: [],
-            inputTour: "",
-            searchedTours: []
-        }
-    },
-
-    methods: {
-        async searchTour() {
-            this.searchedTours = this.tours.filter(tour => tour.name.toLowerCase().includes(this.inputTour.toLowerCase()));
-        },
-
-        async enterUpdateTourPage(tourId) {
-            this.$router.push(`/updateTour/${tourId}`);
-        },
-
-        async deleteTour(tourId) {
-            console.log("Tour deleted! " + tourId);
-        }
-    },
-
-    async mounted() {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            this.$router.push('/login');
-            return;
-        }
-        this.tours = (await tourAPI.getUnavailableTours(token)).sort((a, b) => a.name.localeCompare(b.name));
-        for (let tour of this.tours) {
-            tour.startDate = await dateHelper.formatDate(tour.startDate);
-            tour.endDate = await dateHelper.formatDate(tour.endDate);
-        }
-        this.searchedTours = this.tours;
-    }
-}
-</script>
-
-<style>
-@import "./../../assets/css/styleTable.css";
-@import "./../../assets/css/styleInputSearch.css";
-</style> -->

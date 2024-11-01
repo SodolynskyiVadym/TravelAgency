@@ -17,6 +17,9 @@ import { AuthGuardService } from '../services/auth-guard.service';
 import { SignupComponent } from './components/signup/signup.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { UpdatePlaceComponent } from './components/update/update-place/update-place.component';
+import { UpdateTourComponent } from './components/update/update-tour/update-tour.component';
+import { UpdateTransportComponent } from './components/update/update-transport/update-transport.component';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},
@@ -30,6 +33,10 @@ export const routes: Routes = [
     {path: 'create-hotel', component: CreateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'create-place', component: CreatePlaceComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'create-tour', component: CreateTourComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
+    {path: 'update-place/:id', component: UpdatePlaceComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
+    {path: 'update-tour/:id', component: UpdateTourComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
+    {path: 'update-transport/:id', component: UpdateTransportComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
+    {path: 'update-hotel/:id', component: UpdateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'login', component: LoginComponent},
     {path: 'signup', component: SignupComponent},
     {path: 'admin', component: AdminComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN']}},

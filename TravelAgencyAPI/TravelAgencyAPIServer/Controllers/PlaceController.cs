@@ -18,6 +18,7 @@ namespace TravelAgencyAPIServer.Controllers;
 public class PlaceController : ControllerBase
 {
     private readonly PlaceService _placeService;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the PlaceController class.
@@ -27,6 +28,7 @@ public class PlaceController : ControllerBase
     /// <param name="redis">The Redis connection multiplexer.</param>
     public PlaceController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
     {
+        _mapper = mapper;
         _placeService = new PlaceService(context, mapper, redis);
     }
 
@@ -36,9 +38,10 @@ public class PlaceController : ControllerBase
     /// <param name="id">The ID of the place.</param>
     /// <returns>The place details.</returns>
     [HttpGet("{id}")]
-    public async Task<Place?> GetPlace(int id)
+    public async Task<PlaceDto?> GetPlace(int id)
     {
-        return await _placeService.GetByIdAsync(id);
+        Place? place = await _placeService.GetByIdAsync(id);
+        return place == null ? null : _mapper.Map<PlaceDto>(place);
     }
 
     /// <summary>

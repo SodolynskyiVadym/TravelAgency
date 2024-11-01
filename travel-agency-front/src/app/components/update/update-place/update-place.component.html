@@ -1,1 +1,44 @@
-<p>update-place works!</p>
+<div style="text-align: center;">
+    <h1>Update place</h1>
+    <div class="create-form">
+        <label for="name">Place Name:</label>
+        <input id="name" type="text" [(ngModel)]="place.name" placeholder="Enter place name" (input)="checkInputs()">
+        <div class="error" *ngIf="!place.name">Name is required</div>
+
+        @for (image of place.imagesUrls; track $index) {
+        <div>
+            <label [for]="'imageUrl' + $index">Image URL</label>
+            <input [id]="'imageUrl' + $index" type="text" [(ngModel)]="place.imagesUrls[$index]"
+                (input)="checkImageUrl($index)" required />
+        </div>
+
+        <img *ngIf="isImagesCorrect[$index]" class="image-preview" [src]="image" />
+        <img *ngIf="!isImagesCorrect[$index]" style="width: 300px;" class="image-preview"
+            src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=' />
+        }
+
+
+        <label for="country">Country:</label>
+        <input type="search" list="data" id="country" class="form-control" autocomplete="off" autocorrect="on"
+            [(ngModel)]="place.country" placeholder="Type to choose country" (input)="checkInputs()">
+        <datalist id="data">
+            <option *ngFor="let country of countries" [value]="country">
+                {{ country }}
+            </option>
+        </datalist>
+        <div class="error" *ngIf="!countries.includes(place.country)">Country is required</div>
+
+        <label for="description">Description:</label>
+        <textarea id="description" [(ngModel)]="place.description" placeholder="Enter place description"
+            (input)="checkInputs()"></textarea>
+        <div class="error" *ngIf="!place.description">Description is required</div>
+
+        <button *ngIf="!isSending" style="margin: 20px;" (click)="updatePlace()" [disabled]="!isCorrectInputs">Update
+            Place</button>
+        <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button"
+            disabled>
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Loading...</span>
+        </button>
+    </div>
+</div>

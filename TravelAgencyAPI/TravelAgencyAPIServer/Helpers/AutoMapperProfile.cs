@@ -9,6 +9,8 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<PlaceDto, Place>();
+        CreateMap<Place, PlaceDto>()
+            .ForMember(dest => dest.ImagesUrls, opt => opt.MapFrom(src => src.ImagesUrls.Select(i => i.Url).ToList()));
         CreateMap<Place, PlaceInfoDto>();
         CreateMap<HotelDto, Hotel>();
         CreateMap<DestinationDto, Destination>();

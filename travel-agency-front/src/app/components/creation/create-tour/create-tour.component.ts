@@ -9,6 +9,7 @@ import { PlaceApiService } from '../../../../services/api/place-api.service';
 import { TourApiService } from '../../../../services/api/tour-api.service';
 import { BrowserStorageService } from '../../../../services/browser-storage-service.service';
 import { Router } from '@angular/router';
+import { PlaceIdNameCountry } from '../../../../models/placeIdNameCountry.model';
 
 
 
@@ -59,7 +60,7 @@ export class CreateTourComponent implements OnInit {
   destinationsHotelsNames: string[] = [''];
   destinationsTransportsNames: string[] = [''];
   transports: Transport[] = [];
-  places: any[] = [];
+  places: PlaceIdNameCountry[] = [];
   hotels: any[] = [];
 
   constructor(
@@ -106,12 +107,29 @@ export class CreateTourComponent implements OnInit {
     return this.hotels.filter((hotel) => hotel.placeId == placeId);
   }
 
+  isPlaceInCountry(index: number) : boolean{
+    let filteredPlaces = this.filterPlacesByCountry(this.destinationsCountries[index])
+    return filteredPlaces.filter(place => place.name == this.destinationsPlacesNames[index]).length > 0;
+  }
+
   checkInputs() {
-    this.isCorrectInputs = this.tour.name != '' && this.tour.description != '' && this.tour.price > 0 && this.isCorrectImage;
+    this.isCorrectInputs = this.tour.name != '' && this.tour.description != '' && this.tour.price > 0 && this.isCorrectImage && this.tour.quantitySeats > 0 
+    && this.tour.startDate < this.tour.endDate && this.checkTourDates() && this.checkIds();
   }
 
   compareToday(date: Date) {
     return date < new Date();
+  }
+
+  checkIds() : boolean{
+    let isValid = true;
+    for (let i = 0; i < this.tour.destinations.length; i++) {
+      if (this.tour.destinations[i].placeId == 0 || this.tour.destinations[i].hotelId == 0 || this.tour.destinations[i].transportId == 0) {
+        isValid = false;
+        break;
+      }
+    }
+    return isValid;
   }
 
   checkTourDates(): boolean {
@@ -164,6 +182,7 @@ export class CreateTourComponent implements OnInit {
     if (token) {
       this.tourApi.createTour(this.tour, token).subscribe((response) => {
         console.log(response);
+        this.router.navigate(['/']);
       });
     } else {
       this.router.navigate(['/login']);

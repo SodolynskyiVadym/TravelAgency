@@ -16,7 +16,7 @@
             <p>{{ destination.hotel.place.description }}</p>
             <div class="locationImages">
                 <div *ngFor="let imageUrl of destination.hotel.place.imagesUrls">
-                    <img style="width: 500px" [src]="imageUrl.url" alt="location image">
+                    <img style="width: 500px" [src]="imageUrl" alt="location image">
                 </div>
             </div>
             <div class="hotel">

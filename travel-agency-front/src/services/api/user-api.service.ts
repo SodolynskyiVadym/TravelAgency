@@ -64,8 +64,6 @@ export class UserApiService {
     });
   }
 
-
-
   deleteUser(id: number, token: string) {
     return this.http.delete(`${this.apiUrl}/deleteUser/${id}`, {
       headers: {

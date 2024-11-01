@@ -24,7 +24,7 @@
             <td><img [src]="place.imagesUrls[1].url"></td>
             <td><img [src]="place.imagesUrls[2].url"></td>
             <td>
-                <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green" [routerLink]="['update-place', place.id]">EDIT</button>
+                <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green" [routerLink]="['../update-place', place.id]">EDIT</button>
                 <!-- <button *ngIf="!(usedPlaceIds.includes(place.id))"
                     class="button-update-delete button-update-delete-hover-black"
                     (click)="deletePlace(place.id)"">DELETE</button> -->
