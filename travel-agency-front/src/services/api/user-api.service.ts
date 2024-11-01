@@ -14,6 +14,15 @@ export class UserApiService {
   
   constructor(private http : HttpClient) { }
 
+
+  getUserByToken(token: string) : Observable<UserEmailRole> {
+    return this.http.get<UserEmailRole>(`${this.apiUrl}/getUserByToken`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   getUsers(token : string) : Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/getAllUsers`, {
       headers: {
@@ -24,6 +33,15 @@ export class UserApiService {
 
   login(user: UserEmailPassword) : Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, user);
+  }
+
+  createReservePassword(email : string) : Observable<any> {
+    console.log(email);
+    return this.http.post(`${this.apiUrl}/createReservePassword`, {email});
+  }
+
+  loginViaReservePassword(user: UserEmailPassword) : Observable<any> {
+    return this.http.post(`${this.apiUrl}/loginViaReservePassword`, user);
   }
 
   signup(user: UserEmailPassword) : Observable<any> {
@@ -38,13 +56,15 @@ export class UserApiService {
     });
   }
 
-  getUserByToken(token: string) : Observable<UserEmailRole> {
-    return this.http.get<UserEmailRole>(`${this.apiUrl}/getUserByToken`, {
+  updatePassword(password: string, token: string) {
+    return this.http.post(`${this.apiUrl}/updatePassword`, {password}, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
     });
   }
+
+
 
   deleteUser(id: number, token: string) {
     return this.http.delete(`${this.apiUrl}/deleteUser/${id}`, {

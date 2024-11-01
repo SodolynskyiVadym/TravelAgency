@@ -16,6 +16,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthGuardService } from '../services/auth-guard.service';
 import { SignupComponent } from './components/signup/signup.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},
@@ -32,6 +33,7 @@ export const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'signup', component: SignupComponent},
     {path: 'admin', component: AdminComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN']}},
+    {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'test', component: TestComponent},
     {path: '**', component: PageNotFoundComponent}
 ];

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ValidatorService } from '../../../services/validator.service';
 import { UserApiService } from '../../../services/api/user-api.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserStorageService } from '../../../services/browser-storage-service.service';
@@ -9,7 +9,7 @@ import { BrowserStorageService } from '../../../services/browser-storage-service
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: [
     './login.component.css',

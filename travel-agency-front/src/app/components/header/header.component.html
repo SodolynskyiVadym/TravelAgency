@@ -18,7 +18,7 @@
         *ngIf="user.role == 'ADMIN' || user.role=='EDITOR'">Finished Tours</button>
     </div>
 
-    <div class="text-end" *ngIf="!user.role">
+    <div class="d-flex align-items-center ms-auto" *ngIf="!user.role">
       <button type="button" routerLink="login" class="btn btn-outline-light me-2 fs-5">Login</button>
       <button type="button" routerLink="signup" class="btn btn-primary me-2 fs-5">Sign-up</button>
     </div>

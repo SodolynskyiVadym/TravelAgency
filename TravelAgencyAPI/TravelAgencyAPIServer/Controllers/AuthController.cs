@@ -113,12 +113,13 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Creates a reserve password for a user and sends it via email.
     /// </summary>
-    /// <param name="email">The user's email address.</param>
+    /// <param name="userParam">The user's email address.</param>
     /// <returns>An action result indicating the outcome.</returns>
     [HttpPost("createReservePassword")]
-    public async Task<IActionResult> CreateReservePassword([FromBody] string email)
+    public async Task<IActionResult> CreateReservePassword([FromBody] UserParamDto userParam)
     {
-        if (email.IsNullOrEmpty()) return StatusCode(401, "Email is empty");
+        string email = userParam.Email;
+        if(email.IsNullOrEmpty()) return StatusCode(401, "Email is empty");
 
         string password = _authHelper.GenerateRandomPassword();
         byte[][] passwordDetails = _authHelper.EncryptUserPassword(password);
@@ -193,12 +194,14 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Updates the password for the authenticated user.
     /// </summary>
-    /// <param name="password">The new password.</param>
+    /// <param name="userPassword">The new password.</param>
     /// <returns>An action result indicating the outcome.</returns>
     [Authorize]
     [HttpPost("updatePassword")]
-    public async Task<IActionResult> UpdatePassword([FromBody] string password)
+    public async Task<IActionResult> UpdatePassword([FromBody] UserParamDto userPassword)
     {
+        string password = userPassword.Password;
+        if(password.IsNullOrEmpty()) return StatusCode(400, "Password is empty");
         if(password.Length < 8) return StatusCode(401, "Password is less than 8");
         
         string? id = User.FindFirst("userId")?.Value;
