@@ -1,1 +1,35 @@
-<p>update-transport works!</p>
+<h1>Create Transport</h1>
+<div class="create-form">
+    <label for="name">Name</label>
+    <input type="text" id="name" [(ngModel)]="transport.name" (input)="checkInputs()">
+    <div class="error" *ngIf="!transport.name">Name is required</div>
+
+    <label for="typeTransp">Type of transport</label>
+    <select id="typeTransp" [(ngModel)]="transport.type" (input)="checkInputs()">
+        <option value="Bus">Bus</option>
+        <option value="Train">Train</option>
+        <option value="Plane">Plane</option>
+        <option value="Ship">Ship</option>
+    </select>
+    <div class="error" *ngIf="!transport.type">Type of transport is required</div>
+
+    <label for="seats">Number of seats</label>
+    <input type="number" id="seats" [(ngModel)]="transport.quantitySeats" (input)="checkInputs()">
+    <div class="error" *ngIf="transport.quantitySeats <= 0">Number of seats must be more than 0</div>
+
+    <label for="imageUrl">Image URL:</label>
+    <input id="imageUrl" type="text" [(ngModel)]="transport.imageUrl" placeholder="Enter image URL" (input)="checkImage(); checkInputs()" required />
+    <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
+    <img *ngIf="isCorrectImage" class="image-preview" [src]="transport.imageUrl" />
+    <img *ngIf="!isCorrectImage" style="width: 300px;" class="image-preview" src='./assets/images/image-not-found.jpg' />
+
+    <label for="description">Description</label>
+    <textarea id="description" [(ngModel)]="transport.description" (input)="checkInputs()"></textarea>
+    <div class="error" *ngIf="!transport.description">Description is required</div>
+
+    <button *ngIf="!isSending" style="margin: 20px;" (click)="updateTransport()" [disabled]="!isCorrectInputs">Update Transport</button>
+    <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">Loading...</span>
+    </button>
+</div>

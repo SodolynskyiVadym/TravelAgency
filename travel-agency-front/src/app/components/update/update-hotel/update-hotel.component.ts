@@ -40,31 +40,30 @@ export class UpdateHotelComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (!id) {
+    const id = Number.parseInt(this.route.snapshot.paramMap.get('id')?.toString() || '0');
+    if (id <= 0) {
+      this.router.navigate(['/page-not-found']);
+      return
+    }
+
+    this.hotelApi.getHotelById(id).subscribe(async (response: Hotel | null) => {
+      if (!response) {
+        console.error('Hotel not found');
         this.router.navigate(['/page-not-found']);
-        return
+        return;
       }
 
-      this.hotelApi.getHotelById(id).subscribe(async (response: Hotel | null) => {
-        if (!response) {
-          console.error('Hotel not found');
-          this.router.navigate(['/page-not-found']);
-          return;
-        }
-
-        this.hotel = response;
-        this.placeAPI.getPlacesInfo().subscribe(async (response: any[]) => {
-          this.places = response;
-          this.placeName = await (this.places.find(place => place.id === this.hotel.placeId)?.name || '');
-          this.country = await this.places.find(place => place.id === this.hotel.placeId)?.country || '';
-          await this.checkImage();
-          await this.checkCorrectInputs();
-        });
+      this.hotel = response;
+      this.placeAPI.getPlacesInfo().subscribe(async (response: any[]) => {
+        this.places = response;
+        this.placeName = await (this.places.find(place => place.id === this.hotel.placeId)?.name || '');
+        this.country = await this.places.find(place => place.id === this.hotel.placeId)?.country || '';
+        await this.checkImage();
+        await this.checkCorrectInputs();
       });
     });
-  }
+  };
+
 
   async checkImage() {
     this.isCorrectImage = await this.validator.checkImageExists(this.hotel.imageUrl);
@@ -95,7 +94,7 @@ export class UpdateHotelComponent implements OnInit {
           this.router.navigate(['/hotels']);
         }
       });
-    }else{
+    } else {
       this.isSending = false;
       this.router.navigate(['/login']);
     }

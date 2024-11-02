@@ -6,7 +6,7 @@ export interface Payment {
     amount: number;
     isPaid: boolean;
     date: Date;
-    stripeSession?: string;
+    stripeSession: string;
     userId: number;
     user: User;
     tourId: number;

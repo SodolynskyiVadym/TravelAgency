@@ -5,6 +5,7 @@ import { UserApiService } from '../../../services/api/user-api.service';
 import { BrowserStorageService } from '../../../services/browser-storage-service.service';
 import { Router, RouterModule } from '@angular/router';
 import { User } from '../../../models/user.model';
+import { UserEmailRole } from '../../../models/userEmailRole.model';
 
 @Component({
   selector: 'app-admin',
@@ -29,13 +30,25 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     let token = this.browserStorage.get('token');
     if (token) {
-      this.userApi.getUsers(token).subscribe({
-        next: (users: User[]) => {
-          this.users = users;
-          this.filteredUsers = users;
+      let user = {} as UserEmailRole;
+      this.userApi.getUserByToken(token).subscribe({
+        next: (result) => {
+          user = result;
+          this.userApi.getUsers(token).subscribe({
+            next: (users: User[]) => {
+              console.log(user);
+              this.users = users.filter(u => u.email != user.email);
+              console.log(this.users);
+              this.filteredUsers = this.users;
+            },
+            error: () => {
+              this.users = [];
+            }
+          });
         },
         error: () => {
-          this.users = [];
+          this.browserStorage.remove('token');
+          this.router.navigate(['/login']);
         }
       });
     } else {
@@ -63,6 +76,8 @@ export class AdminComponent implements OnInit {
           this.users = this.users.filter((user) => {
             return user.id !== id;
           });
+          this.input = '';
+          this.filteredUsers = this.users;
         },
         error: () => {
           alert('Error deleting user');

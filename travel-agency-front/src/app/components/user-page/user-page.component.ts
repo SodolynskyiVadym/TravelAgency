@@ -5,6 +5,10 @@ import { Router, RouterModule } from '@angular/router';
 import { BrowserStorageService } from '../../../services/browser-storage-service.service';
 import { UserApiService } from '../../../services/api/user-api.service';
 import { UserEmailRole } from '../../../models/userEmailRole.model';
+import { Payment } from '../../../models/payment.model';
+import { PaymentApiService } from '../../../services/api/payment-api.service';
+import { StripeService } from '../../../services/stripe.service';
+import { DateHelperService } from '../../../services/date-helper.service';
 
 @Component({
   selector: 'app-user-page',
@@ -19,16 +23,24 @@ import { UserEmailRole } from '../../../models/userEmailRole.model';
   ],
 })
 export class UserPageComponent implements OnInit {
-  user : UserEmailRole = {email: '', role: ''};
+  user: UserEmailRole = {} as UserEmailRole;
+  payments = [] as Payment[];
+  stripe: any;
   password = '';
   confirmPassword = '';
 
-  constructor(private browserStorage : BrowserStorageService, private userApi : UserApiService, private router : Router){}
-  
-  ngOnInit(): void {
+  constructor(private browserStorage: BrowserStorageService,
+    private userApi: UserApiService,
+    private router: Router,
+    private paymentApi: PaymentApiService,
+    private stipeService: StripeService,
+    private dateHelper: DateHelperService) { }
+
+  async ngOnInit(): Promise<void> {
     let token = this.browserStorage.get("token");
-    if(token == null) this.router.navigate(['/login']);
-    else{
+    if (token == null) this.router.navigate(['/login']);
+    else {
+      this.stripe = await this.stipeService.getStripe();
       this.userApi.getUserByToken(token).subscribe({
         next: (response) => {
           this.user = response;
@@ -37,13 +49,25 @@ export class UserPageComponent implements OnInit {
           this.router.navigate(['/login']);
         }
       });
+
+      this.paymentApi.getUserPayments(token).subscribe({
+        next: (response) => {
+          this.payments = response;
+          this.payments.forEach((payment) => {
+            payment.tour.formattedStartDate = this.dateHelper.formatDate(payment.tour.startDate);
+            payment.tour.formattedEndDate = this.dateHelper.formatDate(payment.tour.endDate);
+          });
+        }, error: (err) => {
+          this.payments = [];
+        }
+      });
     }
   }
 
-  updatePassword(){
+  updatePassword() {
     let token = this.browserStorage.get("token");
-    if(token == null) this.router.navigate(['/login']);
-    else{
+    if (token == null) this.router.navigate(['/login']);
+    else {
       this.userApi.updatePassword(this.password, token).subscribe({
         next: () => {
           this.password = '';
@@ -54,4 +78,10 @@ export class UserPageComponent implements OnInit {
       });
     }
   }
+
+  payTour(stripeSessionId: string) {
+    console.log(stripeSessionId);
+    this.stripe.redirectToCheckout({ sessionId: stripeSessionId });
+  }
 }
+

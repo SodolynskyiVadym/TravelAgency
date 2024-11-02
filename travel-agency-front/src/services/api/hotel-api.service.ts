@@ -12,7 +12,7 @@ export class HotelApiService {
 
   constructor(private http: HttpClient) { }
 
-  getHotelById(id: string): Observable<Hotel | null> {
+  getHotelById(id: number): Observable<Hotel | null> {
     return this.http.get<Hotel>(`${this.apiUrl}/${id}`);
   }
 

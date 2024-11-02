@@ -120,10 +120,7 @@ public class PayController : ControllerBase
         payment.StripeSession = sessionId;
         await _paymentService.UpdateAsync(payment);
 
-        TourEmailDto tourEmail = _mapper.Map<TourEmailDto>((tour, user.Email, paymentData.Quantity));
-        await _rabbitMqPublisher.PublishAsync(tourEmail, "payment-queue");
-
-        return Ok(sessionId);
+        return Ok(new { sessionId });;
     }
 
     /// <summary>
@@ -150,6 +147,9 @@ public class PayController : ControllerBase
 
         payment.IsPaid = true;
         await _paymentService.UpdateAsync(_mapper.Map<PaymentDto>(payment));
+        
+        TourEmailDto tourEmail = _mapper.Map<TourEmailDto>((tour, user.Email, payment.Amount));
+        await _rabbitMqPublisher.PublishAsync(tourEmail, "payment-queue");
 
         return Redirect($"{_addressSetting.Client}/tour/{payment.TourId}");
     }

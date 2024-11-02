@@ -12,6 +12,10 @@ export class TransportApiService {
 
   constructor(private http : HttpClient) { }
 
+  getTransportById(id : number) : Observable<Transport> {
+    return this.http.get<Transport>(`${this.apiUrl}/${id}`);
+  }
+
   getTransports() : Observable<Transport[]> {
     return this.http.get<Transport[]>(`${this.apiUrl}/getAllTransports`);
   }

@@ -12,7 +12,7 @@ export class TourApiService {
 
   constructor(private http : HttpClient) { }
 
-  getTourById(id : string) : Observable<Tour> {
+  getTourById(id : number) : Observable<Tour> {
     return this.http.get<Tour>(`${this.apiUrl}/${id}`);
   }
 
@@ -24,8 +24,8 @@ export class TourApiService {
     return this.http.get<Tour[]>(`${this.apiUrl}/getUnavailableTours`);
   }
 
-  createTour(tour : any, token : string) : Observable<HttpResponse<Tour>> {
-    return this.http.post<Tour>(`${this.apiUrl}/create`, tour, { 
+  createTour(tour : any, token : string) {
+    return this.http.post(`${this.apiUrl}/create`, tour, { 
       observe: 'response', 
       headers : {
         'Authorization': `Bearer ${token}`
@@ -33,8 +33,8 @@ export class TourApiService {
     });
   }
 
-  updateTour(tour : any, token : string) : Observable<HttpResponse<Tour>> {
-    return this.http.patch<Tour>(`${this.apiUrl}/update`, tour, { 
+  updateTour(tour : any, token : string){
+    return this.http.patch(`${this.apiUrl}/update`, tour, { 
       observe: 'response', 
       headers : {
         'Authorization': `Bearer ${token}`

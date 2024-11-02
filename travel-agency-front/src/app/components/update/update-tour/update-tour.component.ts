@@ -71,69 +71,67 @@ export class UpdateTourComponent {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (!id) {
+    const id = Number.parseInt(this.route.snapshot.paramMap.get('id')?.toString() || '0');
+    if (id <= 0) {
+      this.router.navigate(['/page-not-found']);
+      return;
+    }
+    this.tourApi.getTourById(id).subscribe(async (response: Tour | null) => {
+      if (!response) {
         this.router.navigate(['/page-not-found']);
         return;
       }
-      this.tourApi.getTourById(id).subscribe(async (response: Tour | null) => {
-        if (!response) {
-          this.router.navigate(['/page-not-found']);
-          return;
-        }
-        this.tour.id = response.id;
-        this.tour.description = response.description;
-        this.tour.endDate = this.dateHelper.formatDateForInput(response.endDate);
-        this.tour.startDate = this.dateHelper.formatDateForInput(response.startDate);
-        this.tour.imageUrl = response.imageUrl;
-        this.tour.name = response.name;
-        this.tour.placeEndId = response.placeEndId;
-        this.tour.placeStartId = response.placeStartId;
-        this.tour.price = response.price;
-        this.tour.quantitySeats = response.quantitySeats;
-        this.tour.transportToEndId = response.transportToEndId;
-        for (let destination of response.destinations) {
-          this.tour.destinations.push({
-            startDate: this.dateHelper.formatDateForInput(destination.startDate),
-            endDate: this.dateHelper.formatDateForInput(destination.endDate),
-            placeId: destination.hotel.placeId,
-            hotelId: destination.hotelId,
-            transportId: destination.transportId
-          });
-          this.destinationsCountries.push(destination.hotel.place.country);
-        }
-
-        this.placeApi.getPlacesInfo().subscribe((places) => {
-          this.places = places;
-          for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsPlacesNames.push(this.places.find((place) => place.id == this.tour.destinations[i].placeId)?.name || '');
+      this.tour.id = response.id;
+      this.tour.description = response.description;
+      this.tour.endDate = this.dateHelper.formatDateForInput(response.endDate);
+      this.tour.startDate = this.dateHelper.formatDateForInput(response.startDate);
+      this.tour.imageUrl = response.imageUrl;
+      this.tour.name = response.name;
+      this.tour.placeEndId = response.placeEndId;
+      this.tour.placeStartId = response.placeStartId;
+      this.tour.price = response.price;
+      this.tour.quantitySeats = response.quantitySeats;
+      this.tour.transportToEndId = response.transportToEndId;
+      for (let destination of response.destinations) {
+        this.tour.destinations.push({
+          startDate: this.dateHelper.formatDateForInput(destination.startDate),
+          endDate: this.dateHelper.formatDateForInput(destination.endDate),
+          placeId: destination.hotel.placeId,
+          hotelId: destination.hotelId,
+          transportId: destination.transportId
         });
+        this.destinationsCountries.push(destination.hotel.place.country);
+      }
 
-        this.hotelApi.getHotels().subscribe((hotels) => {
-          this.hotels = hotels;
-          for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsHotelsNames.push(this.hotels.find((hotel) => hotel.id == this.tour.destinations[i].hotelId)?.name || '');
-        });
-
-        this.transportApi.getTransports().subscribe((transports) => {
-          this.transports = transports;
-          for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsTransportsNames.push(this.transports.find((transport) => transport.id == this.tour.destinations[i].transportId)?.name || '');
-        });
-        this.startPlaceName = this.places.find((place) => place.id == this.tour.placeStartId)?.name || '';
-        this.endPlaceName = this.places.find((place) => place.id == this.tour.placeEndId)?.name || '';
-        this.startPlaceCountry = this.places.find((place) => place.id == this.tour.placeStartId)?.country || '';
-        this.endPlaceCountry = this.places.find((place) => place.id == this.tour.placeEndId)?.country || '';
-        this.endTransportName = this.transports.find((transport) => transport.id == this.tour.transportToEndId)?.name || '';
-        this.isCorrectImage = await this.validator.checkImageExists(this.tour.imageUrl);
-        this.checkInputs();
+      this.placeApi.getPlacesInfo().subscribe((places) => {
+        this.places = places;
+        for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsPlacesNames.push(this.places.find((place) => place.id == this.tour.destinations[i].placeId)?.name || '');
       });
+
+      this.hotelApi.getHotels().subscribe((hotels) => {
+        this.hotels = hotels;
+        for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsHotelsNames.push(this.hotels.find((hotel) => hotel.id == this.tour.destinations[i].hotelId)?.name || '');
+      });
+
+      this.transportApi.getTransports().subscribe((transports) => {
+        this.transports = transports;
+        for (let i = 0; i < this.tour.destinations.length; i++) this.destinationsTransportsNames.push(this.transports.find((transport) => transport.id == this.tour.destinations[i].transportId)?.name || '');
+      });
+      this.startPlaceName = this.places.find((place) => place.id == this.tour.placeStartId)?.name || '';
+      this.endPlaceName = this.places.find((place) => place.id == this.tour.placeEndId)?.name || '';
+      this.startPlaceCountry = this.places.find((place) => place.id == this.tour.placeStartId)?.country || '';
+      this.endPlaceCountry = this.places.find((place) => place.id == this.tour.placeEndId)?.country || '';
+      this.endTransportName = this.transports.find((transport) => transport.id == this.tour.transportToEndId)?.name || '';
+      this.isCorrectImage = await this.validator.checkImageExists(this.tour.imageUrl);
+      this.checkInputs();
     });
 
   }
 
-  rescheduleTour(){
+  rescheduleTour() {
     this.tour.startDate = this.dateHelper.addDaysToDateString(this.tour.startDate, this.quantityDays);
     this.tour.endDate = this.dateHelper.addDaysToDateString(this.tour.endDate, this.quantityDays);
-    for(let i = 0; i < this.tour.destinations.length; i++){
+    for (let i = 0; i < this.tour.destinations.length; i++) {
       this.tour.destinations[i].startDate = this.dateHelper.addDaysToDateString(this.tour.destinations[i].startDate, this.quantityDays);
       this.tour.destinations[i].endDate = this.dateHelper.addDaysToDateString(this.tour.destinations[i].endDate, this.quantityDays);
     }
@@ -199,10 +197,10 @@ export class UpdateTourComponent {
     let isValid = true;
     for (let destination of this.tour.destinations) {
       if (destination.startDate >= destination.endDate) {
-      console.log("Invalid destination dates");
-      isValid = false;
-      this.isCorrectInputs = false;
-      break;
+        console.log("Invalid destination dates");
+        isValid = false;
+        this.isCorrectInputs = false;
+        break;
       }
     }
     if (this.tour.destinations.length == 0 || new Date(this.tour.startDate) > new Date(this.tour.destinations[0].startDate)

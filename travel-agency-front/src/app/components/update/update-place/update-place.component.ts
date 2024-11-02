@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ValidatorService } from '../../../../services/validator.service';
 import { countries } from '../../../../services/constants/countries';
 import { BrowserStorageService } from '../../../../services/browser-storage-service.service';
+import { PlaceDto } from '../../../../models/placeDto.model';
 
 @Component({
   selector: 'app-update-place',
@@ -19,7 +20,7 @@ import { BrowserStorageService } from '../../../../services/browser-storage-serv
   ]
 })
 export class UpdatePlaceComponent implements OnInit {
-  place: Place = {} as Place;
+  place: PlaceDto = {} as PlaceDto;
   countries = countries;
   isCorrectInputs: boolean = false;
   isImagesCorrect: boolean[] = [false, false, false];
@@ -37,12 +38,12 @@ export class UpdatePlaceComponent implements OnInit {
 
     if (id > 0) {
       this.placeApi.getPlaceById(id).subscribe({
-        next: async (response: Place | null) => {
+        next: async (response: PlaceDto | null) => {
           if (response === null) this.router.navigate(['/places']);
           else{
             this.place = response;
             for (let i = 0; i < this.place.imagesUrls.length; i++) {
-              this.isImagesCorrect[i] = await this.validator.checkImageExists(this.place.imagesUrls[i].url);
+              this.isImagesCorrect[i] = await this.validator.checkImageExists(this.place.imagesUrls[i]);
             }
             this.checkInputs();
           }
@@ -61,7 +62,7 @@ export class UpdatePlaceComponent implements OnInit {
   }
 
   async checkImageUrl(index: number) {
-    this.isImagesCorrect[index] = await this.validator.checkImageExists(this.place.imagesUrls[index].url);
+    this.isImagesCorrect[index] = await this.validator.checkImageExists(this.place.imagesUrls[index]);
     this.checkInputs();
   }
 

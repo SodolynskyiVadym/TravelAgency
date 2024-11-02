@@ -16,7 +16,7 @@ import { BrowserStorageService } from '../../../services/browser-storage-service
 })
 
 export class HeaderComponent implements OnInit {
-  user: UserEmailRole = { email: '', role: '' };
+  user: UserEmailRole = { email: '', role: '', id: 0 };
   token: string | null = null;
 
   constructor(private userApi: UserApiService, private auth : AuthService, private browserStorage : BrowserStorageService) { }

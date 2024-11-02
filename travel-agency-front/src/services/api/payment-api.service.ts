@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environment/environment';
 import { Observable } from 'rxjs';
@@ -24,7 +24,7 @@ export class PaymentApiService {
     return this.http.get<number>(`${this.apiUrl}/getTourFreeSeats/${tourId}`);
   }
 
-  hasUserPaidForTour(tourId: string, token: string): Observable<boolean> {
+  hasUserPaidForTour(tourId: number, token: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/haveUserPayment/${tourId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -32,8 +32,8 @@ export class PaymentApiService {
     });
   }
 
-  reserveTour(payData: any, token: string) {
-    return this.http.post(`${this.apiUrl}/reserveTour`, payData, {
+  reserveTour(payData: any, token: string) : Observable<{ sessionId: string }> {
+    return this.http.post<{ sessionId: string }>(`${this.apiUrl}/reserveTour`, payData, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

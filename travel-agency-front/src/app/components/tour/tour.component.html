@@ -47,42 +47,34 @@
         </div>
 
         <div style="margin-top: 30px; display: flex; flex-direction: column;">
-            <!-- <button class="button-action" (click)="reserveTour()" *ngIf="!isSending && !hasUserPaid" [disabled]="isSending">Buy</button> -->
-                <button class="button-action" [routerLink]="['../../update-tour', tour.id]" routerLinkActive="router-link-active" *ngIf="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
+            <button class="button-action" (click)="reserveTour()" *ngIf="!isSending && !hasUserPaid"
+                [disabled]="isSending">Buy</button>
+            <button class="button-action" [routerLink]="['../../update-tour', tour.id]"
+                routerLinkActive="router-link-active"
+                *ngIf="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
+        </div>
+    </div>
+</div>
+
+
+<div style="text-align: center; margin-top: 70px;">
+    <h2>Your review</h2>
+    <div *ngIf="user.role" style="margin-top: 60px; text-align: center;">
+        <input type="number" [(ngModel)]="userReview.rating" (change)="checkRating()">
+        <div *ngIf="user.role">
+            <textarea class="comment-area" [(ngModel)]="userReview.text" placeholder="Write your review"></textarea><br>
+            <button *ngIf="!this.isUserReview" class="button-comment-area" (click)="createReview()">Send</button>
+            <div *ngIf="this.isUserReview">
+                <button class="button-comment-area" (click)="updateReview()">Update</button>
+                <button class="button-comment-area" (click)="deleteReview()">Delete</button>
             </div>
         </div>
     </div>
+</div>
 
-
-    <!-- <div style="text-align: center; margin-top: 70px;">
-        <h2>Your review</h2>
-        <div v-if="user.role" style="text-align:center; ">
-            <div>
-                <div class="rating">
-                    <input value="5" name="rating" id="star5" type="radio">
-                    <label for="star5"></label>
-                    <input value="4" name="rating" id="star4" type="radio">
-                    <label for="star4"></label>
-                    <input value="3" name="rating" id="star3" type="radio">
-                    <label for="star3"></label>
-                    <input value="2" name="rating" id="star2" type="radio">
-                    <label for="star2"></label>
-                    <input value="1" name="rating" id="star1" type="radio">
-                    <label for="star1"></label>
-                </div>
-            </div>
-            <textarea class="comment-area" v-model="userReview.text" placeholder="Write your review"></textarea><br>
-            <button v-if="!isReviewFromDb" class="button-comment-area" @click="sendReview">Send</button>
-            <div v-else>
-                <button class="button-comment-area" (click)="updateReview">Update</button>
-                <button class="button-comment-area" (click)="deleteReview">Delete</button>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- <div style="text-align: center; margin-top: 40px">
-        <div v-for="review in reviews" :key="review.id" class="review">
-            <h3>{{ review.rating }}</h3>
-            <p>{{ review.text }}</p>
-        </div>
-    </div> -->
+<div style="text-align: center; margin-top: 40px">
+    <div *ngFor="let review of reviews" class="review">
+        <h3>{{ review.rating }}</h3>
+        <p>{{ review.text }}</p>
+    </div>
+</div>

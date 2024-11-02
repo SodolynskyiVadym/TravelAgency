@@ -29,7 +29,7 @@ export class ListHotelsComponent implements OnInit {
     this.hotelApi.getHotels().subscribe(
       (response: Hotel[]) => {
         this.hotels = response;
-        this.filteredHotels = this.hotels;
+        this.filteredHotels = this.hotels.sort((a, b) => a.place.country.localeCompare(b.place.country));
       },
       (error) => {
         console.error('Error fetching hotels', error);

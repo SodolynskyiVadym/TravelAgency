@@ -11,10 +11,13 @@
         <input id="password" placeholder="Password" [(ngModel)]="password" class="password input" type="password">
 
         <label for="confirmPassword">Confirm new password:</label>
-        <input id="confirmPassword" placeholder="Confirm password" [(ngModel)]="confirmPassword" class="password input" type="password">
+        <input id="confirmPassword" placeholder="Confirm password" [(ngModel)]="confirmPassword" class="password input"
+            type="password">
 
         <p *ngIf="password.length < 8">New password must be more than 8</p>
-        <button style="margin-top: 10px;" class="btn" type="submit" *ngIf="password == confirmPassword && password.length > 7" (click)="updatePassword()">Update password</button>
+        <button style="margin-top: 10px;" class="btn" type="submit"
+            *ngIf="password == confirmPassword && password.length > 7" (click)="updatePassword()">Update
+            password</button>
     </div>
 </div>
 
@@ -31,17 +34,17 @@
             <th>Status</th>
             <th>Action</th>
         </tr>
-        <tr>
-            <td><img src="image_url_here"></td>
-            <td>Tour name here</td>
-            <td>Start date here</td>
-            <td>End date here</td>
-            <td>Amount here</td>
-            <td>Total price here</td>
-            <td>Status here</td>
+        <tr *ngFor="let payment of payments; let i = index">
+            <td><img [src]="payment.tour.imageUrl"></td>
+            <td>{{payment.tour.name}}</td>
+            <td>{{payment.tour.formattedStartDate}}</td>
+            <td>{{payment.tour.formattedEndDate}}</td>
+            <td>{{payment.amount}}</td>
+            <td>{{payment.amount * payment.tour.price}}</td>
+            <td [ngStyle]="{'color': payment.isPaid ? 'green' : 'red'}">{{payment.isPaid ? 'Paid' : 'Unpaid'}}</td>
             <td>
-                <button class="button-update-delete button-update-delete-hover-green">Pay</button>
-                <button class="button-update-delete button-update-delete-hover-black">View</button>
+                <button *ngIf="!payment.isPaid" class="button-update-delete button-update-delete-hover-green" (click)="payTour(payment.stripeSession)">Pay</button>
+                <button class="button-update-delete button-update-delete-hover-black" [routerLink]="['../tour', payment.tourId]">View</button>
             </td>
         </tr>
     </table>

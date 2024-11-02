@@ -20,6 +20,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { UpdatePlaceComponent } from './components/update/update-place/update-place.component';
 import { UpdateTourComponent } from './components/update/update-tour/update-tour.component';
 import { UpdateTransportComponent } from './components/update/update-transport/update-transport.component';
+import { CreateTransportComponent } from './components/creation/create-transport/create-transport.component';
 
 export const routes: Routes = [
     {path: '', component: MainPageComponent},
@@ -32,6 +33,7 @@ export const routes: Routes = [
     {path: 'update-hotel/:id', component: UpdateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'create-hotel', component: CreateHotelComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'create-place', component: CreatePlaceComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
+    {path: 'create-transport', component: CreateTransportComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'create-tour', component: CreateTourComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'update-place/:id', component: UpdatePlaceComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
     {path: 'update-tour/:id', component: UpdateTourComponent, canActivate: [AuthGuardService], data: {expectedRoles: ['ADMIN', 'EDITOR']}},
