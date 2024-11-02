@@ -30,7 +30,7 @@ export class ListPlacesComponent implements OnInit {
   ngOnInit(): void {
     this.placeApi.getPlaces().subscribe(
       (response: Place[]) => {
-        this.places = response;
+        this.places = response.sort((a, b) => a.country.localeCompare(b.country));
         this.filteredPlaces = this.places;
       },
       (error) => {

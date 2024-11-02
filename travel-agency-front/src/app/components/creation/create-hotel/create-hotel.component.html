@@ -1,6 +1,6 @@
 <div class="create-form">
     <label for="country">Country:</label>
-    <input id="country" type="search" list="countries" class="form-control" (input)="checkCountry()"
+    <input id="country" type="search" list="countries" class="form-control" (input)="checkCountry(); checkInputs()"
         autocomplete="false" autocorrect="on" [(ngModel)]="country" placeholder="Type to choose country">
     <datalist id="countries">
         <option *ngFor="let country of countries" [value]="country">
@@ -10,7 +10,7 @@
     <div class="error" *ngIf="!countries.includes(country)">Country is required</div>
 
     <label for="placeName">Place Name:</label>
-    <input id="placeName" type="search" list="data" [(ngModel)]="placeName" (input)="checkPlace()"
+    <input id="placeName" type="search" list="data" [(ngModel)]="placeName" (input)="checkPlace(); checkInputs()"
         placeholder="Type to choose place">
     <datalist id="data">
         <option *ngFor="let place of filteredPlaces" [value]="place.name">
@@ -29,7 +29,7 @@
     <div class="error" *ngIf="!hotel.address">Address is required</div>
 
     <label for="imageUrl">Image URL:</label>
-    <input id="imageUrl" type="text" [(ngModel)]="hotel.imageUrl" placeholder="Enter image URL" (input)="checkImage()"
+    <input id="imageUrl" type="text" [(ngModel)]="hotel.imageUrl" placeholder="Enter image URL" (input)="checkImage(); checkInputs()"
         required />
     <div class="error" *ngIf="!isCorrectImage">Image url isn't correct</div>
     <img *ngIf="isCorrectImage" class="image-preview" [src]="hotel.imageUrl" />
@@ -45,7 +45,7 @@
         (input)="checkInputs()"></textarea>
     <div class="error" *ngIf="!hotel.description">Description is required</div>
 
-    <button *ngIf="!isSending" style="margin: 20px;" (click)="createHotel()" :disabled="!isCorrectInputs">Add
+    <button *ngIf="!isSending" style="margin: 20px;" (click)="createHotel()" [disabled]="!isCorrectInputs">Add
         Hotel</button>
     <button *ngIf="isSending" style="background-color: #4CAF50; margin: 20px;" class="btn btn-primary" type="button" disabled>
         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>

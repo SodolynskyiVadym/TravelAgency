@@ -20,7 +20,7 @@ export class HotelApiService {
     return this.http.get<Hotel[]>(`${this.apiUrl}/getAllHotels`);
   }
 
-  createHotel(hotel: Hotel, token: string): Observable<HttpResponse<Hotel>> {
+  createHotel(hotel: Hotel, token: string){
     return this.http.post<Hotel>(`${this.apiUrl}/create`, hotel, {
       observe: 'response',
       headers: {

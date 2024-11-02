@@ -3,5 +3,11 @@ export interface Place {
     name: string;
     country: string;
     description: string;
-    imagesUrls: string[];
+    imagesUrls: ImageUrl[];
+}
+
+interface ImageUrl {
+    url: string;
+    id : number;
+    placeId : number;
 }

@@ -8,7 +8,7 @@
         @for (image of place.imagesUrls; track $index) {
         <div>
             <label [for]="'imageUrl' + $index">Image URL</label>
-            <input [id]="'imageUrl' + $index" type="text" [(ngModel)]="place.imagesUrls[$index]"
+            <input [id]="'imageUrl' + $index" type="text" [(ngModel)]="place.imagesUrls[$index].url"
                 (input)="checkImageUrl($index)" required />
         </div>
 

@@ -30,7 +30,7 @@
 
     <label for="startPlace">Start location</label>
     <input id="startPlace" list="places" type="search" [(ngModel)]="startPlaceName" placeholder="Enter start location"
-        (input)="tour.placeStartId = getPlaceIdByNameAndCountry(startPlaceName, startPlaceCountry)">
+        (input)="tour.placeStartId = getPlaceIdByNameAndCountry(startPlaceName, startPlaceCountry); checkInputs()">
     <datalist id="places">
         <option *ngFor="let place of filterPlacesByCountry(startPlaceCountry)" [value]="place.name">
             {{ place.name }}
@@ -44,14 +44,14 @@
             <h2>Destination {{ index + 1 }}</h2>
             <label [for]="'country' + index">Country:</label>
             <input [id]="'country' + index" type="search" list="countries"
-                (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index])"
+                (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index]); checkInputs()"
                 [(ngModel)]="destinationsCountries[index]" placeholder="Type to choose country">
             <div class="error" *ngIf="!countries.includes(destinationsCountries[index])">Country is required</div>
 
             <label [for]="'place' + index">Place:</label>
             <input [id]="'place' + index" type="search" [attr.list]="'places' + index" [(ngModel)]="destinationsPlacesNames[index]"
                 placeholder="Type to choose place"
-                (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index])">
+                (input)="tour.destinations[index].placeId = getPlaceIdByNameAndCountry(destinationsPlacesNames[index], destinationsCountries[index]); checkInputs()">
             <datalist [id]="'places' + index">
                 <option *ngFor="let place of filterPlacesByCountry(destinationsCountries[index])" [value]="place.name">
                     {{ place.name }}
@@ -66,7 +66,7 @@
             <label [for]="'hotel' + index">Hotel:</label>
             <input [id]="'hotel' + index" type="search" [attr.list]="'hotels' + index"
                 [(ngModel)]="destinationsHotelsNames[index]" placeholder="Type to choose hotel"
-                (input)="tour.destinations[index].hotelId = getHotelIdByHotelNameAndPlaceId(destinationsHotelsNames[index], tour.destinations[index].placeId)">
+                (input)="tour.destinations[index].hotelId = getHotelIdByHotelNameAndPlaceId(destinationsHotelsNames[index], tour.destinations[index].placeId); checkInputs()">
             <datalist [id]="'hotels' + index">
                 <option *ngFor="let hotel of filterHotelsByPlaceId(tour.destinations[index].placeId)"
                     [value]="hotel.name">
@@ -80,7 +80,7 @@
             <label [for]="'transport' + index">Transport:</label>
             <input [id]="'transport' + index" type="search" list="transports"
                 [(ngModel)]="destinationsTransportsNames[index]" placeholder="Type to choose transport"
-                (input)="tour.destinations[index].transportId = getTransportIdByTransportName(destinationsTransportsNames[index])">
+                (input)="tour.destinations[index].transportId = getTransportIdByTransportName(destinationsTransportsNames[index]); checkInputs()">
             <div class="error" *ngIf="tour.destinations[index].transportId === 0">Transport is required</div>
 
             <label [for]="'startDate' + index">Start Date:</label>
@@ -117,7 +117,7 @@
 
     <label for="endPlace">End location</label>
     <input id="endPlace" list="endPlaces" type="search" [(ngModel)]="endPlaceName" placeholder="Enter end location"
-        (input)="tour.placeEndId = getPlaceIdByNameAndCountry(endPlaceName, endPlaceCountry)">
+        (input)="tour.placeEndId = getPlaceIdByNameAndCountry(endPlaceName, endPlaceCountry); checkInputs()">
     <datalist id="endPlaces">
         <option *ngFor="let place of filterPlacesByCountry(endPlaceCountry)" [value]="place.name">
             {{ place.name }}
@@ -129,7 +129,7 @@
     <label for="endPlaceTransport">End location transport</label>
     <input id="endPlaceTransport" type="search" list="transports" [(ngModel)]="endTransportName"
         placeholder="Type to choose transport"
-        (input)="tour.transportToEndId = getTransportIdByTransportName(endTransportName)">
+        (input)="tour.transportToEndId = getTransportIdByTransportName(endTransportName); checkInputs()">
     <datalist id="transports">
         <option *ngFor="let transport of transports" [value]="transport.name">
             {{ transport.name }}

@@ -122,7 +122,7 @@ export class CreateTourComponent implements OnInit {
   }
 
   checkIds() : boolean{
-    let isValid = true;
+    let isValid = this.tour.placeStartId != 0 && this.tour.placeEndId != 0 && this.tour.transportToEndId != 0;
     for (let i = 0; i < this.tour.destinations.length; i++) {
       if (this.tour.destinations[i].placeId == 0 || this.tour.destinations[i].hotelId == 0 || this.tour.destinations[i].transportId == 0) {
         isValid = false;
@@ -149,6 +149,7 @@ export class CreateTourComponent implements OnInit {
 
   async checkImage() {
     this.isCorrectImage = true;
+    this.checkInputs();
   }
 
 

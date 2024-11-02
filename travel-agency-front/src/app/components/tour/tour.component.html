@@ -1,7 +1,7 @@
 <div class="main">
     <h1>{{ tour.name }}</h1>
     <p class="tourDescription">{{ tour.description }}</p>
-    <h5 style="margin-top: 30px;">Start location: {{ tour.placeStart.name }}</h5>
+    <h5 style="margin-top: 30px;">Start location: {{ tour.placeStart.name}}</h5>
     <h5>End location: {{ tour.placeEnd.name }}</h5>
     <h5>Transport to {{ tour.placeEnd.name }}: {{ tour.transportToEnd.name }}</h5>
     <h5>{{ tour.formattedStartDate }} --- {{ tour.formattedEndDate }}</h5>
@@ -16,7 +16,7 @@
             <p>{{ destination.hotel.place.description }}</p>
             <div class="locationImages">
                 <div *ngFor="let imageUrl of destination.hotel.place.imagesUrls">
-                    <img style="width: 500px" [src]="imageUrl" alt="location image">
+                    <img style="width: 500px" [src]="imageUrl.url" alt="location image">
                 </div>
             </div>
             <div class="hotel">
@@ -37,23 +37,20 @@
 
 
 
-    <div v-if="user.role">
+    <div *ngIf="user.role">
         <div style="margin-top: 60px; text-align: center;">
             <h2>Quantity</h2>
-            <input type="number" [(ngModel)]="quantity" min="1" :max="freeSeats" (input)="calculatePrice()">
+            <input type="number" [(ngModel)]="quantity" min="1" [max]="freeSeats">
         </div>
         <div>
             <h2 style="margin-top: 30px;">Price: {{ tour.price * quantity}}</h2>
         </div>
 
         <div style="margin-top: 30px; display: flex; flex-direction: column;">
-            <!-- <button class="button-action" (click)="reserveTour()" v-if="!isSendRequest && !haveUserTour"
-                    :disabled="isSendRequest">Buy</button>
-                <button class="button-action" (click)="enterUpdatePage()"
-                    v-if="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
-            </div> -->
+            <!-- <button class="button-action" (click)="reserveTour()" *ngIf="!isSending && !hasUserPaid" [disabled]="isSending">Buy</button> -->
+                <button class="button-action" [routerLink]="['../../update-tour', tour.id]" routerLinkActive="router-link-active" *ngIf="user.role === 'EDITOR' || user.role === 'ADMIN'">Update</button>
+            </div>
         </div>
-
     </div>
 
 

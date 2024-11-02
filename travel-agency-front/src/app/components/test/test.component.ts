@@ -10,15 +10,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './test.component.css'
 })
 
-export class TestComponent implements OnInit{
+export class TestComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.test)
   }
   test = {
-    date : Date.now(),
+    date: '',
   }
 
-  showDate(){
+  showDate() {
     console.log(this.test)
+    console.log(new Date(this.test.date).getDate())
   }
 }

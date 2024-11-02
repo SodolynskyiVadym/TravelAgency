@@ -42,7 +42,7 @@ export class UpdatePlaceComponent implements OnInit {
           else{
             this.place = response;
             for (let i = 0; i < this.place.imagesUrls.length; i++) {
-              this.isImagesCorrect[i] = await this.validator.checkImageExists(this.place.imagesUrls[i]);
+              this.isImagesCorrect[i] = await this.validator.checkImageExists(this.place.imagesUrls[i].url);
             }
             this.checkInputs();
           }
@@ -61,7 +61,7 @@ export class UpdatePlaceComponent implements OnInit {
   }
 
   async checkImageUrl(index: number) {
-    this.isImagesCorrect[index] = await this.validator.checkImageExists(this.place.imagesUrls[index]);
+    this.isImagesCorrect[index] = await this.validator.checkImageExists(this.place.imagesUrls[index].url);
     this.checkInputs();
   }
 
