@@ -16,6 +16,10 @@ export class TransportApiService {
     return this.http.get<Transport>(`${this.apiUrl}/${id}`);
   }
 
+  getUsedTransportsIds() : Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/getUsedTransportsIds`);
+  }
+
   getTransports() : Observable<Transport[]> {
     return this.http.get<Transport[]>(`${this.apiUrl}/getAllTransports`);
   }
@@ -30,6 +34,14 @@ export class TransportApiService {
 
   updateTransport(transport : Transport, token : string) : Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/update`, transport, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  deleteTransport(id : number, token : string) : Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/delete/${id}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

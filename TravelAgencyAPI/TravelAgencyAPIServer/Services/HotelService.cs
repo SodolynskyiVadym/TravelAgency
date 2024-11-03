@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -12,13 +14,15 @@ namespace TravelAgencyAPIServer.Services;
 public class HotelService : IRepository<Hotel, HotelDto>
 {
     private TravelDbContext _context;
+    private DapperDbContext _dapperDbContext;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
 
-    public HotelService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public HotelService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection, DapperDbContext dapperDbContext)
     {
         _context = context;
         _mapper = mapper;
+        _dapperDbContext = dapperDbContext;
         _redis = redisConnection.GetDatabase();
     }
 
@@ -44,6 +48,12 @@ public class HotelService : IRepository<Hotel, HotelDto>
         if (hotel != null)
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(hotel), TimeSpan.FromMinutes(10));
         return hotel;
+    }
+    
+    public async Task<IEnumerable<int>> GetUsedHotelsIds()
+    {
+        string query = "SELECT HotelId FROM Destinations";
+        return await _dapperDbContext.Connection.QueryAsync<int>(query);
     }
 
     public async Task<List<Hotel>> GetAllAsync()

@@ -24,9 +24,10 @@ public class HotelController : ControllerBase
     /// <param name="context">The database context.</param>
     /// <param name="mapper">The object mapper.</param>
     /// <param name="redis">The Redis connection multiplexer.</param>
-    public HotelController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
+    /// <param name="dapperDbContext">The dapper context</param>
+    public HotelController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, DapperDbContext dapperDbContext)
     {
-        _hotelService = new HotelService(context, mapper, redis);
+        _hotelService = new HotelService(context, mapper, redis, dapperDbContext);
     }
 
     /// <summary>
@@ -38,6 +39,12 @@ public class HotelController : ControllerBase
     public async Task<Hotel?> GetHotel(int id)
     {
         return await _hotelService.GetByIdAsync(id);
+    }
+    
+    [HttpGet("getUsedHotelsIds")]
+    public async Task<IEnumerable<int>> GetUsedHotelsIds()
+    {
+        return await _hotelService.GetUsedHotelsIds();
     }
 
     /// <summary>

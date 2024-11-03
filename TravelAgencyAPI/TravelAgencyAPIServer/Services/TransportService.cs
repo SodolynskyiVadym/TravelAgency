@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -12,14 +13,15 @@ namespace TravelAgencyAPIServer.Services;
 public class TransportService : IRepository<Transport, TransportDto>
 {
     private readonly TravelDbContext _context;
+    private readonly DapperDbContext _dapperDbContext;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
-    private IRepository<Transport, TransportDto> _repositoryImplementation;
 
-    public TransportService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public TransportService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection, DapperDbContext dapperDbContext)
     {
         _context = context;
         _mapper = mapper;
+        _dapperDbContext = dapperDbContext;
         _redis = redisConnection.GetDatabase();
     }
 
@@ -40,6 +42,12 @@ public class TransportService : IRepository<Transport, TransportDto>
         if(transport != null) 
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(transport), TimeSpan.FromMinutes(10));
         return transport;
+    }
+    
+    public async Task<IEnumerable<int>> GetUsedTransportsIds()
+    {
+        string query = "SELECT TransportId FROM Destinations UNION  SELECT TransportToEndId FROM Tours;";
+        return await _dapperDbContext.Connection.QueryAsync<int>(query);
     }
     
     public async Task<List<Transport>> GetAllAsync()

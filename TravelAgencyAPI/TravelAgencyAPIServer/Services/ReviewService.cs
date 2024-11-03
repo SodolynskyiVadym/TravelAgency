@@ -48,7 +48,7 @@ public class ReviewService : IRepository<Review, ReviewDto>, IReviewService
 
     public async Task<bool> UpdateAsync(ReviewDto reviewUpdate)
     {
-        Review? review = await _context.Reviews.FindAsync(reviewUpdate.Id);
+        Review? review = await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == reviewUpdate.UserId && r.TourId == reviewUpdate.TourId);
         if (review == null) return false;
         
         review.Text = reviewUpdate.Text ?? review.Text;

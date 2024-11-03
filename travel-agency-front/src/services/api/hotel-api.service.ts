@@ -16,6 +16,10 @@ export class HotelApiService {
     return this.http.get<Hotel>(`${this.apiUrl}/${id}`);
   }
 
+  getUsedHotelsIds(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/getUsedHotelsIds`);
+  }
+
   getHotels(): Observable<Hotel[]> {
     return this.http.get<Hotel[]>(`${this.apiUrl}/getAllHotels`);
   }
@@ -32,6 +36,15 @@ export class HotelApiService {
   updateHotel(hotel: Hotel, token: string): Observable<HttpResponse<Hotel>> {
 
     return this.http.patch<Hotel>(`${this.apiUrl}/update`, hotel, {
+      observe: 'response',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  deleteHotel(id: number, token: string): Observable<HttpResponse<any>> {
+    return this.http.delete<any>(`${this.apiUrl}/delete/${id}`, {
       observe: 'response',
       headers: {
         'Authorization': `Bearer ${token}`

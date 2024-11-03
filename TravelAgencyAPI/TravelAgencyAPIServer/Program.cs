@@ -61,6 +61,9 @@ builder.Services.AddDbContext<TravelDbContext>(options =>
 });
 
 
+builder.Services.AddSingleton<DapperDbContext>(sp => new DapperDbContext(connectionString));
+
+
 builder.Services.AddSingleton<IRabbitMqPublisher>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<List<RabbitMqQueueSetting>>>();

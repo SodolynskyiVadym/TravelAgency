@@ -26,10 +26,11 @@ public class PlaceController : ControllerBase
     /// <param name="context">The database context.</param>
     /// <param name="mapper">The object mapper.</param>
     /// <param name="redis">The Redis connection multiplexer.</param>
-    public PlaceController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
+    /// <param name="dapperDbContext">The dapper context</param>
+    public PlaceController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, DapperDbContext dapperDbContext)
     {
         _mapper = mapper;
-        _placeService = new PlaceService(context, mapper, redis);
+        _placeService = new PlaceService(context, mapper, redis, dapperDbContext);
     }
 
     /// <summary>
@@ -42,6 +43,12 @@ public class PlaceController : ControllerBase
     {
         Place? place = await _placeService.GetByIdAsync(id);
         return place == null ? null : _mapper.Map<PlaceDto>(place);
+    }
+    
+    [HttpGet("getUsedPlacesIds")]
+    public async Task<IEnumerable<int>> GetUsedPlacesIds()
+    {
+        return await _placeService.GetUsedPlacesIds();
     }
 
     /// <summary>

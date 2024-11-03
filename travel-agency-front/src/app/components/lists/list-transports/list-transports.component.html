@@ -27,9 +27,9 @@
             <td>
                 <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
                     [routerLink]="['../update-transport', transport.id]">EDIT</button>
-                <!-- <button v-if="!(usedTransportIds.includes(transport.id) || usedTransportToEndIds.includes(transport.id))"
-                        class="button-update-delete button-update-delete-hover-black"
-                        @click="deleteTransport(transport.id)">DELETE</button> -->
+                <button *ngIf="!usedTransportsIds.includes(transport.id)"
+                    class="button-update-delete button-update-delete-hover-black"
+                    (click)="deleteTransport(transport.id)">DELETE</button>
             </td>
         </tr>
     </table>

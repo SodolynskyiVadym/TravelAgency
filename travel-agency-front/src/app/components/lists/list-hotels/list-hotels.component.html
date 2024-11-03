@@ -33,9 +33,9 @@
                 <td>
                     <button style="margin-right: 30px;" class="button-update-delete button-update-delete-hover-green"
                         [routerLink]="['../update-hotel', hotel.id]">EDIT</button>
-                    <!-- <button v-if="!usedHotelIds.includes(hotel.id)"
+                    <button *ngIf="!usedHotelsIds.includes(hotel.id)"
                         class="button-update-delete button-update-delete-hover-black"
-                        @click="deleteHotelPage(hotel.id)">DELETE</button> -->
+                        (click)="deleteHotel(hotel.id)">DELETE</button>
                 </td>
             </tr>
         </tbody>

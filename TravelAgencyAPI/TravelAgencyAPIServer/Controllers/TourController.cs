@@ -74,59 +74,7 @@ public class TourController : ControllerBase
     {
         return await _tourService.GetUnavailableTours();
     }
-
-    /// <summary>
-    /// Retrieves the IDs of all places associated with tours.
-    /// </summary>
-    /// <returns>A list of place IDs associated with tours.</returns>
-    [HttpGet("getTourPlacesId")]
-    public async Task<List<int>> GetToursPlacesId()
-    {
-        List<int> destinationsPlaceId = await _context.Destinations
-            .Include(d => d.Hotel)
-            .Select(d => d.Hotel.PlaceId)
-            .ToListAsync();
-
-        List<int> tourPlacesStartId = await _context.Tours
-            .Select(t => t.PlaceStartId)
-            .ToListAsync();
-
-        List<int> tourPlacesEndId = await _context.Tours
-            .Select(t => t.PlaceEndId)
-            .ToListAsync();
-
-        return destinationsPlaceId.Concat(tourPlacesStartId).Concat(tourPlacesEndId).Distinct().ToList();
-    }
-
-    /// <summary>
-    /// Retrieves the IDs of all transports associated with tours.
-    /// </summary>
-    /// <returns>A list of transport IDs associated with tours.</returns>
-    [HttpGet("getTourTransportsId")]
-    public async Task<List<int>> GetToursTransportsId()
-    {
-        List<int> destinationsTransportId = await _context.Destinations
-            .Select(d => d.TransportId)
-            .ToListAsync();
-
-        List<int> tourTransportsId = await _context.Tours
-            .Select(t => t.TransportToEndId)
-            .ToListAsync();
-
-        return destinationsTransportId.Concat(tourTransportsId).Distinct().ToList();
-    }
-
-    /// <summary>
-    /// Retrieves the IDs of all hotels associated with tours.
-    /// </summary>
-    /// <returns>A list of hotel IDs associated with tours.</returns>
-    [HttpGet("getTourHotelsId")]
-    public async Task<List<int>> GetToursHotelsId()
-    {
-        return await _context.Destinations
-            .Select(d => d.HotelId)
-            .ToListAsync();
-    }
+    
 
     /// <summary>
     /// Adds a new tour.

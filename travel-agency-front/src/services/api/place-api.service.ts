@@ -18,6 +18,10 @@ export class PlaceApiService {
     return this.http.get<PlaceDto>(`${this.apiUrl}/${id}`);
   }
 
+  getUsedPlacesIds() : Observable<number[]>{
+    return this.http.get<number[]>(`${this.apiUrl}/getUsedPlacesIds`);
+  }
+
   getPlaces() : Observable<Place[]>{
     return this.http.get<Place[]>(`${this.apiUrl}/getAllPlaces`);
   }
@@ -36,6 +40,14 @@ export class PlaceApiService {
 
   updatePlace(place : PlaceDto, token : string) : Observable<any>{
     return this.http.patch<any>(`${this.apiUrl}/update`, place, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  deletePlace(id : number, token : string) : Observable<any>{
+    return this.http.delete<any>(`${this.apiUrl}/delete/${id}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

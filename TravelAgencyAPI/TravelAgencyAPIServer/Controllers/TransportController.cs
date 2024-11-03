@@ -24,9 +24,10 @@ public class TransportController : ControllerBase
     /// <param name="context">The database context.</param>
     /// <param name="mapper">The object mapper.</param>
     /// <param name="redis">The Redis connection multiplexer.</param>
-    public TransportController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
+    /// <param name="dapperDbContext">The dapper context</param>
+    public TransportController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, DapperDbContext dapperDbContext)
     {
-        _transportService = new TransportService(context, mapper, redis);
+        _transportService = new TransportService(context, mapper, redis, dapperDbContext);
     }
 
     /// <summary>
@@ -38,6 +39,12 @@ public class TransportController : ControllerBase
     public async Task<Transport?> GetTransport(int id)
     {
         return await _transportService.GetByIdAsync(id);
+    }
+    
+    [HttpGet("getUsedTransportsIds")]
+    public async Task<IEnumerable<int>> GetUsedTransportsIds()
+    {
+        return await _transportService.GetUsedTransportsIds();
     }
 
     /// <summary>

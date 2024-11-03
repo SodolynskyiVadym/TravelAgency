@@ -45,7 +45,7 @@ export class TourComponent implements OnInit {
     transportToEnd: {} as Transport,
     destinations: []
   }
-  userReview = {} as Review;
+  userReview = { id: 0, text: '', rating: 0, userId: 0, tourId: 0 } as Review;
   reviews = [] as Review[];
   stripe = {} as any;
   quantity = 1;
@@ -179,7 +179,7 @@ export class TourComponent implements OnInit {
     this.userReview.tourId = id;
     this.reviewApi.createReview(this.userReview, token).subscribe({
       next: (response) => {
-        this.userReview.id = this.user.id;
+        this.userReview.userId = this.user.id;
         this.isUserReview = true;
         this.reviews.push(this.userReview);
       },
@@ -201,9 +201,9 @@ export class TourComponent implements OnInit {
     this.userReview.tourId = id;
     this.reviewApi.updateReview(this.userReview, token).subscribe({
       next: (response) => {
-        this.isUserReview = true;
         this.reviews = this.reviews.filter(review => review.userId != this.user.id)
         this.reviews.push(this.userReview);
+        this.isUserReview = true;
       },
       error: () => this.router.navigate(['/'])
     });

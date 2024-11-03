@@ -90,6 +90,7 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> UpdateReview(ReviewDto review)
     {
         int userId = int.Parse(User.FindFirst("userId")?.Value);
+        review.UserId = userId;
         if (review.Rating <= 0 || review.Rating > 5) return BadRequest("Rating must be between 1 and 5");
         if (await _reviewService.UpdateAsync(review)) return Ok();
         return NoContent();

@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -13,14 +15,16 @@ namespace TravelAgencyAPIServer.Services;
 public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
 {
     private readonly TravelDbContext _context;
+    private readonly DapperDbContext _dapperDbContext;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
     private readonly ComparatorHelper _comparatorHelper = new();
 
-    public PlaceService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction)
+    public PlaceService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnecction, DapperDbContext dapperDbContext)
     {
         _context = context;
         _mapper = mapper;
+        _dapperDbContext = dapperDbContext;
         _redis = redisConnecction.GetDatabase();
     }
 
@@ -45,6 +49,12 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
         if(place != null) 
             await _redis.StringSetAsync(redisKey, JsonConvert.SerializeObject(place), TimeSpan.FromMinutes(10));
         return place;
+    }
+    
+    public async Task<IEnumerable<int>> GetUsedPlacesIds()
+    {
+        string query = "SELECT PlaceId FROM Hotels UNION SELECT PlaceStartId FROM Tours UNION SELECT PlaceEndId FROM Tours;";
+        return await _dapperDbContext.Connection.QueryAsync<int>(query);
     }
 
     public async Task<List<Place>> GetAllAsync()

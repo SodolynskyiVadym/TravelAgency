@@ -4,6 +4,7 @@ import { HotelApiService } from '../../../../services/api/hotel-api.service';
 import { Hotel } from '../../../../models/hotel.model';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { BrowserStorageService } from '../../../../services/browser-storage-service.service';
 
 @Component({
   selector: 'app-list-hotels',
@@ -19,11 +20,12 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class ListHotelsComponent implements OnInit {
-  inputHotelName : string = '';
+  inputHotelName: string = '';
   filteredHotels: Hotel[] = [];
   hotels: Hotel[] = [];
-  
-  constructor(private hotelApi : HotelApiService, private router : Router) { }
+  usedHotelsIds: number[] = [];
+
+  constructor(private hotelApi: HotelApiService, private router: Router, private browserStorage : BrowserStorageService) { }
 
   ngOnInit(): void {
     this.hotelApi.getHotels().subscribe(
@@ -35,9 +37,34 @@ export class ListHotelsComponent implements OnInit {
         console.error('Error fetching hotels', error);
       }
     );
+
+    this.hotelApi.getUsedHotelsIds().subscribe({
+      next: (response: number[]) => {
+        this.usedHotelsIds = response;
+      },
+      error: (error) => {
+        this.usedHotelsIds = this.hotels.map(hotel => hotel.id);
+      }
+    });
   }
 
   searchHotel() {
     this.filteredHotels = this.hotels.filter(hotel => hotel.name.toLowerCase().includes(this.inputHotelName.toLowerCase()));
+  }
+
+  deleteHotel(id: number) {
+    let token = this.browserStorage.get('token');
+    if(token == null) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.hotelApi.deleteHotel(id, token).subscribe(
+      (response) => {
+        this.filteredHotels = this.filteredHotels.filter(hotel => hotel.id !== id);
+      },
+      (error) => {
+        alert('Error deleting hotel');
+      }
+    );
   }
 }
