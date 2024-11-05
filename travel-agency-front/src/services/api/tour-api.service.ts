@@ -17,6 +17,7 @@ export class TourApiService {
   }
 
   getTours() : Observable<Tour[]> {
+    console.log(environment.env);
     return this.http.get<Tour[]>(`${this.apiUrl}/getAllTours`);
   }
 

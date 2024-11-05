@@ -38,13 +38,13 @@ services:
     image: travel_agency_client
     container_name: client
     build:
-      context: ./travel_agency_front
+      context: ./travel-agency-front
       dockerfile: Dockerfile
     environment:
-      - ENVIRONMENT=DockerEnv
-      - SERVER_ADDRESS=http://server:5160
+      - NODE_ENV=docker
+      - SERVER=server
     ports:
-      - "8080:8080"
+      - "4200:4200"
 
 
   database:
