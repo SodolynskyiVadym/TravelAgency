@@ -30,9 +30,15 @@ public class PlaceService : IRepository<Place, PlaceDto>, IPlaceService
 
     public async Task<Place?> GetByIdWithIncludeAsync(int id)
     {
-        return await _context.Places
-            .Include(p => p.ImagesUrls)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        Console.WriteLine("GetByIdWithIncludeAsync");
+        string query = $@"SELECT p.*, pi.url
+        FROM Places p
+        LEFT JOIN PlaceImageUrls pi ON p.Id = pi.PlaceId
+        WHERE p.Id = {id}";
+        return await _dapperDbContext.Connection.QueryFirstOrDefaultAsync<Place>(query);
+        // return await _context.Places
+        //     .Include(p => p.ImagesUrls)
+        //     .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Place?> GetByIdAsync(int id)

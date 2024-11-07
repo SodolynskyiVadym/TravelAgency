@@ -57,17 +57,15 @@
 </div>
 
 
-<div style="text-align: center; margin-top: 70px;">
+<div *ngIf="user.role" style="text-align: center; margin-top: 70px;">
     <h2>Your review</h2>
-    <div *ngIf="user.role" style="margin-top: 60px; text-align: center;">
-        <input type="number" [(ngModel)]="userReview.rating" (change)="checkRating()">
-        <div *ngIf="user.role">
-            <textarea class="comment-area" [(ngModel)]="userReview.text" placeholder="Write your review"></textarea><br>
-            <button *ngIf="!this.isUserReview" class="button-comment-area" (click)="createReview()">Send</button>
-            <div *ngIf="this.isUserReview">
-                <button class="button-comment-area" (click)="updateReview()">Update</button>
-                <button class="button-comment-area" (click)="deleteReview()">Delete</button>
-            </div>
+    <div style="margin-top: 60px; text-align: center;">
+        <input type="number" [(ngModel)]="userReview.rating" (change)="checkRating()"><br>
+        <textarea class="comment-area" [(ngModel)]="userReview.text" placeholder="Write your review"></textarea><br>
+        <button *ngIf="!this.isUserReview" class="button-comment-area" (click)="createReview()">Send</button>
+        <div *ngIf="this.isUserReview">
+            <button class="button-comment-area" (click)="updateReview()">Update</button>
+            <button class="button-comment-area" (click)="deleteReview()">Delete</button>
         </div>
     </div>
 </div>

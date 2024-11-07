@@ -27,8 +27,10 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.Item1.ImageUrl))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Item2));
         CreateMap<Tour, TourBasicInfoDto>()
-            .ForMember(dest => dest.DestinationsNames, opt => 
-                    opt.MapFrom(src => src.Destinations.Select(d => d.Hotel.Place.Name).ToList()));
+            .ForMember(dest => dest.TransportTypes, opt =>
+                opt.MapFrom(src => src.Destinations.Select(d => d.Transport.Type).ToHashSet()))
+            .ForMember(dest => dest.PlaceIds,
+                opt => opt.MapFrom((src => src.Destinations.Select(d => d.Hotel.PlaceId).ToHashSet())));
         CreateMap<UserDto, User>();
         CreateMap<User, UserEmailRoleDto>();
         CreateMap<User, UserIdEmailRoleDto>();

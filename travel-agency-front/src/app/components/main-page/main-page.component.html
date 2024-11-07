@@ -6,32 +6,86 @@
             Whether you're a seasoned globetrotter or embarking on your first adventure, we're here to inspire your
             journeys and make your travel dreams a reality. From hidden gems in bustling cities to serene retreats in
             nature's lap, we offer
-            expert tips, curated itineraries, and vibrant stories that bring every corner of the globe to life. Join us as
+            expert tips, curated itineraries, and vibrant stories that bring every corner of the globe to life. Join us
+            as
             we explore the rich
             tapestry of cultures, flavors, and experiences that await you on your next trip. Your adventure begins here.
         </p>
     </div>
 </div>
 
-<div style="text-align: center; margin-bottom: 30px;">
+<div style="margin-bottom: 30px;">
     <div class="form-control">
-        <input class="input input-alt" placeholder="Type name of tour or location" type="text" [(ngModel)]="inputTourName" (input)="searchTour()">
+        <input class="input input-alt" placeholder="Type name of tour or location" type="text"
+            [(ngModel)]="inputTourName" (input)="searchTour()">
         <span class="input-border input-border-alt"></span>
+        <button class="btn-filter" (click)="isFiltering = !isFiltering">Filters</button>
     </div>
     <div class="error-search" *ngIf="filteredTours.length === 0">Tours not found</div>
+
+    <div class="filter-field" *ngIf="isFiltering">
+        <div class="filter-group">
+            <label for="startDateFrom">Start Date From:</label>
+            <input id="startDateFrom" type="date" [(ngModel)]="choosedStartDateFrom" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="startDateTo">Start Date To:</label>
+            <input id="startDateTo" type="date" [(ngModel)]="choosedStartDateTo" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="endDateFrom">End Date From:</label>
+            <input id="endDateFrom" type="date" [(ngModel)]="choosedEndDateFrom" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="endDateTo">End Date To:</label>
+            <input id="endDateTo" type="date" [(ngModel)]="choosedEndDateTo" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="priceFrom">Price From:</label>
+            <input id="priceFrom" type="number" [(ngModel)]="priceFrom" class="form-control">
+        </div>
+        <div class="filter-group">
+            <label for="priceTo">Price To:</label>
+            <input id="priceTo" type="number" [(ngModel)]="priceTo" class="form-control">
+        </div>
+        <!-- <div class="filter-group">
+            <label for="transportTypes">Transport Types:</label>
+            <select id="transportTypes" multiple [(ngModel)]="choosedTransportTypes" class="form-control">
+                <option *ngFor="let transportType of transportTypes" [value]="transportType">{{ transportType }}</option>
+            </select>
+        </div> -->
+        <div class="filter-group">
+            <label for="countries">Countries:</label>
+            <select id="countries" multiple [(ngModel)]="choosedCountries" class="form-control">
+                <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="places">Places:</label>
+            <select id="places" multiple [(ngModel)]="choosedPlaces" class="form-control">
+                <option *ngFor="let place of places" [value]="place">{{ place }}</option>
+            </select>
+        </div>
+        <!-- <div class="filter-group">
+            <button (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
+        </div> -->
+    </div>
 </div>
 
 <div class="row mb-2" style="width: 100%;">
     <div class="col-md-6" *ngFor="let tour of filteredTours; let index = index" :key="index">
-        <div style="cursor: pointer;" class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
+        <div style="cursor: pointer;"
+            class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
             [routerLink]="['tour', tour.id]">
             <div class="col p-4 d-flex flex-column position-static">
                 <h4 style="max-width: 100%; word-wrap: break-word;" class="mb-0">{{ tour.name }}</h4>
-                <div class="mb-1 text-body-secondary">{{ tour.formattedStartDate }} --- {{ tour.formattedEndDate }}</div>
+                <div class="mb-1 text-body-secondary">{{ tour.formattedStartDate }} --- {{ tour.formattedEndDate }}
+                </div>
                 <p style="max-height: 145px; overflow: hidden;" class="card-text mb-auto">{{ tour.description }}</p>
             </div>
             <div class="col-auto d-none d-lg-block">
-                <img class="bd-placeholder-img" [src]="tour.imageUrl" alt="Description of image" width="390" height="250">
+                <img class="bd-placeholder-img" [src]="tour.imageUrl" alt="Description of image" width="390"
+                    height="250">
             </div>
         </div>
     </div>

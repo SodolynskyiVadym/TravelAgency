@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -13,15 +14,17 @@ namespace TravelAgencyAPIServer.Services;
 public class TourService : IRepository<Tour, TourDto>, ITourService
 {
     private TravelDbContext _context;
+    private readonly DapperDbContext _dapperDbContext;
     private readonly IMapper _mapper;
     private readonly IDatabase _redis;
     private readonly ComparatorHelper _comparatorHelper = new();
 
-    public TourService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection)
+    public TourService(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redisConnection, DapperDbContext dapperDbContext)
     {
         _context = context;
         _mapper = mapper;
         _redis = redisConnection.GetDatabase();
+        _dapperDbContext = dapperDbContext;
     }
 
     public async Task<Tour?> GetByIdWithIncludeAsync(int id)
@@ -46,8 +49,8 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         string redisKey = "tour" + id;
         if (await _redis.KeyExistsAsync(redisKey))
         {
-            string jsonData = await _redis.StringGetAsync(redisKey);
-            return JsonConvert.DeserializeObject<Tour>(jsonData);
+            string? jsonData = await _redis.StringGetAsync(redisKey);
+            if (jsonData != null) return JsonConvert.DeserializeObject<Tour>(jsonData);
         }
 
         Tour? tour = await this.GetByIdWithIncludeAsync(id);
@@ -59,6 +62,22 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
     public async Task<List<Tour>> GetAllAsync()
     {
         return await _context.Tours.ToListAsync();
+    }
+    
+    public async Task<IEnumerable<TourBasicInfoDto>> GetAvailableTours()
+    {
+        return await _context.Tours
+            .Where(t => t.IsAvailable)
+            .Include(t => t.Destinations)
+            .ThenInclude(d => d.Hotel)
+            .Include(t => t.Destinations)
+            .ThenInclude(d => d.Transport)
+            .Select(t => _mapper.Map<TourBasicInfoDto>(t)).ToListAsync();
+    }
+
+    public async Task<List<Tour>> GetUnavailableTours()
+    {
+        return await _context.Tours.Where(t => !t.IsAvailable).ToListAsync();
     }
 
     public async Task<int> AddAsync(TourDto tourDto)
@@ -119,21 +138,6 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
         await _context.SaveChangesAsync();
         await _redis.KeyDeleteAsync("tour" + id);
         return true;
-    }
-
-    public async Task<List<TourBasicInfoDto>> GetAvailableTours()
-    {
-        return await _context.Tours.Include(t => t.Destinations)
-            .ThenInclude(d => d.Hotel)
-            .ThenInclude(h => h.Place)
-            .Where(t => t.IsAvailable)
-            .Select(t => _mapper.Map<TourBasicInfoDto>(t))
-            .ToListAsync();
-    }
-
-    public async Task<List<Tour>> GetUnavailableTours()
-    {
-        return await _context.Tours.Where(t => !t.IsAvailable).ToListAsync();
     }
 
     public async Task CheckTourAvailability()

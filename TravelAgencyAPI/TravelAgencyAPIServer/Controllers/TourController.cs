@@ -27,10 +27,11 @@ public class TourController : ControllerBase
     /// <param name="context">The database context.</param>
     /// <param name="mapper">The object mapper.</param>
     /// <param name="redis">The Redis connection multiplexer.</param>
-    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis)
+    /// <param name="dapperDbContext">The dapper context</param>
+    public TourController(TravelDbContext context, IMapper mapper, IConnectionMultiplexer redis, DapperDbContext dapperDbContext)
     {
         _context = context;
-        _tourService = new TourService(context, mapper, redis);
+        _tourService = new TourService(context, mapper, redis, dapperDbContext);
         _mapper = mapper;
     }
 
@@ -44,6 +45,7 @@ public class TourController : ControllerBase
     {
         return await _tourService.GetByIdAsync(id);
     }
+
 
     /// <summary>
     /// Retrieves all tours.
@@ -60,11 +62,10 @@ public class TourController : ControllerBase
     /// </summary>
     /// <returns>A list of available tours.</returns>
     [HttpGet("getAvailableTours")]
-    public async Task<List<TourBasicInfoDto>> GetAvailableTours()
+    public async Task<IEnumerable<TourBasicInfoDto>> GetAvailableTours()
     {
         return await _tourService.GetAvailableTours();
     }
-
     /// <summary>
     /// Retrieves all unavailable tours.
     /// </summary>

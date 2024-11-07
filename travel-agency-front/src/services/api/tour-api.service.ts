@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Tour } from '../../models/tour.model';
 import { environment } from '../../environment/environment';
+import { TourBasicDto } from '../../models/tourBasicDto.mode';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,11 @@ export class TourApiService {
   }
 
   getTours() : Observable<Tour[]> {
-    console.log(environment.env);
     return this.http.get<Tour[]>(`${this.apiUrl}/getAllTours`);
+  }
+
+  getAvailableTours() : Observable<TourBasicDto[]> {
+    return this.http.get<TourBasicDto[]>(`${this.apiUrl}/getAvailableTours`);
   }
 
   getUnavailableTours() : Observable<Tour[]> {

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Tour } from '../../../models/tour.model';
 import { TourApiService } from '../../../services/api/tour-api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DateHelperService } from '../../../services/date-helper.service';
+import { TourBasicDto } from '../../../models/tourBasicDto.mode';
+import { PlaceApiService } from '../../../services/api/place-api.service';
+import { countries } from '../../../services/constants/countries';
 
 @Component({
   selector: 'app-main-page',
@@ -17,21 +19,45 @@ import { DateHelperService } from '../../../services/date-helper.service';
 })
 
 export class MainPageComponent implements OnInit {
-  inputTourName : string = '';
-  filteredTours : Tour[] = [];
-  tours : Tour[] = []
+  inputTourName: string = '';
+  countries = countries;
+  filteredTours: TourBasicDto[] = [];
+  tours: TourBasicDto[] = []
+  places: any[] = [];
 
-  constructor(private tourService : TourApiService, private dateHelper : DateHelperService) { }
+  choosedStartDateTo: Date = new Date();
+  choosedStartDateFrom: Date = new Date();
+  choosedEndDateTo: Date = new Date();
+  choosedEndDateFrom: Date = new Date();
+  priceFrom: number = 0;
+  priceTo: number = 0;
+  choosedTransportTypes = [];
+  choosedCountries = [];
+  choosedPlaces = [];
+  isFiltering: boolean = false;
+
+  constructor(private tourService: TourApiService, private placeAPi : PlaceApiService, private dateHelper: DateHelperService) { }
 
   ngOnInit(): void {
-    this.tourService.getTours().subscribe((response : Tour[]) => {
-      this.tours = response;
-      this.tours.forEach(tour => { 
-        tour.formattedStartDate = this.dateHelper.formatDate(tour.startDate); 
-        tour.formattedEndDate = this.dateHelper.formatDate(tour.endDate);
-      });
-      this.filteredTours = this.tours;
-      
+    this.tourService.getAvailableTours().subscribe({
+      next: (response: TourBasicDto[]) => {
+        this.tours = response;
+        this.tours.forEach(tour => {
+          tour.formattedStartDate = this.dateHelper.formatDate(tour.startDate);
+          tour.formattedEndDate = this.dateHelper.formatDate(tour.endDate);
+        });
+        this.filteredTours = this.tours;
+      },error : (error) => {
+        this.filteredTours = [];
+        this.tours = [];
+      }
+    });
+
+    this.placeAPi.getPlacesInfo().subscribe({
+      next: (response: any) => {
+        this.places = response;
+    }, error: (error) => {
+    }
     });
   }
 

@@ -36,11 +36,12 @@ public class PayController : ControllerBase
     /// <param name="addressSetting">The address settings.</param>
     /// <param name="redis">The Redis connection multiplexer.</param>
     /// <param name="rabbitMqPublisher">The RabbitMQ publisher.</param>
+    /// <param name="dapperDbContext">The dapper context</param>
     public PayController(TravelDbContext context, IMapper mapper, IOptions<AddressSetting> addressSetting,
-        IConnectionMultiplexer redis, IRabbitMqPublisher rabbitMqPublisher)
+        IConnectionMultiplexer redis, IRabbitMqPublisher rabbitMqPublisher, DapperDbContext dapperDbContext)
     {
         _userService = new UserService(context, mapper);
-        _tourService = new TourService(context, mapper, redis);
+        _tourService = new TourService(context, mapper, redis, dapperDbContext);
         _paymentService = new PaymentService(context, mapper);
         _stripeHelper = new StripeHelper(addressSetting.Value);
         _mapper = mapper;

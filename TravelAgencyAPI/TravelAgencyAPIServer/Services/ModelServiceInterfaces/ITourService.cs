@@ -5,7 +5,7 @@ namespace TravelAgencyAPIServer.Services.ModelServiceInterfaces;
 
 public interface ITourService
 {
-    public Task<List<TourBasicInfoDto>> GetAvailableTours();
+    public Task<IEnumerable<TourBasicInfoDto>> GetAvailableTours();
     public Task<List<Tour>> GetUnavailableTours();
     public Task CheckTourAvailability();
 }
