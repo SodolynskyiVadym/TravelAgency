@@ -48,12 +48,28 @@
             <label for="priceTo">Price To:</label>
             <input id="priceTo" type="number" [(ngModel)]="priceTo" class="form-control">
         </div>
-        <!-- <div class="filter-group">
-            <label for="transportTypes">Transport Types:</label>
-            <select id="transportTypes" multiple [(ngModel)]="choosedTransportTypes" class="form-control">
-                <option *ngFor="let transportType of transportTypes" [value]="transportType">{{ transportType }}</option>
-            </select>
-        </div> -->
+        
+        <div class="filter-group">
+            <label for="priceRange">Price Range:</label>
+            <input type="range" [(ngModel)]="priceFrom" min="0" max="1000" class="form-range">
+            <input type="range" [(ngModel)]="priceTo" min="0" max="1000" class="form-range">
+            <div class="range-values">
+                <span>{{ priceFrom }}</span> - <span>{{ priceTo }}</span>
+            </div>
+        </div>
+        
+        <div style="text-align: center; display:inline-block;" class="filter-group">
+            <p for="transportTypes">Transport Types:</p>
+            <img class="type-img" *ngIf="isTrainIncluded" src="/assets/images/train_on.png" alt="transport" class="transport-image" (click)="isTrainIncluded = false">
+            <img class="type-img" *ngIf="!isTrainIncluded" src="/assets/images/train_off.png" alt="transport" class="transport-image" (click)="isTrainIncluded = true">
+            <img class="type-img" *ngIf="isAirplaneIncluded" src="/assets/images/airplane_on.png" alt="transport" class="transport-image" (click)="isAirplaneIncluded = false">
+            <img class="type-img" *ngIf="!isAirplaneIncluded" src="/assets/images/airplane_off.png" alt="transport" class="transport-image" (click)="isAirplaneIncluded = true">
+            <img class="type-img" *ngIf="isShipIncluded" src="/assets/images/ship_on.png" alt="transport" class="transport-image" (click)="isShipIncluded = false">
+            <img class="type-img" *ngIf="!isShipIncluded" src="/assets/images/ship_off.png" alt="transport" class="transport-image" (click)="isShipIncluded = true">
+            <img class="type-img" *ngIf="isBusIncluded" src="/assets/images/bus_on.png" alt="transport" class="transport-image" (click)="isBusIncluded = false">
+            <img class="type-img" *ngIf="!isBusIncluded" src="/assets/images/bus_off.png" alt="transport" class="transport-image" (click)="isBusIncluded = true">
+
+        </div>
         <div class="filter-group">
             <label for="countries">Countries:</label>
             <select id="countries" multiple [(ngModel)]="choosedCountries" class="form-control">
@@ -66,9 +82,9 @@
                 <option *ngFor="let place of places" [value]="place">{{ place }}</option>
             </select>
         </div>
-        <!-- <div class="filter-group">
+        <div class="filter-group">
             <button (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
-        </div> -->
+        </div>
     </div>
 </div>
 

@@ -28,3 +28,123 @@
 .btn-filter:active {
     transform: translateY(-1px);
 }
+
+/* Filter CSS */
+
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* max-width: 600px; */
+    margin: 0 auto;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label,
+.filter-group p {
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-group input[type="date"],
+.filter-group input[type="number"],
+.filter-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.filter-group input[type="date"]:focus,
+.filter-group input[type="number"]:focus,
+.filter-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.filter-group select {
+    height: auto;
+}
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+button.btn-primary {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.filter-group p {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.filter-group img {
+    width: 200px;
+    height: 200px;
+    margin-right: 10px;
+}
+
+
+
+
+
+.filter-group input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.filter-group input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+}
+
+.filter-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -6px;
+    transition: background 0.3s ease;
+}
+
+.filter-group input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0056b3;
+}
+
+.range-values {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    margin-top: 5px;
+}

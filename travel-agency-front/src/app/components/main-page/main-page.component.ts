@@ -31,7 +31,10 @@ export class MainPageComponent implements OnInit {
   choosedEndDateFrom: Date = new Date();
   priceFrom: number = 0;
   priceTo: number = 0;
-  choosedTransportTypes = [];
+  isShipIncluded: boolean = true;
+  isAirplaneIncluded: boolean = true;
+  isBusIncluded: boolean = true;
+  isTrainIncluded: boolean = true;
   choosedCountries = [];
   choosedPlaces = [];
   isFiltering: boolean = false;
@@ -64,5 +67,9 @@ export class MainPageComponent implements OnInit {
 
   searchTour() {
     this.filteredTours = this.tours.filter(tour => tour.name.toLowerCase().includes(this.inputTourName.toLowerCase()));
+  }
+
+  applyFilters() {
+    
   }
 }
