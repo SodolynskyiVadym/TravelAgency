@@ -72,6 +72,7 @@ public class TourService : IRepository<Tour, TourDto>, ITourService
             .ThenInclude(d => d.Hotel)
             .Include(t => t.Destinations)
             .ThenInclude(d => d.Transport)
+            .Include(t => t.TransportToEnd)
             .Select(t => _mapper.Map<TourBasicInfoDto>(t)).ToListAsync();
     }
 

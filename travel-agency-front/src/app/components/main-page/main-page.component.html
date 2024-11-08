@@ -19,77 +19,91 @@
         <input class="input input-alt" placeholder="Type name of tour or location" type="text"
             [(ngModel)]="inputTourName" (input)="searchTour()">
         <span class="input-border input-border-alt"></span>
-        <button class="btn-filter" (click)="isFiltering = !isFiltering">Filters</button>
+        <button [ngStyle]="{'background-color': isFiltering ? 'rgb(201, 6, 6)' : '#23c483'}" class="btn-filter"
+            (click)="isFiltering = !isFiltering">
+            {{ isFiltering ? 'Hide' : 'Filters' }}
+        </button>
     </div>
-    <div class="error-search" *ngIf="filteredTours.length === 0">Tours not found</div>
 
     <div class="filter-field" *ngIf="isFiltering">
-        <div class="filter-group">
-            <label for="startDateFrom">Start Date From:</label>
+        <div class="filter-group d-flex align-items-center">
+            <p for="startDateFrom">Start Date From:</p>
             <input id="startDateFrom" type="date" [(ngModel)]="choosedStartDateFrom" class="form-control">
-        </div>
-        <div class="filter-group">
-            <label for="startDateTo">Start Date To:</label>
+            <p for="startDateTo">Start Date To:</p>
             <input id="startDateTo" type="date" [(ngModel)]="choosedStartDateTo" class="form-control">
         </div>
-        <div class="filter-group">
-            <label for="endDateFrom">End Date From:</label>
-            <input id="endDateFrom" type="date" [(ngModel)]="choosedEndDateFrom" class="form-control">
+
+        <div class="filter-group d-flex align-items-center">
+            <p for="endDateFrom">End Date From:</p>
+            <input id="endDateFrom" style="margin-left: 8px;" type="date" [(ngModel)]="choosedEndDateFrom"
+                class="form-control">
+            <p for="endDateTo">End Date To:</p>
+            <input id="endDateTo" style="margin-left: 9px;" type="date" [(ngModel)]="choosedEndDateTo"
+                class="form-control">
         </div>
-        <div class="filter-group">
-            <label for="endDateTo">End Date To:</label>
-            <input id="endDateTo" type="date" [(ngModel)]="choosedEndDateTo" class="form-control">
-        </div>
-        <div class="filter-group">
-            <label for="priceFrom">Price From:</label>
-            <input id="priceFrom" type="number" [(ngModel)]="priceFrom" class="form-control">
-        </div>
-        <div class="filter-group">
-            <label for="priceTo">Price To:</label>
-            <input id="priceTo" type="number" [(ngModel)]="priceTo" class="form-control">
-        </div>
-        
+
         <div class="filter-group">
             <label for="priceRange">Price Range:</label>
-            <input type="range" [(ngModel)]="priceFrom" min="0" max="1000" class="form-range">
-            <input type="range" [(ngModel)]="priceTo" min="0" max="1000" class="form-range">
-            <div class="range-values">
-                <span>{{ priceFrom }}</span> - <span>{{ priceTo }}</span>
-            </div>
-        </div>
-        
-        <div style="text-align: center; display:inline-block;" class="filter-group">
-            <p for="transportTypes">Transport Types:</p>
-            <img class="type-img" *ngIf="isTrainIncluded" src="/assets/images/train_on.png" alt="transport" class="transport-image" (click)="isTrainIncluded = false">
-            <img class="type-img" *ngIf="!isTrainIncluded" src="/assets/images/train_off.png" alt="transport" class="transport-image" (click)="isTrainIncluded = true">
-            <img class="type-img" *ngIf="isAirplaneIncluded" src="/assets/images/airplane_on.png" alt="transport" class="transport-image" (click)="isAirplaneIncluded = false">
-            <img class="type-img" *ngIf="!isAirplaneIncluded" src="/assets/images/airplane_off.png" alt="transport" class="transport-image" (click)="isAirplaneIncluded = true">
-            <img class="type-img" *ngIf="isShipIncluded" src="/assets/images/ship_on.png" alt="transport" class="transport-image" (click)="isShipIncluded = false">
-            <img class="type-img" *ngIf="!isShipIncluded" src="/assets/images/ship_off.png" alt="transport" class="transport-image" (click)="isShipIncluded = true">
-            <img class="type-img" *ngIf="isBusIncluded" src="/assets/images/bus_on.png" alt="transport" class="transport-image" (click)="isBusIncluded = false">
-            <img class="type-img" *ngIf="!isBusIncluded" src="/assets/images/bus_off.png" alt="transport" class="transport-image" (click)="isBusIncluded = true">
+            <input type="range" [(ngModel)]="priceFrom" [min]="0" [max]="priceTo" class="form-range">
+            <input type="range" [(ngModel)]="priceTo" [min]="priceFrom" [max]="priceMax" class="form-range">
 
         </div>
-        <div class="filter-group">
-            <label for="countries">Countries:</label>
-            <select id="countries" multiple [(ngModel)]="choosedCountries" class="form-control">
+        <div class="range-values">
+            <span>{{ priceFrom }} UAH - {{ priceTo }}UAH</span>
+        </div>
+
+        <div style="text-align: center; display:inline-block;" class="filter-group">
+            <p for="transportTypes">Transport Types:</p>
+            <img class="type-img" *ngIf="isTrainIncluded" src="/assets/images/train_on.png" alt="transport"
+                class="transport-image" (click)="isTrainIncluded = false">
+            <img class="type-img" *ngIf="!isTrainIncluded" src="/assets/images/train_off.png" alt="transport"
+                class="transport-image" (click)="isTrainIncluded = true">
+            <img class="type-img" *ngIf="isAirplaneIncluded" src="/assets/images/airplane_on.png" alt="transport"
+                class="transport-image" (click)="isAirplaneIncluded = false">
+            <img class="type-img" *ngIf="!isAirplaneIncluded" src="/assets/images/airplane_off.png" alt="transport"
+                class="transport-image" (click)="isAirplaneIncluded = true">
+            <img class="type-img" *ngIf="isShipIncluded" src="/assets/images/ship_on.png" alt="transport"
+                class="transport-image" (click)="isShipIncluded = false">
+            <img class="type-img" *ngIf="!isShipIncluded" src="/assets/images/ship_off.png" alt="transport"
+                class="transport-image" (click)="isShipIncluded = true">
+            <img class="type-img" *ngIf="isBusIncluded" src="/assets/images/bus_on.png" alt="transport"
+                class="transport-image" (click)="isBusIncluded = false">
+            <img class="type-img" *ngIf="!isBusIncluded" src="/assets/images/bus_off.png" alt="transport"
+                class="transport-image" (click)="isBusIncluded = true">
+        </div>
+
+        <div style="text-align: center;">
+            <p>Desired locations</p>
+        </div>
+
+        @for (place of choosedPlaces; track $index) {
+        <div class="filter-group d-flex align-items-center">
+            <label for="countries">Country:</label>
+            <select id="countries" [(ngModel)]="choosedCountries[$index]" class="form-control">
                 <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
             </select>
-        </div>
-        <div class="filter-group">
-            <label for="places">Places:</label>
-            <select id="places" multiple [(ngModel)]="choosedPlaces" class="form-control">
-                <option *ngFor="let place of places" [value]="place">{{ place }}</option>
+            <label for="places">Place:</label>
+            <select id="places" [(ngModel)]="choosedPlaces[$index]" class="form-control">
+                <option *ngFor="let place of filterPlaces(choosedCountries[$index])" [value]="place.name">{{ place.name
+                    }}</option>
             </select>
+            <button style="color: white;background-color: black;" class="btn-filter"
+                (click)="choosedCountries.splice($index, 1); choosedPlaces.splice($index, 1)">Remove location</button>
         </div>
-        <div class="filter-group">
-            <button (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
+        }
+        <div style="text-align: center;">
+            <button class="btn-filter" (click)="choosedCountries.push(''); choosedPlaces.push('')">Add
+                location</button><br>
+
+            <button style="background-color: rgb(0, 0, 236); color: white; margin-top: 20px;" (click)="applyFilters()"
+                class="btn-filter">Apply Filters</button>
         </div>
+
     </div>
 </div>
 
 <div class="row mb-2" style="width: 100%;">
-    <div class="col-md-6" *ngFor="let tour of filteredTours; let index = index" :key="index">
+    <div class="col-md-6 " *ngFor="let tour of filteredTours; let index = index">
         <div style="cursor: pointer;"
             class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
             [routerLink]="['tour', tour.id]">
