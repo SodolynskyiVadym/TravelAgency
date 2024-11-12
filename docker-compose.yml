@@ -34,17 +34,17 @@ services:
     depends_on:
       - rabbitmq
 
-  client:
-    image: travel_agency_client
-    container_name: client
-    build:
-      context: ./travel-agency-front
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=docker
-      - SERVER=server
-    ports:
-      - "4200:4200"
+  # client:
+  #   image: travel_agency_client
+  #   container_name: client
+  #   build:
+  #     context: ./travel-agency-front
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - NODE_ENV=docker
+  #     - SERVER=server
+  #   ports:
+  #     - "4200:4200"
 
 
   database:
