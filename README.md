@@ -38,7 +38,7 @@ File [appsettings.json](TravelAgencyService/appsettings.json) (TravelAgencyServi
 > - MailSetting
 > - RabbitMqSetting
 
-File [config.env](travel_agency_front/config.env) (travel_agency_front)
+File [config.env](travel-agency-front/config.env) (travel_agency_front)
 > - STRIPE_PUBLIC_KEY
 <br>
 
