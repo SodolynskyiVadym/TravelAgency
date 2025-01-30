@@ -28,7 +28,7 @@ git clone https://github.com/SodolynskyiVadym/TravelAgency.git
 
 - Enter your data in files appsettings.json and config.env
 
-File [appsettings.json](TravelAgencyAPI/appsettings.json) (TravelAgencyAPI)
+File [appsettings.json](TravelAgencyAPI/TravelAgencyAPIServer/appsettings.json) (TravelAgencyAPI)
 > - Stripe(private key)
 > - ConnectionStrings(if you run by docker you haven't to do it)
 > - AuthSetting
